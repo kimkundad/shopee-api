@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\OwnershopController;
 
 /*
 |--------------------------------------------------------------------------
@@ -31,6 +32,10 @@ Route::group(['middleware' => ['UserRole:superadmin|admin']], function() {
     Route::resource('/admin/category', CategoryController::class);
     Route::post('/api/api_post_status_category', [App\Http\Controllers\CategoryController::class, 'api_post_status_category']);
     Route::get('api/del_cat/{id}', [App\Http\Controllers\CategoryController::class, 'del_cat']);
+
+    Route::resource('/admin/ownershop', OwnershopController::class);
+    Route::post('/api/api_post_status_ownershop', [App\Http\Controllers\OwnershopController::class, 'api_post_status_ownershop']);
+    Route::get('api/del_ownershop/{id}', [App\Http\Controllers\OwnershopController::class, 'del_ownershop']);
 
 });
 

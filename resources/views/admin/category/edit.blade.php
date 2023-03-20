@@ -1,8 +1,8 @@
 @extends('admin.layouts.template')
 
 @section('title')
-    <title>วงษ์พาณิชย์รีไซเคิล ระยอง จำกัด</title>
-    <meta name="description" content=" รายละเอียด วงษ์พาณิชย์รีไซเคิล ระยอง จำกัด">
+    <title>shopee-app</title>
+    <meta name="description" content="shopee-app">
 @stop
 @section('stylesheet')
 

@@ -1,8 +1,8 @@
 @extends('admin.layouts.template')
 
 @section('title')
-    <title>shopee-apiด</title>
-    <meta name="description" content=" รายละเอียด shopee-api">
+    <title>shopee-app</title>
+    <meta name="description" content="shopee-app">
 @stop
 @section('stylesheet')
 
