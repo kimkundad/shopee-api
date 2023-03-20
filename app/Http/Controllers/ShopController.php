@@ -3,13 +3,13 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\ownershop;
-use App\Models\User;
+use App\Models\shop;
 use Intervention\Image\ImageManagerStatic as Image;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
+use App\Models\ownershop;
 
-class OwnershopController extends Controller
+class ShopController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -19,11 +19,11 @@ class OwnershopController extends Controller
     public function index()
     {
         //
-        $objs = ownershop::paginate(30);
+        $objs = shop::paginate(30);
 
         $objs->setPath('');
         $data['objs'] = $objs;
-        return view('admin.ownershop.index', compact('objs'));
+        return view('admin.shops.index', compact('objs'));
     }
 
     /**
@@ -34,17 +34,17 @@ class OwnershopController extends Controller
     public function create()
     {
         //
-        $user = User::all();
-        $data['user'] = $user;
+        $ownershop = ownershop::all();
+        $data['ownershop'] = $ownershop;
         $data['method'] = "post";
-        $data['url'] = url('admin/ownershop');
-        return view('admin.ownershop.create', $data);
+        $data['url'] = url('admin/shops');
+        return view('admin.shops.create', $data);
     }
 
 
-    public function api_post_status_ownershop(Request $request){
+    public function api_post_status_shops(Request $request){
 
-        $user = ownershop::findOrFail($request->user_id);
+        $user = shop::findOrFail($request->user_id);
 
               if($user->status == 1){
                   $user->status = 0;
@@ -70,34 +70,6 @@ class OwnershopController extends Controller
     public function store(Request $request)
     {
         //
-        $this->validate($request, [
-            'fname' => 'required',
-            'lname' => 'required',
-            'phone' => 'required',
-            'user_id' => 'required',
-            'email' => 'required'
-           ]);
-
-           $status = 0;
-            if(isset($request['status'])){
-                if($request['status'] == 1){
-                    $status = 1;
-                }
-            }
-
-           $ran_num = rand(1000000,9999999);
-
-           $objs = new ownershop();
-           $objs->fname = $request['fname'];
-           $objs->lname = $request['lname'];
-           $objs->phone = $request['phone'];
-           $objs->user_id = $request['user_id'];
-           $objs->email = $request['email'];
-           $objs->user_code = $ran_num;
-           $objs->status = $status;
-           $objs->save();
-
-           return redirect(url('admin/ownershop'))->with('add_success','เพิ่ม เสร็จเรียบร้อยแล้ว');
     }
 
     /**

@@ -2,7 +2,7 @@
 
 @section('title')
     <title>shopee-app</title>
-    <meta name="description" content="shopee-app">
+    <meta name="description" content=" shopee-app">
 @stop
 @section('stylesheet')
 
@@ -21,7 +21,7 @@
                     <div class="page-title d-flex flex-column justify-content-center flex-wrap me-3">
                         <!--begin::Title-->
                         <h1 class="page-heading d-flex text-dark fw-bold fs-3 flex-column justify-content-center my-0">
-                            สร้างหมวดหมู่สินค้า</h1>
+                            สร้างร้านค้าใหม่ </h1>
                         <!--end::Title-->
                         <!--begin::Breadcrumb-->
                         <ul class="breadcrumb breadcrumb-separatorless fw-semibold fs-7 my-0 pt-1">
@@ -36,7 +36,7 @@
                             </li>
                             <!--end::Item-->
                             <!--begin::Item-->
-                            <li class="breadcrumb-item text-muted">สร้างหมวดหมู่สินค้าใหม่</li>
+                            <li class="breadcrumb-item text-muted">สร้างร้านค้าใหม่</li>
                             <!--end::Item-->
                         </ul>
                         <!--end::Breadcrumb-->
@@ -59,61 +59,57 @@
                             
                             <div class="card-body border-top p-9">
 
+
                                 <div class="row mb-6">
                                     <!--begin::Label-->
-                                    <label class="col-lg-4 col-form-label fw-semibold fs-6">รูปหมวดหมู่สินค้า</label>
+                                    <label class="col-lg-4 col-form-label fw-semibold fs-6">เลือกบัญชีเจ้าของร้านค้า</label>
                                     <!--end::Label-->
                                     <!--begin::Col-->
-                                    <div class="col-lg-8">
-                                        <!--begin::Image input-->
-                                        <div class="image-input image-input-outline" data-kt-image-input="true" style="background-image: url('{{ url('admin/assets/media/svg/avatars/blank.svg') }}')">
-                                            <!--begin::Preview existing avatar-->
-                                            <div class="image-input-wrapper w-125px h-125px" style="background-image: url({{ url('admin/assets/media/svg/avatars/blank.svg') }})"></div>
-                                            <!--end::Preview existing avatar-->
-                                            <!--begin::Label-->
-                                            <label class="btn btn-icon btn-circle btn-active-color-primary w-25px h-25px bg-body shadow" data-kt-image-input-action="change" data-bs-toggle="tooltip" title="เปลี่ยน รูปหมวดหมู่สินค้า">
-                                                <i class="bi bi-pencil-fill fs-7"></i>
-                                                <!--begin::Inputs-->
-                                                <input type="file" name="image" accept=".png, .jpg, .jpeg" />
-                                                <input type="hidden" name="avatar_remove" />
-                                                <!--end::Inputs-->
-                                            </label>
-                                            <!--end::Label-->
-                                            <!--begin::Cancel-->
-                                            <span class="btn btn-icon btn-circle btn-active-color-primary w-25px h-25px bg-body shadow" data-kt-image-input-action="cancel" data-bs-toggle="tooltip" title="ยกเลิก รูปหมวดหมู่สินค้า">
-                                                <i class="bi bi-x fs-2"></i>
-                                            </span>
-                                            <!--end::Cancel-->
-                                            <!--begin::Remove-->
-                                            <span class="btn btn-icon btn-circle btn-active-color-primary w-25px h-25px bg-body shadow" data-kt-image-input-action="remove" data-bs-toggle="tooltip" title="ลบ รูปหมวดหมู่สินค้า">
-                                                <i class="bi bi-x fs-2"></i>
-                                            </span>
-                                            <!--end::Remove-->
-                                        </div>
-                                        <!--end::Image input-->
-                                        <!--begin::Hint-->
-                                        <div class="form-text">Allowed file types: png, jpg, jpeg.</div>
-                                        @if ($errors->has('image'))
+                                    <div class="col-lg-8 fv-row fv-plugins-icon-container">
+                                        <select class="form-select" aria-label="Select example" name="user_code">
+                                            <option> -- เลือกบัญชีเจ้าของร้านค้า -- </option>
+                                            @isset($ownershop)
+                                            @foreach($ownershop as $u)
+                                            <option value="{{$u->user_code}}">{{$u->fname}} - {{$u->lname}}</option>
+                                            @endforeach
+                                            @endisset
+                                        </select>
+                                        @if ($errors->has('user_code'))
                                             <div class="fv-plugins-message-container invalid-feedback">
-                                                <div>กรุณาเลือกรูปหมวดหมู่สินค้า</div>
+                                                <div>กรุณาเลือกบัญชีเจ้าของร้านค้า</div>
                                             </div>
                                         @endif
-                                        <!--end::Hint-->
                                     </div>
                                     <!--end::Col-->
                                 </div>
 
                                 <div class="row mb-6">
                                     <!--begin::Label-->
-                                    <label class="col-lg-4 col-form-label required fw-semibold fs-6">ชื่อหมวดหมู่สินค้า</label>
+                                    <label class="col-lg-4 col-form-label required fw-semibold fs-6">ชื่อร้านค้า</label>
                                     <!--end::Label-->
                                     <!--begin::Col-->
                                     <div class="col-lg-8 fv-row fv-plugins-icon-container">
-                                        <input type="text" name="cat_name" class="form-control form-control-lg form-control-solid" placeholder="เศษเหล็ก อลูมิเนียม" value="{{old('cat_name') ? old('cat_name') : ''}}">
-                                    
-                                        @if ($errors->has('cat_name'))
+                                        <input type="text" name="name_shop" class="form-control form-control-lg form-control-solid" placeholder="คุณคิม" value="{{old('name_shop') ? old('name_shop') : ''}}">
+                               
+                                        @if ($errors->has('name_shop'))
                                             <div class="fv-plugins-message-container invalid-feedback">
-                                                <div>กรุณากรอกชื่อหมวดหมู่สินค้า</div>
+                                                <div>กรุณากรอกชื่อร้านค้า</div>
+                                            </div>
+                                        @endif
+                                    </div>
+                                    <!--end::Col-->
+                                </div>
+
+                                <div class="row mb-6">
+                                    <!--begin::Label-->
+                                    <label class="col-lg-4 col-form-label required fw-semibold fs-6">รายละเอียดร้านค้า</label>
+                                    <!--end::Label-->
+                                    <!--begin::Col-->
+                                    <div class="col-lg-8 fv-row fv-plugins-icon-container">
+                                        <textarea class="form-control form-control-lg form-control-solid" id="textareaAutosize" placeholder="รายละเอียดร้านค้า..." rows="3" name="detail_shop" >{{old('detail_shop') ? old('detail_shop') : ''}} </textarea>
+                                        @if ($errors->has('sub_title'))
+                                            <div class="fv-plugins-message-container invalid-feedback">
+                                                <div>กรุณากรอกรายละเอียดร้านค้า</div>
                                             </div>
                                         @endif
                                     </div>
@@ -121,7 +117,6 @@
                                 </div>
 
                                 
-
                                 <div class="row mb-0">
                                     <!--begin::Label-->
                                     <label class="col-lg-4 col-form-label fw-semibold fs-6">เปิดใช้งานทันที</label>
