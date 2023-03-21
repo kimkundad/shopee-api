@@ -18,6 +18,7 @@ class ProductController extends Controller
      */
     public function index()
     {
+        
         //
         $objs = DB::table('products')->select(
             'products.*',
