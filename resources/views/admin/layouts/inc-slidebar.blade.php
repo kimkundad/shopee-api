@@ -118,7 +118,7 @@
 
                 <div class="menu-item">
                     <!--begin:Menu link-->
-                    <a class="menu-link" href="{{ url('admin/shops') }}">
+                    <a class="menu-link" href="{{ url('admin/products') }}">
                         <span class="menu-icon">
                             <!--begin::Svg Icon | path: icons/duotune/general/gen014.svg-->
                             <span class="svg-icon svg-icon-2">

@@ -8,6 +8,8 @@ use Intervention\Image\ImageManagerStatic as Image;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use App\Models\ownershop;
+use App\Models\User;
+
 
 class ShopController extends Controller
 {
@@ -19,10 +21,17 @@ class ShopController extends Controller
     public function index()
     {
         //
-        $objs = shop::paginate(30);
+        $objs = DB::table('shops')->select(
+            'shops.*',
+            'shops.id as id_q',
+            'shops.status as status1',
+            'ownershops.*'
+            )
+            ->leftjoin('ownershops', 'ownershops.user_code',  'shops.user_code')
+            ->paginate(15);
 
-        $objs->setPath('');
-        $data['objs'] = $objs;
+            $objs->setPath('');
+
         return view('admin.shops.index', compact('objs'));
     }
 
@@ -70,6 +79,71 @@ class ShopController extends Controller
     public function store(Request $request)
     {
         //
+        $this->validate($request, [
+            'img_shop' => 'required',
+            'cover_img_shop' => 'required',
+            'user_code' => 'required',
+            'name_shop' => 'required',
+            'detail_shop' => 'required'
+           ]);
+
+
+           $image = $request->file('img_shop');
+
+           $input['imagename'] = time().'.'.$image->getClientOriginalExtension();
+           $img = Image::make($image->getRealPath());
+           $img->resize(300, 300, function ($constraint) {
+            $constraint->aspectRatio();
+           });
+           $img->stream();
+           Storage::disk('do_spaces')->put('shopee/shop/'.$image->hashName(), $img, 'public');
+
+
+
+           $image2 = $request->file('cover_img_shop');
+
+           $input['imagename'] = time().'.'.$image2->getClientOriginalExtension();
+           $img2 = Image::make($image2->getRealPath());
+           $img2->resize(550, 300, function ($constraint2) {
+            $constraint2->aspectRatio();
+           });
+           $img2->stream();
+           Storage::disk('do_spaces')->put('shopee/cover_img_shop/'.$image2->hashName(), $img2, 'public');
+
+
+           $status = 0;
+            if(isset($request['status'])){
+                if($request['status'] == 1){
+                    $status = 1;
+                }
+            }
+
+            $length = 4;
+
+            $characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+            $charactersLength = strlen($characters);
+            $randomString = '';
+            for ($i = 0; $i < $length; $i++) {
+                $randomString .= $characters[random_int(0, $charactersLength - 1)];
+            }
+            
+            $user = ownershop::where('user_code', $request['user_code'])->first();
+
+           $ran_num = rand(100000000,999999999);
+
+           $objs = new shop();
+           $objs->name_shop = $request['name_shop'];
+           $objs->detail_shop = $request['detail_shop'];
+           $objs->user_code = $request['user_code'];
+           $objs->user_id = $user->user_id;
+           $objs->code_shop = $ran_num;
+           $objs->url_shop = $randomString.''.$ran_num;
+           $objs->img_shop = $image->hashName();
+           $objs->cover_img_shop = $image2->hashName();
+           $objs->status = $status;
+           $objs->save();
+
+           return redirect(url('admin/shops'))->with('add_success','เพิ่ม เสร็จเรียบร้อยแล้ว');
     }
 
     /**

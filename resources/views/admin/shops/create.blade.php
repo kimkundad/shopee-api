@@ -62,6 +62,96 @@
 
                                 <div class="row mb-6">
                                     <!--begin::Label-->
+                                    <label class="col-lg-4 col-form-label fw-semibold fs-6">รูปร้านค้า</label>
+                                    <!--end::Label-->
+                                    <!--begin::Col-->
+                                    <div class="col-lg-8">
+                                        <!--begin::Image input-->
+                                        <div class="image-input image-input-outline" data-kt-image-input="true" style="background-image: url('{{ url('img/img-49.jpg') }}')">
+                                            <!--begin::Preview existing avatar-->
+                                            <div class="image-input-wrapper w-125px h-125px" style="background-image: url({{ url('img/img-49.jpg') }})"></div>
+                                            <!--end::Preview existing avatar-->
+                                            <!--begin::Label-->
+                                            <label class="btn btn-icon btn-circle btn-active-color-primary w-25px h-25px bg-body shadow" data-kt-image-input-action="change" data-bs-toggle="tooltip" title="เปลี่ยน รูปซับหมวดหมู่สินค้า">
+                                                <i class="bi bi-pencil-fill fs-7"></i>
+                                                <!--begin::Inputs-->
+                                                <input type="file" name="img_shop" accept=".png, .jpg, .jpeg" />
+                                                <input type="hidden" name="avatar_remove" />
+                                                <!--end::Inputs-->
+                                            </label>
+                                            <!--end::Label-->
+                                            <!--begin::Cancel-->
+                                            <span class="btn btn-icon btn-circle btn-active-color-primary w-25px h-25px bg-body shadow" data-kt-image-input-action="cancel" data-bs-toggle="tooltip" title="ยกเลิก รูปซับหมวดหมู่สินค้า">
+                                                <i class="bi bi-x fs-2"></i>
+                                            </span>
+                                            <!--end::Cancel-->
+                                            <!--begin::Remove-->
+                                            <span class="btn btn-icon btn-circle btn-active-color-primary w-25px h-25px bg-body shadow" data-kt-image-input-action="remove" data-bs-toggle="tooltip" title="ลบ รูปซับหมวดหมู่สินค้า">
+                                                <i class="bi bi-x fs-2"></i>
+                                            </span>
+                                            <!--end::Remove-->
+                                        </div>
+                                        <!--end::Image input-->
+                                        <!--begin::Hint-->
+                                        <div class="form-text">ขนาดแนะนำ 250px X 250px ชนิดรูป: png, jpg, jpeg.</div>
+                                        @if ($errors->has('img_shop'))
+                                            <div class="fv-plugins-message-container invalid-feedback">
+                                                <div>กรุณาเลือกรูปร้านค้า</div>
+                                            </div>
+                                        @endif
+                                        <!--end::Hint-->
+                                    </div>
+                                    <!--end::Col-->
+                                </div>
+
+
+                                <div class="row mb-6">
+                                    <!--begin::Label-->
+                                    <label class="col-lg-4 col-form-label fw-semibold fs-6">รูป cover ร้านค้า</label>
+                                    <!--end::Label-->
+                                    <!--begin::Col-->
+                                    <div class="col-lg-8">
+                                        <!--begin::Image input-->
+                                        <div class="image-input image-input-outline" data-kt-image-input="true" style="background-image: url('{{ url('img/media-image-size.png') }}')">
+                                            <!--begin::Preview existing avatar-->
+                                            <div class="image-input-wrapper " style="background-image: url({{ url('img/media-image-size.png') }}); width:380px; height:200px"></div>
+                                            <!--end::Preview existing avatar-->
+                                            <!--begin::Label-->
+                                            <label class="btn btn-icon btn-circle btn-active-color-primary w-25px h-25px bg-body shadow" data-kt-image-input-action="change" data-bs-toggle="tooltip" title="เปลี่ยน รูปซับหมวดหมู่สินค้า">
+                                                <i class="bi bi-pencil-fill fs-7"></i>
+                                                <!--begin::Inputs-->
+                                                <input type="file" name="cover_img_shop" accept=".png, .jpg, .jpeg" />
+                                                <input type="hidden" name="avatar_remove" />
+                                                <!--end::Inputs-->
+                                            </label>
+                                            <!--end::Label-->
+                                            <!--begin::Cancel-->
+                                            <span class="btn btn-icon btn-circle btn-active-color-primary w-25px h-25px bg-body shadow" data-kt-image-input-action="cancel" data-bs-toggle="tooltip" title="ยกเลิก รูปซับหมวดหมู่สินค้า">
+                                                <i class="bi bi-x fs-2"></i>
+                                            </span>
+                                            <!--end::Cancel-->
+                                            <!--begin::Remove-->
+                                            <span class="btn btn-icon btn-circle btn-active-color-primary w-25px h-25px bg-body shadow" data-kt-image-input-action="remove" data-bs-toggle="tooltip" title="ลบ รูปซับหมวดหมู่สินค้า">
+                                                <i class="bi bi-x fs-2"></i>
+                                            </span>
+                                            <!--end::Remove-->
+                                        </div>
+                                        <!--end::Image input-->
+                                        <!--begin::Hint-->
+                                        <div class="form-text">ขนาดแนะนำแนวนอน เช่น กว้าง 450px สูง 200px ชนิดรูป: png, jpg, jpeg.</div>
+                                        @if ($errors->has('cover_img_shop'))
+                                            <div class="fv-plugins-message-container invalid-feedback">
+                                                <div>กรุณาเลือกรูป cover ร้านค้า</div>
+                                            </div>
+                                        @endif
+                                        <!--end::Hint-->
+                                    </div>
+                                    <!--end::Col-->
+                                </div>
+
+
+                                <div class="row mb-6">
+                                    <!--begin::Label-->
                                     <label class="col-lg-4 col-form-label fw-semibold fs-6">เลือกบัญชีเจ้าของร้านค้า</label>
                                     <!--end::Label-->
                                     <!--begin::Col-->
@@ -107,7 +197,7 @@
                                     <!--begin::Col-->
                                     <div class="col-lg-8 fv-row fv-plugins-icon-container">
                                         <textarea class="form-control form-control-lg form-control-solid" id="textareaAutosize" placeholder="รายละเอียดร้านค้า..." rows="3" name="detail_shop" >{{old('detail_shop') ? old('detail_shop') : ''}} </textarea>
-                                        @if ($errors->has('sub_title'))
+                                        @if ($errors->has('detail_shop'))
                                             <div class="fv-plugins-message-container invalid-feedback">
                                                 <div>กรุณากรอกรายละเอียดร้านค้า</div>
                                             </div>

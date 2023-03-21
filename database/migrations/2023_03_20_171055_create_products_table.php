@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration
 {
     /**
-     * Run the migrations.
+     * Run the migrations. sku
      *
      * @return void
      */
@@ -26,6 +26,7 @@ return new class extends Migration
             $table->integer('stock')->nullable();
             $table->string('weight')->nullable();
             $table->string('width_product')->nullable();
+            $table->string('sku')->nullable();
             $table->string('length_product')->nullable();
             $table->string('height_product')->nullable();
             $table->string('user_code')->nullable();
