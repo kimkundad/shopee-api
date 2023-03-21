@@ -47,6 +47,10 @@ Route::group(['middleware' => ['UserRole:superadmin|admin']], function() {
     Route::post('/api/api_post_status_products', [App\Http\Controllers\ProductController::class, 'api_post_status_products']);
     Route::get('api/del_products/{id}', [App\Http\Controllers\ProductController::class, 'del_products']);
 
+    Route::post('/api/upload_img_product/{id}', [App\Http\Controllers\ProductController::class, 'upload_img_product']);
+    Route::get('/api/image_del/{id}', [App\Http\Controllers\ProductController::class, 'image_del']);
+ 
+
 });
 
 Route::get('/images/{file}', function ($file) {

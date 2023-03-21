@@ -83,6 +83,7 @@
                                             <th class="p-0 w-50px"></th>
                                             <th class="p-0 "></th>
                                             <th class="p-0 ">หมู่สินค้า</th>
+                                            <th class="p-0 ">บัญชี</th>
                                             <th class="p-0 ">ราคา</th>
                                             <th class="p-0 ">จำนวนสินค้า</th>
                                             <th class="p-0 ">status</th>
@@ -99,7 +100,7 @@
                                         <tr id="{{$item->id_q}}">
                                             <td>
                                                 <div class="symbol symbol-50px">
-                                                    <img src="{{ url('img/products/'.$item->image_pro) }}" alt="">
+                                                    <img src="{{ url('images/shopee/products/'.$item->img_product) }}" alt="">
                                                 </div>
                                             </td>
                                             <td>
@@ -110,6 +111,9 @@
                                                 {{ ($item->cat_name) }}
                                             </td>
                                             <td>
+                                                {{ $item->fname }} {{ $item->lname }}
+                                            </td>
+                                            <td>
                                                 {{ number_format($item->price,2) }}
                                             </td>
                                             <td>
@@ -118,7 +122,7 @@
                                             <td>
                                                 <div class="form-check form-check-solid form-switch form-check-custom fv-row">
                                                     <input class="form-check-input w-45px h-30px" type="checkbox" id="allowmarketing" name="status" 
-                                                    @if($item->status1 == 1)
+                                                    @if($item->active == 1)
                                                     checked="checked"
                                                     @endif
                                                     value="1"/>
@@ -203,7 +207,7 @@
     
         $.ajax({
                 type:'POST',
-                url:'{{url('api/api_post_status_product')}}',
+                url:'{{url('api/api_post_status_products')}}',
                 headers: {'X-CSRF-TOKEN': '{{ csrf_token() }}' },
                 data: { "user_id" : user_id },
                 success: function(data){

@@ -8,6 +8,9 @@ use App\Models\category;
 use Intervention\Image\ImageManagerStatic as Image;
 use Illuminate\Support\Facades\DB;
 use Response;
+use App\Models\ownershop;
+use Illuminate\Support\Facades\Storage;
+use App\Models\product_image;
 
 class ProductController extends Controller
 {
@@ -18,22 +21,24 @@ class ProductController extends Controller
      */
     public function index()
     {
-        
+
         //
         $objs = DB::table('products')->select(
             'products.*',
             'products.id as id_q',
-            'products.status as status1',
-            'categories.*'
+            'products.active as active',
+            'categories.*',
+            'ownershops.*'
             )
             ->leftjoin('categories', 'categories.id',  'products.category')
+            ->leftjoin('ownershops', 'ownershops.user_code',  'products.user_code')
             ->paginate(15);
 
             $objs->setPath('');
         $data['objs'] = $objs;
 
         
-        return view('admin.product.index', compact('objs'));
+        return view('admin.products.index', compact('objs'));
     }
 
     /**
@@ -44,7 +49,34 @@ class ProductController extends Controller
     public function create()
     {
         //
+        $cat = category::all();
+        $data['cat'] = $cat;
+        $ownershop = ownershop::all();
+        $data['ownershop'] = $ownershop;
+        $data['method'] = "post";
+        $data['url'] = url('admin/products');
+        return view('admin.products.create', $data);
     }
+
+
+    public function api_post_status_products(Request $request){
+
+        $user = product::findOrFail($request->user_id);
+
+              if($user->active == 1){
+                  $user->active = 0;
+              } else {
+                  $user->active = 1;
+              }
+
+
+      return response()->json([
+      'data' => [
+        'success' => $user->save(),
+      ]
+    ]);
+
+     }
 
     /**
      * Store a newly created resource in storage.
@@ -55,6 +87,56 @@ class ProductController extends Controller
     public function store(Request $request)
     {
         //
+        $this->validate($request, [
+            'img_product' => 'required',
+            'user_code' => 'required',
+            'category' => 'required',
+            'name_product' => 'required',
+            'detail_product' => 'required',
+            'price' => 'required',
+            'price_sales' => 'required',
+            'cost' => 'required',
+            'stock' => 'required',
+            'weight' => 'required',
+            'sku' => 'required'
+           ]);
+
+           $status = 0;
+            if(isset($request['status'])){
+                if($request['status'] == 1){
+                    $status = 1;
+                }
+            }
+
+           $image = $request->file('img_product');
+
+           $input['imagename'] = time().'.'.$image->getClientOriginalExtension();
+           $img = Image::make($image->getRealPath());
+           $img->resize(300, 300, function ($constraint) {
+            $constraint->aspectRatio();
+           });
+           $img->stream();
+           Storage::disk('do_spaces')->put('shopee/products/'.$image->hashName(), $img, 'public');
+
+           $objs = new product();
+           $objs->name_product = $request['name_product'];
+           $objs->detail_product = $request['detail_product'];
+           $objs->cost = $request['cost'];
+           $objs->price = $request['price'];
+           $objs->category = $request['category'];
+           $objs->price_sales = $request['price_sales'];
+           $objs->stock = $request['stock'];
+           $objs->weight = $request['weight'];
+           $objs->width_product = $request['width_product'];
+           $objs->sku = $request['sku'];
+           $objs->height_product = $request['height_product'];
+           $objs->user_code = $request['user_code'];
+           $objs->img_product = $image->hashName();
+           $objs->active = $status;
+           $objs->save();
+
+           return redirect(url('admin/products'))->with('add_success','เพิ่ม เสร็จเรียบร้อยแล้ว');
+
     }
 
     /**
@@ -77,6 +159,69 @@ class ProductController extends Controller
     public function edit($id)
     {
         //
+        $cat = category::all();
+        $data['cat'] = $cat;
+        $ownershop = ownershop::all();
+        $data['ownershop'] = $ownershop;
+
+        $img = product_image::where('product_id', $id)->get();
+        $data['img'] = $img;
+
+        $objs = product::find($id);
+        $data['url'] = url('admin/products/'.$id);
+        $data['method'] = "put";
+        $data['item'] = $objs;
+        $data['pro_id'] = $id;
+        return view('admin.products.edit', $data);
+    }
+
+
+    public function upload_img_product(Request $request, $id){
+       
+        $gallary = $request->file('file');
+
+        $this->validate($request, [
+             'file' => 'required|max:8048'
+         ]);
+
+           $input['imagename'] = time().'.'.$gallary->getClientOriginalExtension();
+           $img = Image::make($gallary->getRealPath());
+           $img->resize(300, 300, function ($constraint) {
+            $constraint->aspectRatio();
+           });
+           $img->stream();
+           Storage::disk('do_spaces')->put('shopee/products/'.$gallary->hashName(), $img, 'public');
+
+            $admins[] = [
+                'image' => $gallary->hashName(),
+                'product_id' => $id
+            ];
+          
+          product_image::insert($admins);
+        
+          return Response::json(array('success' => true, 'message' => 'Successfully uploaded file.'), 200);
+
+    }
+
+    public function image_del($id){
+
+        $objs = DB::table('product_images')
+            ->where('id', $id)
+            ->first();
+
+          $pid = $objs->product_id;
+
+            if(isset($objs->image)){
+             
+                $storage = Storage::disk('do_spaces');
+                $storage->delete('shopee/products/' . $objs->image, 'public');
+            }
+
+        $obj = product_image::find($id);
+        $obj->delete();
+
+        return redirect(url('admin/products/'.$pid.'/edit'))->with('edit_success','คุณทำการเพิ่มอสังหา สำเร็จ');
+
     }
 
     /**
