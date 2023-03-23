@@ -5,8 +5,10 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\category;
 use App\Models\product;
+use App\Models\shop;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
+use Intervention\Image\ImageManagerStatic as Image;
 
 class ApiController extends Controller
 {
@@ -35,17 +37,17 @@ class ApiController extends Controller
         try {
             // Validate input
             $id = $request->input('id');
-            $checked = filter_var($request->input('checked'), FILTER_VALIDATE_BOOLEAN);
+            $checked = $request->input('checked');
             if (!$id || $checked === null) {
                 throw new Exception('Invalid input');
             }
-            if ($checked == 'true') {
+            if ($checked === "true") {
                 product::where('id', '=', $id)->update(['active' => 1]);
             } else {
                 product::where('id', '=', $id)->update(['active' => 0]);
             }
 
-            $products = product::select('id','img_product','name_product','cost','price','created_at','stock')->get();
+            $products = product::select('id','img_product','name_product','cost','price','maker','created_at','stock','active')->get();
             return response()->json([
                 'product' => $products,
             ], 201);
@@ -90,5 +92,56 @@ class ApiController extends Controller
                 'error' => $e->getMessage(),
             ], 400);
         }
+    }
+    public function addProduct(Request $request)
+    {
+        try {
+            $objs = new product();
+           $objs->name_product = $request['name_product'];
+           $objs->detail_product = $request['detail_product'];
+           $objs->cost = $request['cost'];
+           $objs->price = $request['price'];
+           $objs->category = $request['category'];
+           $objs->price_sales = $request['price_sales'];
+           $objs->stock = $request['stock'];
+           $objs->weight = $request['weight'];
+           $objs->width_product = $request['width_product'];
+           $objs->sku = $request['sku'];
+           $objs->height_product = $request['height_product'];
+           $objs->user_code = $request['user_code'];
+           $objs->active = 0;
+           $objs->save();
+
+            $products = product::all();
+            return response()->json([
+                'product' => $products,
+            ], 201);
+        } catch (Exception $e) {
+            return response()->json([
+                'error' => $e->getMessage(),
+            ], 400);
+        }
+    }
+
+    public function get_shop_name()
+    {
+
+        $objs = shop::where('id','=',1)->get();
+
+        return response()->json([
+            'shop' => $objs,
+        ], 201);
+    }
+
+    public function search_product(Request $request)
+    {
+        $search = $request->input('search');
+        $objs = DB::table('products')
+        ->where(DB::raw("CONCAT(name_product, detail_product)"), 'LIKE', "%$search%")
+        ->get();
+
+        return response()->json([
+            'shop' => $objs,
+        ], 201);
     }
 }
