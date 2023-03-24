@@ -32,6 +32,16 @@ class ApiController extends Controller
             'product' => $objs,
         ], 201);
     }
+
+    public function get_product(Request $request)
+    {
+        $id = $request->input('id');
+        $objs = product::where('id','=',$id)->get();
+
+        return response()->json([
+            'product' => $objs,
+        ], 201);
+    }
     public function set_active_product(Request $request)
     {
         try {
@@ -141,7 +151,7 @@ class ApiController extends Controller
         ->get();
 
         return response()->json([
-            'shop' => $objs,
+            'product' => $objs,
         ], 201);
     }
 }
