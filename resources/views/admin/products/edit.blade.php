@@ -68,7 +68,7 @@
                                         <!--begin::Image input-->
                                         <div class="image-input image-input-outline" data-kt-image-input="true" style="background-image: url('{{ url('img/media-image-size.png') }}')">
                                             <!--begin::Preview existing avatar-->
-                                            <div class="image-input-wrapper " style="background-image: url({{ url('images/shopee/products/'.$item->img_product) }}); width:380px; height:200px"></div>
+                                            <div class="image-input-wrapper " style="background-image: url({{ url('images/shopee/products/'.$item->img_product) }}); width:380px; height:380px"></div>
                                             <!--end::Preview existing avatar-->
                                             <!--begin::Label-->
                                             <label class="btn btn-icon btn-circle btn-active-color-primary w-25px h-25px bg-body shadow" data-kt-image-input-action="change" data-bs-toggle="tooltip" title="เปลี่ยน รูปซับหมวดหมู่สินค้า">
@@ -203,7 +203,11 @@
                                             <option> -- เลือกบัญชีเจ้าของร้านค้า -- </option>
                                             @isset($ownershop)
                                             @foreach($ownershop as $u)
-                                            <option value="{{$u->user_code}}">{{$u->fname}} - {{$u->lname}}</option>
+                                            <option value="{{$u->user_code}}" 
+                                                @if( $item->user_code == $u->user_code)
+                                                selected='selected'
+                                                @endif
+                                                >{{$u->fname}} - {{$u->lname}}</option>
                                             @endforeach
                                             @endisset
                                         </select>
@@ -227,7 +231,11 @@
                                             <option> -- เลือกหมวดหมู่ลินค้า -- </option>
                                             @isset($cat)
                                             @foreach($cat as $u)
-                                            <option value="{{$u->id}}">{{$u->cat_name}}</option>
+                                            <option value="{{$u->id}}" 
+                                                @if( $item->category == $u->id)
+                                                selected='selected'
+                                                @endif
+                                                >{{$u->cat_name}}</option>
                                             @endforeach
                                             @endisset
                                         </select>
@@ -246,7 +254,7 @@
                                     <!--end::Label-->
                                     <!--begin::Col-->
                                     <div class="col-lg-8 fv-row fv-plugins-icon-container">
-                                        <input type="text" name="sku" class="form-control form-control-lg form-control-solid" placeholder="รองเท้าฉลามยอดฮิต" value="{{old('sku') ? old('sku') : ''}}">
+                                        <input type="text" name="sku" class="form-control form-control-lg form-control-solid" value="{{$item->sku}}" placeholder="รองเท้าฉลามยอดฮิต" >
                                
                                         @if ($errors->has('sku'))
                                             <div class="fv-plugins-message-container invalid-feedback">
@@ -263,7 +271,7 @@
                                     <!--end::Label-->
                                     <!--begin::Col-->
                                     <div class="col-lg-8 fv-row fv-plugins-icon-container">
-                                        <input type="text" name="name_product" class="form-control form-control-lg form-control-solid" placeholder="รองเท้าฉลามยอดฮิต" value="{{old('name_product') ? old('name_product') : ''}}">
+                                        <input type="text" name="name_product" class="form-control form-control-lg form-control-solid" value="{{$item->name_product}}" placeholder="รองเท้าฉลามยอดฮิต" >
                                
                                         @if ($errors->has('name_product'))
                                             <div class="fv-plugins-message-container invalid-feedback">
@@ -280,7 +288,7 @@
                                     <!--end::Label-->
                                     <!--begin::Col-->
                                     <div class="col-lg-8 fv-row fv-plugins-icon-container">
-                                        <textarea class="form-control form-control-lg form-control-solid" id="textareaAutosize" placeholder="รายละเอียดร้านค้า..." rows="3" name="detail_product" >{{old('detail_product') ? old('detail_product') : ''}} </textarea>
+                                        <textarea class="form-control form-control-lg form-control-solid" id="textareaAutosize" placeholder="รายละเอียดร้านค้า..." rows="5" name="detail_product" >{{$item->detail_product}} </textarea>
                                         @if ($errors->has('detail_product'))
                                             <div class="fv-plugins-message-container invalid-feedback">
                                                 <div>กรุณากรอกรายละเอียดร้านค้า</div>
@@ -297,7 +305,7 @@
                                     <!--end::Label-->
                                     <!--begin::Col-->
                                     <div class="col-lg-8 fv-row fv-plugins-icon-container">
-                                        <input type="text" name="price" class="form-control form-control-lg form-control-solid" placeholder="1500" value="{{old('price') ? old('price') : ''}}">
+                                        <input type="text" name="price" class="form-control form-control-lg form-control-solid" value="{{$item->price}}" placeholder="1500" value="{{old('price') ? old('price') : ''}}">
                                
                                         @if ($errors->has('price'))
                                             <div class="fv-plugins-message-container invalid-feedback">
@@ -314,7 +322,7 @@
                                     <!--end::Label-->
                                     <!--begin::Col-->
                                     <div class="col-lg-8 fv-row fv-plugins-icon-container">
-                                        <input type="text" name="price_sales" class="form-control form-control-lg form-control-solid" placeholder="รองเท้าฉลามยอดฮิต" value="{{old('price_sales') ? old('price_sales') : 0}}">
+                                        <input type="text" name="price_sales" class="form-control form-control-lg form-control-solid" value="{{$item->price_sales}}" placeholder="รองเท้าฉลามยอดฮิต" value="{{old('price_sales') ? old('price_sales') : 0}}">
                                
                                         @if ($errors->has('price_sales'))
                                             <div class="fv-plugins-message-container invalid-feedback">
@@ -331,7 +339,7 @@
                                     <!--end::Label-->
                                     <!--begin::Col-->
                                     <div class="col-lg-8 fv-row fv-plugins-icon-container">
-                                        <input type="text" name="cost" class="form-control form-control-lg form-control-solid" placeholder="500" value="{{old('cost') ? old('cost') : ''}}">
+                                        <input type="text" name="cost" class="form-control form-control-lg form-control-solid" value="{{$item->cost}}" placeholder="500" value="{{old('cost') ? old('cost') : ''}}">
                                
                                         @if ($errors->has('cost'))
                                             <div class="fv-plugins-message-container invalid-feedback">
@@ -348,7 +356,7 @@
                                     <!--end::Label-->
                                     <!--begin::Col-->
                                     <div class="col-lg-8 fv-row fv-plugins-icon-container">
-                                        <input type="text" name="stock" class="form-control form-control-lg form-control-solid" placeholder="200" value="{{old('stock') ? old('stock') : ''}}">
+                                        <input type="text" name="stock" class="form-control form-control-lg form-control-solid" placeholder="200" value="{{$item->stock}}">
                                
                                         @if ($errors->has('stock'))
                                             <div class="fv-plugins-message-container invalid-feedback">
@@ -366,7 +374,7 @@
                                     <!--end::Label-->
                                     <!--begin::Col-->
                                     <div class="col-lg-8 fv-row fv-plugins-icon-container">
-                                        <input type="text" name="weight" class="form-control form-control-lg form-control-solid" placeholder="20 กรัม" value="{{old('weight') ? old('weight') : ''}}">
+                                        <input type="text" name="weight" class="form-control form-control-lg form-control-solid" placeholder="20 กรัม" value="{{$item->weight}}">
                                
                                         @if ($errors->has('weight'))
                                             <div class="fv-plugins-message-container invalid-feedback">
@@ -383,7 +391,7 @@
                                     <!--end::Label-->
                                     <!--begin::Col-->
                                     <div class="col-lg-8 fv-row fv-plugins-icon-container">
-                                        <input type="text" name="width_product" class="form-control form-control-lg form-control-solid" placeholder="20 cm." value="{{old('width_product') ? old('width_product') : ''}}">
+                                        <input type="text" name="width_product" class="form-control form-control-lg form-control-solid" placeholder="20 cm." value="{{$item->width_product}}">
                                     </div>
                                     <!--end::Col-->
                                 </div>
@@ -394,7 +402,7 @@
                                     <!--end::Label-->
                                     <!--begin::Col-->
                                     <div class="col-lg-8 fv-row fv-plugins-icon-container">
-                                        <input type="text" name="height_product" class="form-control form-control-lg form-control-solid" placeholder="20 cm." value="{{old('height_product') ? old('height_product') : ''}}">
+                                        <input type="text" name="height_product" class="form-control form-control-lg form-control-solid" placeholder="20 cm."  value="{{$item->height_product}}">
                                     </div>
                                     <!--end::Col-->
                                 </div>

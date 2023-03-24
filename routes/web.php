@@ -53,6 +53,7 @@ Route::group(['middleware' => ['UserRole:superadmin|admin']], function() {
 
 });
 
+
 Route::get('/images/{file}', function ($file) {
     $url = Storage::disk('do_spaces')->temporaryUrl(
       $file,

@@ -21,7 +21,7 @@
                     <div class="page-title d-flex flex-column justify-content-center flex-wrap me-3">
                         <!--begin::Title-->
                         <h1 class="page-heading d-flex text-dark fw-bold fs-3 flex-column justify-content-center my-0">
-                            สร้างข้อมูลผู้เปิดร้านค้า </h1>
+                            แก้ไขข้อมูลผู้เปิดร้านค้า </h1>
                         <!--end::Title-->
                         <!--begin::Breadcrumb-->
                         <ul class="breadcrumb breadcrumb-separatorless fw-semibold fs-7 my-0 pt-1">
@@ -36,7 +36,7 @@
                             </li>
                             <!--end::Item-->
                             <!--begin::Item-->
-                            <li class="breadcrumb-item text-muted">สร้างข้อมูลผู้เปิดร้านค้า</li>
+                            <li class="breadcrumb-item text-muted">แก้ไขข้อมูลผู้เปิดร้านค้า</li>
                             <!--end::Item-->
                         </ul>
                         <!--end::Breadcrumb-->
@@ -70,7 +70,10 @@
                                             <option> -- เลือกยูสเจ้าของ -- </option>
                                             @isset($user)
                                             @foreach($user as $u)
-                                            <option value="{{$u->id}}">{{$u->name}} - {{$u->phone}}</option>
+                                            <option value="{{$u->id}}" @if( $item->user_id == $u->id)
+                                                selected='selected'
+                                                @endif
+                                                >{{$u->name}} - {{$u->phone}}</option>
                                             @endforeach
                                             @endisset
                                         </select>
@@ -89,7 +92,7 @@
                                     <!--end::Label-->
                                     <!--begin::Col-->
                                     <div class="col-lg-8 fv-row fv-plugins-icon-container">
-                                        <input type="text" name="fname" class="form-control form-control-lg form-control-solid" placeholder="คุณคิม" value="{{old('fname') ? old('fname') : ''}}">
+                                        <input type="text" name="fname" class="form-control form-control-lg form-control-solid" placeholder="คุณคิม" value="{{$item->fname}}">
                                
                                         @if ($errors->has('fname'))
                                             <div class="fv-plugins-message-container invalid-feedback">
@@ -106,7 +109,7 @@
                                     <!--end::Label-->
                                     <!--begin::Col-->
                                     <div class="col-lg-8 fv-row fv-plugins-icon-container">
-                                        <input type="text" name="lname" class="form-control form-control-lg form-control-solid" placeholder="นามสกุลผู้ใช้งาน" value="{{old('lname') ? old('lname') : ''}}">
+                                        <input type="text" name="lname" class="form-control form-control-lg form-control-solid" placeholder="นามสกุลผู้ใช้งาน" value="{{$item->lname}}">
                                
                                         @if ($errors->has('lname'))
                                             <div class="fv-plugins-message-container invalid-feedback">
@@ -124,7 +127,7 @@
                                     <!--end::Label-->
                                     <!--begin::Col-->
                                     <div class="col-lg-8 fv-row fv-plugins-icon-container">
-                                        <input type="text" name="phone" class="form-control form-control-lg form-control-solid" placeholder="094-852-XXXX" value="{{old('phone') ? old('phone') : ''}}">
+                                        <input type="text" name="phone" class="form-control form-control-lg form-control-solid" placeholder="094-852-XXXX" value="{{$item->phone}}">
                                
                                         @if ($errors->has('phone'))
                                             <div class="fv-plugins-message-container invalid-feedback">
@@ -142,7 +145,7 @@
                                     <!--end::Label-->
                                     <!--begin::Col-->
                                     <div class="col-lg-8 fv-row fv-plugins-icon-container">
-                                        <input type="text" name="email" class="form-control form-control-lg form-control-solid" placeholder="email@email.com" value="{{old('email') ? old('email') : ''}}">
+                                        <input type="text" name="email" class="form-control form-control-lg form-control-solid" placeholder="email@email.com" value="{{$item->email}}">
                                
                                         @if ($errors->has('email'))
                                             <div class="fv-plugins-message-container invalid-feedback">

@@ -155,6 +155,7 @@ class ShopController extends Controller
     public function show($id)
     {
         //
+
     }
 
     /**
@@ -166,6 +167,15 @@ class ShopController extends Controller
     public function edit($id)
     {
         //
+        $ownershop = ownershop::all();
+        $data['ownershop'] = $ownershop;
+        $objs = shop::find($id);
+        $data['url'] = url('admin/shops/'.$id);
+        $data['method'] = "put";
+        $data['item'] = $objs;
+        $data['pro_id'] = $id;
+        return view('admin.shops.edit', $data);
+
     }
 
     /**
@@ -178,6 +188,86 @@ class ShopController extends Controller
     public function update(Request $request, $id)
     {
         //
+
+        $this->validate($request, [
+            'user_code' => 'required',
+            'name_shop' => 'required',
+            'detail_shop' => 'required'
+           ]);
+
+           $status = 0;
+            if(isset($request['status'])){
+                if($request['status'] == 1){
+                    $status = 1;
+                }
+            }
+
+           $image = $request->file('img_shop');
+           $image2 = $request->file('cover_img_shop');
+
+           $img_old = DB::table('shops')
+          ->where('id', $id)
+          ->first();
+
+           if($image !== NULL){
+
+            if(isset($img_old)){
+             
+                $storage = Storage::disk('do_spaces');
+                $storage->delete('shopee/shop/' . $img_old->img_shop, 'public');
+            }
+
+            $input['imagename'] = time().'.'.$image->getClientOriginalExtension();
+            $img = Image::make($image->getRealPath());
+            $img->resize(300, 300, function ($constraint) {
+                $constraint->aspectRatio();
+            });
+            $img->stream();
+            Storage::disk('do_spaces')->put('shopee/shop/'.$image->hashName(), $img, 'public');
+
+            $objs = shop::find($id);
+           $objs->img_shop = $image->hashName();
+           $objs->save();
+
+           }
+
+           if($image2 !== NULL){
+
+            if(isset($img_old)){
+             
+                $storage = Storage::disk('do_spaces');
+                $storage->delete('shopee/cover_img_shop/' . $img_old->cover_img_shop, 'public');
+            }
+
+            $input['imagename'] = time().'.'.$image2->getClientOriginalExtension();
+           $img2 = Image::make($image2->getRealPath());
+           $img2->resize(550, 300, function ($constraint2) {
+            $constraint2->aspectRatio();
+           });
+           $img2->stream();
+           Storage::disk('do_spaces')->put('shopee/cover_img_shop/'.$image2->hashName(), $img2, 'public');
+
+           $objs = shop::find($id);
+           $objs->cover_img_shop = $image2->hashName();
+           $objs->save();
+
+           }
+
+
+           $user = ownershop::where('user_code', $request['user_code'])->first();
+
+           $objs = shop::find($id);
+           $objs->name_shop = $request['name_shop'];
+           $objs->detail_shop = $request['detail_shop'];
+           $objs->user_code = $request['user_code'];
+           $objs->user_id = $user->user_id;
+           $objs->status = $status;
+           $objs->save();
+
+
+           return redirect(url('admin/shops/'.$id.'/edit'))->with('edit_success','คุณทำการเพิ่มอสังหา สำเร็จ');
+
+
     }
 
     /**
@@ -186,8 +276,23 @@ class ShopController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function del_shops($id)
     {
         //
+        $img_old = DB::table('shops')
+        ->where('id', $id)
+        ->first();
+
+        if(isset($img_old)){
+           
+          $storage = Storage::disk('do_spaces');
+          $storage->delete('shopee/shop/' . $img_old->img_shop, 'public');
+          $storage->delete('shopee/cover_img_shop/' . $img_old->cover_img_shop, 'public');
+      }
+
+        $obj = shop::find($id);
+        $obj->delete();
+
+        return redirect(url('admin/shops/'))->with('del_success','คุณทำการลบอสังหา สำเร็จ');
     }
 }

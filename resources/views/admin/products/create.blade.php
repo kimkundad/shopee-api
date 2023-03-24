@@ -114,7 +114,7 @@
                                             <option> -- เลือกบัญชีเจ้าของร้านค้า -- </option>
                                             @isset($ownershop)
                                             @foreach($ownershop as $u)
-                                            <option value="{{$u->user_code}}">{{$u->fname}} - {{$u->lname}}</option>
+                                            <option value="{{$u->user_code}}" >{{$u->fname}} - {{$u->lname}}</option>
                                             @endforeach
                                             @endisset
                                         </select>
@@ -191,7 +191,7 @@
                                     <!--end::Label-->
                                     <!--begin::Col-->
                                     <div class="col-lg-8 fv-row fv-plugins-icon-container">
-                                        <textarea class="form-control form-control-lg form-control-solid" id="textareaAutosize" placeholder="รายละเอียดร้านค้า..." rows="3" name="detail_product" >{{old('detail_product') ? old('detail_product') : ''}} </textarea>
+                                        <textarea class="form-control form-control-lg form-control-solid" id="textareaAutosize" placeholder="รายละเอียดร้านค้า..." rows="5" name="detail_product" >{{old('detail_product') ? old('detail_product') : ''}} </textarea>
                                         @if ($errors->has('detail_product'))
                                             <div class="fv-plugins-message-container invalid-feedback">
                                                 <div>กรุณากรอกรายละเอียดร้านค้า</div>

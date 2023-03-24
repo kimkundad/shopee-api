@@ -120,6 +120,14 @@ class OwnershopController extends Controller
     public function edit($id)
     {
         //
+        $user = User::all();
+        $data['user'] = $user;
+        $objs = ownershop::find($id);
+        $data['url'] = url('admin/ownershop/'.$id);
+        $data['method'] = "put";
+        $data['item'] = $objs;
+        $data['pro_id'] = $id;
+        return view('admin.ownershop.edit', $data);
     }
 
     /**
@@ -132,6 +140,33 @@ class OwnershopController extends Controller
     public function update(Request $request, $id)
     {
         //
+        $this->validate($request, [
+            'fname' => 'required',
+            'lname' => 'required',
+            'phone' => 'required',
+            'user_id' => 'required',
+            'email' => 'required'
+           ]);
+
+           $status = 0;
+            if(isset($request['status'])){
+                if($request['status'] == 1){
+                    $status = 1;
+                }
+            }
+
+           $objs = ownershop::find($id);
+           $objs->fname = $request['fname'];
+           $objs->lname = $request['lname'];
+           $objs->phone = $request['phone'];
+           $objs->user_id = $request['user_id'];
+           $objs->email = $request['email'];
+           $objs->status = $status;
+           $objs->save();
+
+
+           return redirect(url('admin/ownershop/'.$id.'/edit'))->with('edit_success','คุณทำการเพิ่มอสังหา สำเร็จ');
+
     }
 
     /**
@@ -140,8 +175,12 @@ class OwnershopController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function del_ownershop($id)
     {
         //
+        $obj = ownershop::find($id);
+        $obj->delete();
+
+        return redirect(url('admin/ownershop/'))->with('del_success','คุณทำการลบอสังหา สำเร็จ');
     }
 }

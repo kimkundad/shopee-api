@@ -117,7 +117,7 @@
                                                 {{ number_format($item->price,2) }}
                                             </td>
                                             <td>
-                                                {{ ($item->stock) }}
+                                                {{ ($item->stock) }} / ชิ้น
                                             </td>
                                             <td>
                                                 <div class="form-check form-check-solid form-switch form-check-custom fv-row">

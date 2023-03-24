@@ -234,6 +234,89 @@ class ProductController extends Controller
     public function update(Request $request, $id)
     {
         //
+
+        $this->validate($request, [
+            'user_code' => 'required',
+            'category' => 'required',
+            'name_product' => 'required',
+            'detail_product' => 'required',
+            'price' => 'required',
+            'price_sales' => 'required',
+            'cost' => 'required',
+            'stock' => 'required',
+            'weight' => 'required',
+            'sku' => 'required'
+           ]);
+
+           $image = $request->file('img_product');
+
+           $status = 0;
+            if(isset($request['status'])){
+                if($request['status'] == 1){
+                    $status = 1;
+                }
+            }
+
+            if($image == NULL){
+
+                $objs = product::find($id);
+           $objs->name_product = $request['name_product'];
+           $objs->detail_product = $request['detail_product'];
+           $objs->cost = $request['cost'];
+           $objs->price = $request['price'];
+           $objs->category = $request['category'];
+           $objs->price_sales = $request['price_sales'];
+           $objs->stock = $request['stock'];
+           $objs->weight = $request['weight'];
+           $objs->width_product = $request['width_product'];
+           $objs->sku = $request['sku'];
+           $objs->height_product = $request['height_product'];
+           $objs->user_code = $request['user_code'];
+           $objs->active = $status;
+           $objs->save();
+
+            }else{
+
+          $img_old = DB::table('products')
+          ->where('id', $id)
+          ->first();
+
+          if(isset($img_old)){
+             
+            $storage = Storage::disk('do_spaces');
+            $storage->delete('shopee/products/' . $img_old->img_product, 'public');
+        }
+          
+
+           $input['imagename'] = time().'.'.$image->getClientOriginalExtension();
+           $img = Image::make($image->getRealPath());
+           $img->resize(300, 300, function ($constraint) {
+            $constraint->aspectRatio();
+           });
+           $img->stream();
+           Storage::disk('do_spaces')->put('shopee/products/'.$image->hashName(), $img, 'public');
+
+
+           $objs = product::find($id);
+           $objs->name_product = $request['name_product'];
+           $objs->detail_product = $request['detail_product'];
+           $objs->cost = $request['cost'];
+           $objs->price = $request['price'];
+           $objs->category = $request['category'];
+           $objs->price_sales = $request['price_sales'];
+           $objs->stock = $request['stock'];
+           $objs->weight = $request['weight'];
+           $objs->width_product = $request['width_product'];
+           $objs->sku = $request['sku'];
+           $objs->height_product = $request['height_product'];
+           $objs->user_code = $request['user_code'];
+           $objs->img_product = $image->hashName();
+           $objs->active = $status;
+           $objs->save();
+
+            }
+
+            return redirect(url('admin/products/'.$id.'/edit'))->with('edit_success','คุณทำการเพิ่มอสังหา สำเร็จ');
     }
 
     /**
@@ -242,8 +325,38 @@ class ProductController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function del_products($id)
     {
         //
+
+        $img_old = DB::table('products')
+        ->where('id', $id)
+        ->first();
+
+        if(isset($img_old)){
+           
+          $storage = Storage::disk('do_spaces');
+          $storage->delete('shopee/products/' . $img_old->img_product, 'public');
+      }
+
+      $img_g = DB::table('product_images')
+        ->where('product_id', $id)
+        ->get();
+
+        if(isset($img_g)){
+            foreach($img_g as $u){
+
+                $storage = Storage::disk('do_spaces');
+                $storage->delete('shopee/products/' . $u->image, 'public');
+
+            }
+        }
+
+        $obj = product::find($id);
+        $obj->delete();
+
+        return redirect(url('admin/products/'))->with('del_success','คุณทำการลบอสังหา สำเร็จ');
+
+
     }
 }
