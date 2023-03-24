@@ -27,6 +27,7 @@ return new class extends Migration
             $table->string('weight')->nullable();
             $table->string('width_product')->nullable();
             $table->string('sku')->nullable();
+            $table->string('maker')->nullable();
             $table->string('length_product')->nullable();
             $table->string('height_product')->nullable();
             $table->string('user_code')->nullable();

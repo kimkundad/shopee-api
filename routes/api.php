@@ -19,7 +19,14 @@ Route::group([
 ], function ($router) {
 
     Route::get('/get_category_all', [App\Http\Controllers\ApiController::class, 'get_category_all']);
-    
+    Route::get('/allProduct', [App\Http\Controllers\ApiController::class, 'get_all_product']);
+    Route::get('/getProduct/{id}', [App\Http\Controllers\ApiController::class, 'get_product']);
+    Route::put('/setActiveProduct', [App\Http\Controllers\ApiController::class, 'set_active_product']);
+    Route::put('/setActiveAllProduct', [App\Http\Controllers\ApiController::class, 'set_active_AllProduct']);
+    Route::post('/deleteProduct/{id}', [App\Http\Controllers\ApiController::class, 'delete_product']);
+    Route::post('/addProduct', [App\Http\Controllers\ApiController::class, 'addProduct']);
+    Route::get('/shop', [App\Http\Controllers\ApiController::class, 'get_shop_name']);
+    Route::post('/searchProduct', [App\Http\Controllers\ApiController::class, 'search_product']);
 });
 
 Route::group([
