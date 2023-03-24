@@ -33,10 +33,13 @@ class ApiController extends Controller
         ], 201);
     }
 
-    public function get_product(Request $request)
+    public function get_product(Request $request, $id)
     {
-        $id = $request->input('id');
-        $objs = product::where('id','=',$id)->get();
+
+        $objs = Product::where('id', '=', $id)->get()->map(function ($item) use ($id) {
+            $item->allImage = DB::table('product_images')->where('product_id', '=', $id)->get();
+            return $item;
+        });
 
         return response()->json([
             'product' => $objs,
@@ -57,7 +60,7 @@ class ApiController extends Controller
                 product::where('id', '=', $id)->update(['active' => 0]);
             }
 
-            $products = product::select('id','img_product','name_product','cost','price','maker','created_at','stock','active')->get();
+            $products = product::select('id', 'img_product', 'name_product', 'cost', 'price', 'maker', 'created_at', 'stock', 'active')->get();
             return response()->json([
                 'product' => $products,
             ], 201);
@@ -107,20 +110,20 @@ class ApiController extends Controller
     {
         try {
             $objs = new product();
-           $objs->name_product = $request['name_product'];
-           $objs->detail_product = $request['detail_product'];
-           $objs->cost = $request['cost'];
-           $objs->price = $request['price'];
-           $objs->category = $request['category'];
-           $objs->price_sales = $request['price_sales'];
-           $objs->stock = $request['stock'];
-           $objs->weight = $request['weight'];
-           $objs->width_product = $request['width_product'];
-           $objs->sku = $request['sku'];
-           $objs->height_product = $request['height_product'];
-           $objs->user_code = $request['user_code'];
-           $objs->active = 0;
-           $objs->save();
+            $objs->name_product = $request['name_product'];
+            $objs->detail_product = $request['detail_product'];
+            $objs->cost = $request['cost'];
+            $objs->price = $request['price'];
+            $objs->category = $request['category'];
+            $objs->price_sales = $request['price_sales'];
+            $objs->stock = $request['stock'];
+            $objs->weight = $request['weight'];
+            $objs->width_product = $request['width_product'];
+            $objs->sku = $request['sku'];
+            $objs->height_product = $request['height_product'];
+            $objs->user_code = $request['user_code'];
+            $objs->active = 0;
+            $objs->save();
 
             $products = product::all();
             return response()->json([
@@ -136,7 +139,7 @@ class ApiController extends Controller
     public function get_shop_name()
     {
 
-        $objs = shop::where('id','=',1)->get();
+        $objs = shop::where('id', '=', 1)->get();
 
         return response()->json([
             'shop' => $objs,
@@ -147,8 +150,8 @@ class ApiController extends Controller
     {
         $search = $request->input('search');
         $objs = DB::table('products')
-        ->where(DB::raw("CONCAT(name_product, detail_product)"), 'LIKE', "%$search%")
-        ->get();
+            ->where(DB::raw("CONCAT(name_product, detail_product)"), 'LIKE', "%$search%")
+            ->get();
 
         return response()->json([
             'product' => $objs,
