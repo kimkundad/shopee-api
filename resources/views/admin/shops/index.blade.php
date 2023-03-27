@@ -83,7 +83,7 @@
                                             <th class="p-0 w-50px"></th>
                                             <th class="p-0 ">ชื่อรา้น</th>
                                             <th class="p-0 ">เจ้าของ</th>
-                                            <th class="p-0 ">จำนวนผู้เข้าชม</th>
+                                            <th class="p-0 ">url shop</th>
                                             <th class="p-0 ">ปิด/เปิด ใช้งาน</th>
                                             <th class="p-0 "></th>
                                         </tr>
@@ -111,7 +111,7 @@
                                             </td>
 
                                             <td>
-                                                0
+                                                <a>https://shopee-api.deksilp.com/{{ $item->code_shop }}</a>
                                             </td>
                                             
                                             <td>
