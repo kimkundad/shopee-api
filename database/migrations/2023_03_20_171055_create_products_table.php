@@ -33,11 +33,13 @@ return new class extends Migration
             $table->string('user_code')->nullable();
             $table->integer('type')->default(0);
             $table->integer('active')->default(0);
+            $table->string('option1')->nullable();
+            $table->string('option2')->nullable();
             $table->timestamps();
         });
     }
 
-    /**
+    /**option1
      * Reverse the migrations.
      *
      * @return void

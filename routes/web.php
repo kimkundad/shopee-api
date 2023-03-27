@@ -49,7 +49,9 @@ Route::group(['middleware' => ['UserRole:superadmin|admin']], function() {
 
     Route::post('/api/upload_img_product/{id}', [App\Http\Controllers\ProductController::class, 'upload_img_product']);
     Route::get('/api/image_del/{id}', [App\Http\Controllers\ProductController::class, 'image_del']);
- 
+    Route::post('/admin/post_option1/{id}', [App\Http\Controllers\ProductController::class, 'post_option1']);
+    Route::post('/admin/post_sup_option1/{id}', [App\Http\Controllers\ProductController::class, 'post_sup_option1']);
+
 
 });
 

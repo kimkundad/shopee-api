@@ -11,6 +11,8 @@ use Response;
 use App\Models\ownershop;
 use Illuminate\Support\Facades\Storage;
 use App\Models\product_image;
+use App\Models\product_option;
+use App\Models\product_suboption;
 
 class ProductController extends Controller
 {
@@ -159,6 +161,25 @@ class ProductController extends Controller
     public function edit($id)
     {
         //
+
+        $sub = DB::table('product_suboptions')->select(
+            'product_suboptions.*',
+            'product_suboptions.id as id_q',
+            'product_suboptions.price as pricex',
+            'product_suboptions.stock as stockx',
+            'product_suboptions.sku as skux',
+            'product_suboptions.status as statusx',
+            'product_options.*'
+            )
+            ->leftjoin('product_options', 'product_options.id',  'product_suboptions.op_id')
+            ->get();
+
+        $data['sub'] = $sub;
+
+
+        $option = product_option::where('product_id', $id)->get();
+        $data['option'] = $option;
+
         $cat = category::all();
         $data['cat'] = $cat;
         $ownershop = ownershop::all();
@@ -231,6 +252,91 @@ class ProductController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
+
+
+    public function post_sup_option1(Request $request, $id){
+
+
+        //id_product
+        $this->validate($request, [
+            'price' => 'required',
+            'stock' => 'required',
+            'op_name' => 'required',
+            'sku' => 'required'
+           ]);
+
+        $status = 0;
+            if(isset($request['status'])){
+                if($request['status'] == 1){
+                    $status = 1;
+                }
+            } 
+
+           $objs = new product_suboption();
+           $objs->op_id = $id;
+           $objs->price = $request['price'];
+           $objs->stock = $request['stock'];
+           $objs->sku = $request['sku'];
+           $objs->sub_op_name = $request['op_name'];
+           $objs->status = $status;
+           $objs->save();
+
+           return redirect(url('admin/products/'.$request['id_product'].'/edit'))->with('add_success','เพิ่ม เสร็จเรียบร้อยแล้ว');
+
+    }
+
+
+    public function post_option1(Request $request, $id){
+
+        $type_product = $request['type_product'];
+
+        if($type_product == 1){
+
+        }
+        if($type_product == 2){
+
+            $this->validate($request, [
+                'img_option1' => 'required',
+                'price' => 'required',
+                'op_name' => 'required',
+                'stock' => 'required',
+                'type_product' => 'required',
+                'sku' => 'required'
+               ]);
+
+        }
+        if($type_product == 3){
+
+            $this->validate($request, [
+                'img_option1' => 'required'
+               ]);
+
+        }
+
+            $status = 0;
+            if(isset($request['status'])){
+                if($request['status'] == 1){
+                    $status = 1;
+                }
+            }
+
+           $img = product_image::where('id', $request['img_option1'])->first();
+
+           $objs = new product_option();
+           $objs->product_id = $id;
+           $objs->img_id = $request['img_option1'];
+           $objs->img_name = $img->image;
+           $objs->price = $request['price'];
+           $objs->stock = $request['stock'];
+           $objs->sku = $request['sku'];
+           $objs->op_name = $request['op_name'];
+           $objs->status = $status;
+           $objs->save();
+
+           return redirect(url('admin/products/'.$id.'/edit'))->with('add_success','เพิ่ม เสร็จเรียบร้อยแล้ว');
+
+     }
+
     public function update(Request $request, $id)
     {
         //
@@ -272,6 +378,9 @@ class ProductController extends Controller
            $objs->sku = $request['sku'];
            $objs->height_product = $request['height_product'];
            $objs->user_code = $request['user_code'];
+           $objs->type = $request['type'];
+           $objs->option1 = $request['option1'];
+           $objs->option2 = $request['option2'];
            $objs->active = $status;
            $objs->save();
 
@@ -311,6 +420,9 @@ class ProductController extends Controller
            $objs->height_product = $request['height_product'];
            $objs->user_code = $request['user_code'];
            $objs->img_product = $image->hashName();
+           $objs->type = $request['type'];
+           $objs->option1 = $request['option1'];
+           $objs->option2 = $request['option2'];
            $objs->active = $status;
            $objs->save();
 
