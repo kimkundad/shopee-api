@@ -52,12 +52,15 @@ class ApiController extends Controller
             });
         }else if($objs !== null &&$objs[0]->type == 3){
             $objs->map(function ($item) {
-                $item->allOption1 = DB::table('product_options')->where('product_id','=',$item->product_id)->get();
+                $item->allOption1 = DB::table('product_options')->where('product_id', '=', $item->product_id)->get();
                 return $item;
             });
-            $objs->allOption1->map(function ($item) {
-                $item->allOption2 = DB::table('product_suboptions')->where('op_id','=',$item->id)->get();
-                return $item;
+        
+            $objs->each(function ($item) {
+                $item->allOption1->each(function ($option) {
+                    $option->allOption2 = DB::table('product_suboptions')->where('op_id', '=', $option->id)->get();
+                    return $option;
+                });
             });
         }
 
