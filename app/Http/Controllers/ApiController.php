@@ -59,10 +59,10 @@ class ApiController extends Controller
                 });
                 return $item;
             });
-            $allSubOption = DB::table('product_options')->select('id')->where('product_id', '=', $product_id)->get()->toArray();
-            
+            $allOption = DB::table('product_options')->select('id')->where('product_id', '=', $product_id)->pluck('id');
+            $allSubOption = DB::table('product_suboptions')->whereIn('op_id', $allOption)->get();
         }
-        
+
 
         return response()->json([
             'product' => $objs,
