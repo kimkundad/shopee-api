@@ -26,7 +26,7 @@ Route::group([
     Route::post('/deleteProduct/{id}', [App\Http\Controllers\ApiController::class, 'delete_product']);
     Route::post('/addProduct', [App\Http\Controllers\ApiController::class, 'addProduct']);
     Route::get('/shop', [App\Http\Controllers\ApiController::class, 'get_shop_name']);
-    Route::post('/searchProduct', [App\Http\Controllers\ApiController::class, 'search_product']);
+    Route::post('/searchProduct/{id}', [App\Http\Controllers\ApiController::class, 'search_product']);
 });
 
 Route::group([

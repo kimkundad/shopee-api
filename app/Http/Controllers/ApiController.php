@@ -16,7 +16,7 @@ class ApiController extends Controller
     public function get_category_all()
     {
 
-        $objs = category::select('cat_name', 'image','id')->where('status', 1)->get();
+        $objs = category::select('cat_name', 'image', 'id')->where('status', 1)->get();
 
         return response()->json([
             'category' => $objs,
@@ -25,7 +25,7 @@ class ApiController extends Controller
     }
     public function get_all_product($id)
     {
-        
+
         $objs = DB::table('shop_list_products')
             ->join('products', 'shop_list_products.product_id', '=', 'products.id')
             ->where('shop_list_products.shop_id', '=', $id)
@@ -152,13 +152,17 @@ class ApiController extends Controller
         ], 201);
     }
 
-    public function search_product(Request $request)
+    public function search_product(Request $request, $id)
     {
         $search = $request->input('search');
-        $objs = DB::table('products')
+        /* $objs = DB::table('products')
             ->where(DB::raw("CONCAT(name_product, detail_product)"), 'LIKE', "%$search%")
+            ->get(); */
+        $objs = DB::table('shop_list_products')
+            ->join('products', 'shop_list_products.product_id', '=', 'products.id')
+            ->where('shop_list_products.shop_id', '=', $id)
+            ->where(DB::raw("CONCAT(products.name_product, products.detail_product)"), 'ILIKE', "%$search%")
             ->get();
-
         return response()->json([
             'product' => $objs,
         ], 201);
