@@ -164,7 +164,7 @@ class ApiController extends Controller
             ->whereRaw("CONCAT(products.name_product, products.detail_product) LIKE ?", ["%$search%"])
             ->get();
         return response()->json([
-            'product' => $id,
+            'product' => $objs,
         ], 201);
     }
 }
