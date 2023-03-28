@@ -44,11 +44,11 @@ class ApiController extends Controller
             ->join('products', 'shop_list_products.product_id', '=', 'products.id')
             ->where('shop_list_products.shop_id', '=', $shop_id)
             ->where('products.id','=',$product_id)
-            ->get()->map(function ($item) {
+            ->first()->map(function ($item) {
                 $item->allImage = DB::table('product_images')->where('product_id', '=', $item->product_id)->get();
                 return $item;
             });
-        if($objs !== null &&$objs[0]->type == 2){
+        if($objs !== null &&$objs->type == 2){
             $objs->map(function ($item) {
                 $item->allOption1 = DB::table('product_options')->where('product_id','=',$item->product_id)->get();
                 return $item;
