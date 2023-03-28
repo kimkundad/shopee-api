@@ -23,10 +23,10 @@ class ApiController extends Controller
             'full_paht_img' => env('APP_URL') . '/images/shopee/category/'
         ], 201);
     }
-    public function get_all_product()
+    public function get_all_product($id)
     {
-
-        $objs = product::all();
+        
+        $objs = DB::table('shop_list_products')->join('product')->where('shop_id','=',$id)->get();
 
         return response()->json([
             'product' => $objs,
@@ -40,6 +40,9 @@ class ApiController extends Controller
             $item->allImage = DB::table('product_images')->where('product_id', '=', $id)->get();
             return $item;
         });
+        /* if($objs->type == 2){
+            $objs->map(function ($item) )
+        } */
 
         return response()->json([
             'product' => $objs,
@@ -139,7 +142,7 @@ class ApiController extends Controller
     public function get_shop_name()
     {
 
-        $objs = shop::where('id', '=', 1)->get();
+        $objs = shop::where('id', '=', 2)->get();
 
         return response()->json([
             'shop' => $objs,
