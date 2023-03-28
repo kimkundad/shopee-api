@@ -36,22 +36,22 @@ class ApiController extends Controller
         ], 201);
     }
 
-    public function get_product(Request $request, $id)
+    public function get_product(Request $request)
     {
 
         $objs = DB::table('shop_list_products')
             ->join('products', 'shop_list_products.product_id', '=', 'products.id')
             ->where('shop_list_products.shop_id', '=', $request->input('shop_id'))
-            ->get()->map(function ($item) use ($id) {
-                $item->allImage = DB::table('product_images')->where('product_id', '=', $id)->get();
+            ->get()->map(function ($item) {
+                $item->allImage = DB::table('product_images')->where('product_id', '=', $request->input('id'))->get();
                 return $item;
             });
-        if($objs[0]->type == 2){
-            $objs->map(function ($item) use ($id) {
+        /* if($objs[0]->type == 2){
+            $objs->map(function ($item) {
                 $item->allOption1 = DB::table('product_options')->where('product_id','=',$id)->get();
                 return $item;
             });
-        }/* else if($objs[0]->type == 3){
+        } *//* else if($objs[0]->type == 3){
             $objs->map(function ($item) use ($id) {
                 $item->allOption1 = DB::table('product_options')->where('product_id','=',$id)->get();
                 return $item;
