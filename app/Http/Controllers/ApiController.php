@@ -38,20 +38,22 @@ class ApiController extends Controller
 
     public function get_product(Request $request)
     {
-
+        $product_id = $request->input('product_id');
+        $shop_id = $request->input('shop_id');
         $objs = DB::table('shop_list_products')
             ->join('products', 'shop_list_products.product_id', '=', 'products.id')
-            ->where('shop_list_products.shop_id', '=', $request->input('shop_id'))
+            ->where('shop_list_products.shop_id', '=', $shop_id)
+            ->where('products.id','=',$product_id)
             ->get()->map(function ($item) {
-                $item->allImage = DB::table('product_images')->where('product_id', '=', $request->input('id'))->get();
+                $item->allImage = DB::table('product_images')->where('product_id', '=', $item->product_id)->get();
                 return $item;
             });
-        /* if($objs[0]->type == 2){
+        if($objs[0]->type == 2){
             $objs->map(function ($item) {
-                $item->allOption1 = DB::table('product_options')->where('product_id','=',$id)->get();
+                $item->allOption1 = DB::table('product_options')->where('product_id','=',$item->product_id)->get();
                 return $item;
             });
-        } *//* else if($objs[0]->type == 3){
+        }/* else if($objs[0]->type == 3){
             $objs->map(function ($item) use ($id) {
                 $item->allOption1 = DB::table('product_options')->where('product_id','=',$id)->get();
                 return $item;
