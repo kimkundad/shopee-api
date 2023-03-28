@@ -50,16 +50,16 @@ class ApiController extends Controller
                 $item->allOption1 = DB::table('product_options')->where('product_id','=',$item->product_id)->get();
                 return $item;
             });
-        }/* else if($objs[0]->type == 3){
-            $objs->map(function ($item) use ($id) {
-                $item->allOption1 = DB::table('product_options')->where('product_id','=',$id)->get();
+        }else if($objs !== null &&$objs[0]->type == 3){
+            $objs->map(function ($item) {
+                $item->allOption1 = DB::table('product_options')->where('product_id','=',$item->product_id)->get();
                 return $item;
             });
-            $objs->map(function ($item) use ($id) {
-                $item->allOption1 = DB::table('product_options')->where('product_id','=',$id)->get();
+            $objs->allOption1->map(function ($item) {
+                $item->allOption2 = DB::table('product_suboptions')->where('op_id','=',$item->id)->get();
                 return $item;
             });
-        } */
+        }
 
         return response()->json([
             'product' => $objs,
