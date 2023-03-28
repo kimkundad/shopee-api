@@ -161,10 +161,10 @@ class ApiController extends Controller
         $objs = DB::table('shop_list_products')
             ->join('products', 'shop_list_products.product_id', '=', 'products.id')
             ->where('shop_list_products.shop_id', '=', $id)
-            ->where(DB::raw("CONCAT(products.name_product, products.detail_product)"), 'ILIKE', "%$search%")
+            ->whereRaw("CONCAT(products.name_product, products.detail_product) LIKE ?", ["%$search%"])
             ->get();
         return response()->json([
-            'product' => $objs,
+            'product' => $id,
         ], 201);
     }
 }
