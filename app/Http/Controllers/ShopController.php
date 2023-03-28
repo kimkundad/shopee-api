@@ -8,6 +8,7 @@ use Intervention\Image\ImageManagerStatic as Image;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use App\Models\ownershop;
+use App\Models\shop_list_product;
 use App\Models\User;
 
 
@@ -50,6 +51,34 @@ class ShopController extends Controller
         return view('admin.shops.create', $data);
     }
 
+    public function api_add_product_shops(Request $request){
+
+       $count = shop_list_product::where('product_id', $request->pro_id)
+                ->where('shop_id', $request->shop_id)
+                ->count();
+
+        if($count > 0){
+
+            shop_list_product::where('product_id', $request->pro_id)
+                ->where('shop_id', $request->shop_id)
+                ->delete();
+
+        }else{
+
+           $objs = new shop_list_product();
+           $objs->product_id = $request['pro_id'];
+           $objs->shop_id = $request['shop_id'];
+           $objs->save();
+
+        }
+
+        return response()->json([
+            'data' => [
+              'success' => 'success',
+            ]
+          ]);
+
+    }
 
     public function api_post_status_shops(Request $request){
 
@@ -158,6 +187,22 @@ class ShopController extends Controller
 
         $shop = shop::find($id);
 
+        $array = array();
+
+        $mix_pro = DB::table('shop_list_products')->select(
+            'shop_list_products.product_id'
+            )
+            ->leftjoin('shops', 'shops.id',  'shop_list_products.shop_id')
+            ->join('products', 'products.id',  'shop_list_products.product_id')
+            ->where('shop_list_products.shop_id', $id)
+            ->get();
+
+            foreach($mix_pro as $u){
+                $array[] = $u->product_id;
+            }
+
+          //  dd($mix_pro);
+
         $objs = DB::table('products')->select(
             'products.*',
             'products.id as id_q',
@@ -168,12 +213,14 @@ class ShopController extends Controller
             ->leftjoin('categories', 'categories.id',  'products.category')
             ->leftjoin('ownershops', 'ownershops.user_code',  'products.user_code')
             ->where('products.user_code', $shop->user_code)
+            ->wherenotin('products.id', $array)
             ->paginate(15);
 
             $objs->setPath('');
-        $data['objs'] = $objs;
+
+            $shop_id = $id;
         
-        return view('admin.shops.pro_shop', compact('objs'));
+        return view('admin.shops.pro_shop', compact('objs', 'shop_id'));
 
     }
 
@@ -195,6 +242,21 @@ class ShopController extends Controller
         $pro_id = $id;
         $shop_id = $id;
 
+        $array = array();
+
+        $mix_pro = DB::table('shop_list_products')->select(
+            'shop_list_products.product_id'
+            )
+            ->leftjoin('shops', 'shops.id',  'shop_list_products.shop_id')
+            ->join('products', 'products.id',  'shop_list_products.product_id')
+            ->where('shop_list_products.shop_id', $id)
+            ->get();
+
+            foreach($mix_pro as $u){
+                $array[] = $u->product_id;
+            }
+
+          //  dd($mix_pro);
 
         $pro = DB::table('products')->select(
             'products.*',
@@ -206,6 +268,7 @@ class ShopController extends Controller
             ->leftjoin('categories', 'categories.id',  'products.category')
             ->leftjoin('ownershops', 'ownershops.user_code',  'products.user_code')
             ->where('products.user_code', $objs->user_code)
+            ->wherein('products.id', $array)
             ->paginate(15);
 
             $pro->setPath('');

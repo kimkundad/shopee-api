@@ -56,7 +56,7 @@ Route::group(['middleware' => ['UserRole:superadmin|admin']], function() {
     Route::get('api/del_options/{id}', [App\Http\Controllers\ProductController::class, 'del_options']);
 
     Route::get('/admin/add_product_to_shop/{id}', [App\Http\Controllers\ShopController::class, 'add_product_to_shop']);
-    
+    Route::post('/api/api_add_product_shops', [App\Http\Controllers\ShopController::class, 'api_add_product_shops']);
 
 });
 
