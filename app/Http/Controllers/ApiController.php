@@ -60,7 +60,11 @@ class ApiController extends Controller
                 return $item;
             });
             $allOption = DB::table('product_options')->select('id')->where('product_id', '=', $product_id)->pluck('id');
-            $allSubOption = DB::table('product_suboptions')->whereIn('op_id', $allOption)->get();
+            $allSubOption = DB::table('product_suboptions')
+                ->whereIn('op_id', $allOption)
+                ->select('sub_op_name')
+                ->distinct()
+                ->get();
         }
 
 
