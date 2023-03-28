@@ -16,7 +16,7 @@ class ApiController extends Controller
     public function get_category_all()
     {
 
-        $objs = category::select('cat_name', 'image')->where('status', 1)->get();
+        $objs = category::select('cat_name', 'image','id')->where('status', 1)->get();
 
         return response()->json([
             'category' => $objs,
