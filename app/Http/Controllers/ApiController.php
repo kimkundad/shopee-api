@@ -26,7 +26,11 @@ class ApiController extends Controller
     public function get_all_product($id)
     {
         
-        $objs = DB::table('shop_list_products')->join('product')->where('shop_id','=',$id)->get();
+        $objs = DB::table('shop_list_products')
+            ->join('product', 'shop_list_products.product_id', '=', 'product.id')
+            ->select('product.name', 'product.price')
+            ->where('shop_id', '=', $id)
+            ->get();
 
         return response()->json([
             'product' => $objs,
