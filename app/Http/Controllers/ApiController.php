@@ -43,14 +43,18 @@ class ApiController extends Controller
         $objs = DB::table('shop_list_products')
             ->join('products', 'shop_list_products.product_id', '=', 'products.id')
             ->where('shop_list_products.shop_id', '=', $shop_id)
-            ->where('products.id','=',$product_id)
-            ->first()->map(function ($item) {
-                $item->allImage = DB::table('product_images')->where('product_id', '=', $item->product_id)->get();
+            ->where('products.id', '=', $product_id)
+            ->first();
+
+        if ($objs !== null) {
+            $objs->allImage = DB::table('product_images')->where('product_id', '=', $objs->product_id)->get();
+            $objs = collect([$objs])->map(function ($item) {
                 return $item;
             });
-        if($objs !== null &&$objs->type == 2){
+        }
+        if ($objs !== null && $objs->type == 2) {
             $objs->map(function ($item) {
-                $item->allOption1 = DB::table('product_options')->where('product_id','=',$item->product_id)->get();
+                $item->allOption1 = DB::table('product_options')->where('product_id', '=', $item->product_id)->get();
                 return $item;
             });
         }/* else if($objs[0]->type == 3){
