@@ -28,8 +28,7 @@ class ApiController extends Controller
         
         $objs = DB::table('shop_list_products')
             ->join('product', 'shop_list_products.product_id', '=', 'product.id')
-            ->select('product.name', 'product.price')
-            ->where('shop_id', '=', $id)
+            ->where('shop_list_products.shop_id', '=', $id)
             ->get();
 
         return response()->json([
