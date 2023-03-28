@@ -152,9 +152,28 @@ class ShopController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function add_product_to_shop($id)
     {
         //
+
+        $shop = shop::find($id);
+
+        $objs = DB::table('products')->select(
+            'products.*',
+            'products.id as id_q',
+            'products.active as active',
+            'categories.*',
+            'ownershops.*'
+            )
+            ->leftjoin('categories', 'categories.id',  'products.category')
+            ->leftjoin('ownershops', 'ownershops.user_code',  'products.user_code')
+            ->where('products.user_code', $shop->user_code)
+            ->paginate(15);
+
+            $objs->setPath('');
+        $data['objs'] = $objs;
+        
+        return view('admin.shops.pro_shop', compact('objs'));
 
     }
 
@@ -170,11 +189,30 @@ class ShopController extends Controller
         $ownershop = ownershop::all();
         $data['ownershop'] = $ownershop;
         $objs = shop::find($id);
-        $data['url'] = url('admin/shops/'.$id);
-        $data['method'] = "put";
-        $data['item'] = $objs;
-        $data['pro_id'] = $id;
-        return view('admin.shops.edit', $data);
+        $url = url('admin/shops/'.$id);
+        $method = "put";
+        $item = $objs;
+        $pro_id = $id;
+        $shop_id = $id;
+
+
+        $pro = DB::table('products')->select(
+            'products.*',
+            'products.id as id_q',
+            'products.active as active',
+            'categories.*',
+            'ownershops.*'
+            )
+            ->leftjoin('categories', 'categories.id',  'products.category')
+            ->leftjoin('ownershops', 'ownershops.user_code',  'products.user_code')
+            ->where('products.user_code', $objs->user_code)
+            ->paginate(15);
+
+            $pro->setPath('');
+            $data['pro'] = $pro;
+
+
+        return view('admin.shops.edit', compact('pro', 'ownershop', 'item', 'url', 'pro_id', 'shop_id', 'method'));
 
     }
 

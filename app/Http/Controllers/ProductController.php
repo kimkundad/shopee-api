@@ -38,7 +38,6 @@ class ProductController extends Controller
 
             $objs->setPath('');
         $data['objs'] = $objs;
-
         
         return view('admin.products.index', compact('objs'));
     }
@@ -194,6 +193,46 @@ class ProductController extends Controller
         $data['item'] = $objs;
         $data['pro_id'] = $id;
         return view('admin.products.edit', $data);
+    }
+
+
+
+    public function del_options($id){
+
+
+        $obj = DB::table('product_options')
+        ->where('id', $id)
+        ->first();
+
+        $objs = DB::table('product_suboptions')
+        ->where('op_id', $id)
+        ->delete();
+
+        $obj = product_option::find($id);
+        $obj->delete();
+
+
+        return redirect(url('admin/products/'.$obj->product_id.'/edit'))->with('edit_success','คุณทำการเพิ่มอสังหา สำเร็จ');
+
+    }
+
+    public function del_suboptions($id){
+
+
+        $obj = DB::table('product_suboptions')
+        ->where('id', $id)
+        ->first();
+
+        $objs = DB::table('product_options')
+        ->where('id', $obj->op_id)
+        ->first();
+
+        $obj = product_suboption::find($id);
+        $obj->delete();
+
+
+        return redirect(url('admin/products/'.$objs->product_id.'/edit'))->with('edit_success','คุณทำการเพิ่มอสังหา สำเร็จ');
+
     }
 
 

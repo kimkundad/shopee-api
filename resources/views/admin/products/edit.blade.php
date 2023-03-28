@@ -764,7 +764,7 @@
                                                 <div class="d-flex justify-content-end flex-shrink-0">
 
                                                     @if($item->type == 3)
-                                                    <a data-bs-toggle="modal" data-bs-target="#kt_modal_addsuboption" class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1">
+                                                    <a data-bs-toggle="modal" data-bs-target="#kt_modal_addsuboption{{ $u->id }}" class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1">
                                                         <!--begin::Svg Icon | path: /var/www/preview.keenthemes.com/kt-products/docs/metronic/html/releases/2023-03-24-172858/core/html/src/media/icons/duotune/general/gen041.svg-->
                                                             <span class="svg-icon svg-icon-muted svg-icon-2hx"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                                                                 <rect opacity="0.3" x="2" y="2" width="20" height="20" rx="10" fill="currentColor"/>
@@ -785,7 +785,7 @@
                                                         </span>
                                                         <!--end::Svg Icon-->
                                                     </a>
-                                                    <a href="{{ url('api/del_options/'.$u->id) }}" class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm">
+                                                    <a href="{{ url('api/del_options/'.$u->id) }}" onclick="return confirm('Are you sure?')" class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm">
                                                         <!--begin::Svg Icon | path: icons/duotune/general/gen027.svg-->
                                                         <span class="svg-icon svg-icon-3">
                                                             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -800,11 +800,11 @@
                                             </td>
                                         </tr>
 
-                                        <div class="modal fade" tabindex="-1" id="kt_modal_addsuboption">
+                                        <div class="modal fade" tabindex="-1" id="kt_modal_addsuboption{{ $u->id }}">
                                             <div class="modal-dialog modal-dialog-centered">
                                                 <div class="modal-content">
                                                     <div class="modal-header">
-                                                        <h3 class="modal-title">สร้างตัวเลือกที่ 1</h3>
+                                                        <h3 class="modal-title">สร้างตัวเลือกที่ 2</h3>
                                             
                                                         <!--begin::Close-->
                                                         <div class="btn btn-icon btn-sm btn-active-light-primary ms-2" data-bs-dismiss="modal" aria-label="Close">
@@ -950,7 +950,7 @@
                                                 <div class="d-flex justify-content-end flex-shrink-0">
 
                                                     
-                                                    <a href="{{url('admin/options/'.$u->id.'/edit')}}" class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1">
+                                                    <a href="{{url('admin/options/'.$u->id_q.'/edit')}}" class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1">
                                                         <!--begin::Svg Icon | path: icons/duotune/art/art005.svg-->
                                                         <span class="svg-icon svg-icon-3">
                                                             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -960,7 +960,7 @@
                                                         </span>
                                                         <!--end::Svg Icon-->
                                                     </a>
-                                                    <a href="{{ url('api/del_options/'.$u->id) }}" class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm">
+                                                    <a href="{{ url('api/del_suboptions/'.$u->id_q) }}" onclick="return confirm('Are you sure?')" class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm">
                                                         <!--begin::Svg Icon | path: icons/duotune/general/gen027.svg-->
                                                         <span class="svg-icon svg-icon-3">
                                                             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">

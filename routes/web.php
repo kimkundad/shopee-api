@@ -52,6 +52,11 @@ Route::group(['middleware' => ['UserRole:superadmin|admin']], function() {
     Route::post('/admin/post_option1/{id}', [App\Http\Controllers\ProductController::class, 'post_option1']);
     Route::post('/admin/post_sup_option1/{id}', [App\Http\Controllers\ProductController::class, 'post_sup_option1']);
 
+    Route::get('api/del_suboptions/{id}', [App\Http\Controllers\ProductController::class, 'del_suboptions']);
+    Route::get('api/del_options/{id}', [App\Http\Controllers\ProductController::class, 'del_options']);
+
+    Route::get('/admin/add_product_to_shop/{id}', [App\Http\Controllers\ShopController::class, 'add_product_to_shop']);
+    
 
 });
 
