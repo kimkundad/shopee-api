@@ -53,12 +53,10 @@ class ApiController extends Controller
         } else if ($objs !== null && $objs[0]->type == 3) {
             $objs->map(function ($item) {
                 $item->allOption1 = DB::table('product_options')->where('product_id', '=', $item->product_id)->get();
-
-                // Use a foreach loop to fetch product_suboptions data for each item in allOption1
-                foreach ($item->allOption1 as $option1) {
-                    $option1->allOption2 = DB::table('product_suboptions')->where('op_id', '=', $option1->id)->get()->toArray();
-                }
-
+                $item->allOption1->map(function ($item2) {
+                    $item2->allOption2 = DB::table('product_suboptions')->where('op_id', '=', $item2->id)->get();
+                    return $item2;
+                });
                 return $item;
             });
         }
