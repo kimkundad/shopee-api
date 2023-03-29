@@ -63,8 +63,9 @@ class ApiController extends Controller
             $allSubOption = DB::table('product_suboptions')
                 ->whereIn('op_id', $allOption)
                 ->select('id', 'sub_op_name')
-                ->distinct('sub_op_name')
-                ->get();
+                ->groupBy('sub_op_name')
+                ->get()
+                ->pluck('id', 'sub_op_name');
         }
 
         if ($objs[0]->type == 3) {
