@@ -67,11 +67,16 @@ class ApiController extends Controller
                 ->get();
         }
 
-
-        return response()->json([
-            'product' => $objs,
-            'allSupOption' => $allSubOption,
-        ], 201);
+        if ($objs[0]->type == 3) {
+            return response()->json([
+                'product' => $objs,
+                'allSupOption' => $allSubOption,
+            ], 201);
+        } else {
+            return response()->json([
+                'product' => $objs,
+            ], 201);
+        }
     }
     public function set_active_product(Request $request)
     {
