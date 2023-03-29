@@ -75,6 +75,7 @@ class ApiController extends Controller
         } else {
             return response()->json([
                 'product' => $objs,
+                'allSupOption' => [],
             ], 201);
         }
     }
