@@ -18,6 +18,9 @@ return new class extends Migration
             $table->integer('user_id')->nullable();
             $table->integer('shop_id')->nullable();
             $table->integer('product_id')->nullable();
+            $table->integer('product_options_id')->nullable()->nullable();
+            $table->integer('product_suboptions_id')->nullable()->nullable();
+            $table->integer('num')->nullable()->nullable();
             $table->timestamps();
         });
     }
