@@ -62,7 +62,8 @@ class ApiController extends Controller
             $allOption = DB::table('product_options')->select('id')->where('product_id', '=', $product_id)->pluck('id');
             $allSubOption = DB::table('product_suboptions')
                 ->whereIn('op_id', $allOption)
-                ->select('id', DB::raw('DISTINCT sub_op_name'))
+                ->select('id', 'sub_op_name')
+                ->distinct('sub_op_name')
                 ->get();
         }
 
