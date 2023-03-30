@@ -18,7 +18,7 @@ use Illuminate\Support\Facades\Validator;
 
 class ApiController extends Controller
 {
-    
+
     //
     public function get_category_all()
     {
@@ -73,7 +73,6 @@ class ApiController extends Controller
             'msg' => 'success please Verifying Phone number OTP',
             'phone' => $data['phone'],
         ], 201);
-
     }
 
     public function get_allproduct()
@@ -285,14 +284,17 @@ class ApiController extends Controller
             ->get()
             ->map(function ($item) {
                 $item->product = DB::table('products')
-                    ->where('products.id', '=', $item->product_id)
                     ->select([
+                        'products.id' => 'product_id',
                         'products.name_product' => 'name_product',
                         'products.detail_product' => 'detail_product',
                         'products.price',
                         'products.price_sales' => 'price_sales',
                         'products.img_product' => 'img_product',
+                        'products.updated_at',
                     ])
+                    ->where('product_id', '=', $item->product_id)
+
                     ->orderBy('products.updated_at', 'desc')
                     ->get();
                 return $item;
