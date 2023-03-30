@@ -234,7 +234,7 @@ class ApiController extends Controller
         ->join('product_options', 'carts.product_options_id', '=', 'product_options.id')
         ->join('product_suboptions', 'carts.product_suboptions_id', '=', 'product_suboptions.id')
         ->select([
-            'shop.id' => 'shop_id',
+            'shops.id' => 'shop_id',
             'products.name_product' => 'name_product',
             'products.detail_product' => 'detail_product',
             'products.price' => 'price',
