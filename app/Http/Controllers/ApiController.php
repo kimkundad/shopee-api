@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\category;
 use App\Models\product;
 use App\Models\shop;
-use App\Models\cart;
+use App\Models\carts;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Intervention\Image\ImageManagerStatic as Image;
@@ -211,7 +211,7 @@ class ApiController extends Controller
     }
 
     public function addProductToCart(Request $request){
-        $objs = new cart();
+        $objs = new carts();
         $objs->user_id = $request->input('user_id');
         $objs->shop_id = $request->input('shopId');
         $objs->product_id = $request->input('productId');
