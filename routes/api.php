@@ -27,6 +27,7 @@ Route::group([
     Route::post('/addProduct', [App\Http\Controllers\ApiController::class, 'addProduct']);
     Route::get('/shop/{id}', [App\Http\Controllers\ApiController::class, 'get_shop_name']);
     Route::post('/searchProduct/{id}', [App\Http\Controllers\ApiController::class, 'search_product']);
+    Route::get('/getAllProduct', [App\Http\Controllers\ApiController::class, 'get_allproduct']);
 });
 
 Route::group([
@@ -37,5 +38,5 @@ Route::group([
     Route::post('/register', [AuthController::class, 'register']);
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::post('/refresh', [AuthController::class, 'refresh']);
-    Route::get('/user-profile', [AuthController::class, 'userProfile']);    
+    Route::get('/user-profile', [AuthController::class, 'userProfile']);
 });

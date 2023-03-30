@@ -37,6 +37,16 @@ class ApiController extends Controller
         ], 201);
     }
 
+    public function get_allproduct()
+    {
+
+        $objs = DB::table('products')->select('*')->get();
+
+        return response()->json([
+            'product' => $objs,
+        ], 201);
+    }
+
     public function get_product(Request $request)
     {
         $product_id = $request->input('product_id');
