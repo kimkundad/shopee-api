@@ -31,6 +31,8 @@ Route::group([
     Route::get('/getAllShops', [App\Http\Controllers\ApiController::class, 'get_all_shops']);
     Route::post('/addProductToCart', [App\Http\Controllers\ApiController::class, 'addProductToCart']);
     Route::get('/getAllCartItem/{id}', [App\Http\Controllers\ApiController::class, 'getAllCartItem']);
+
+    Route::post('/createUser', [App\Http\Controllers\ApiController::class, 'createUser']);
 });
 
 Route::group([
