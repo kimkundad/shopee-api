@@ -30,7 +30,7 @@ class ApiController extends Controller
         $objs = DB::table('shop_list_products')
             ->join('products', 'shop_list_products.product_id', '=', 'products.id')
             ->where('shop_list_products.shop_id', '=', $id)
-            ->where('products.active','=',1)
+            ->where('products.active', '=', 1)
             ->get();
 
         return response()->json([
@@ -56,26 +56,26 @@ class ApiController extends Controller
             ->join('products', 'shop_list_products.product_id', '=', 'products.id')
             ->where('shop_list_products.shop_id', '=', $shop_id)
             ->where('products.id', '=', $product_id)
-            ->where('products.active','=',1)
+            ->where('products.active', '=', 1)
             ->get();
         if ($objs !== null && $objs[0]->type == 2) {
             $objs->map(function ($item) {
-                $item->allOption1 = DB::table('product_options')->where('product_id', '=', $item->product_id)->where('status','=',1)->get();
+                $item->allOption1 = DB::table('product_options')->where('product_id', '=', $item->product_id)->where('status', '=', 1)->get();
                 return $item;
             });
         } else if ($objs !== null && $objs[0]->type == 3) {
             $objs->map(function ($item) {
-                $item->allOption1 = DB::table('product_options')->where('product_id', '=', $item->product_id)->where('status','=',1)->get();
+                $item->allOption1 = DB::table('product_options')->where('product_id', '=', $item->product_id)->where('status', '=', 1)->get();
                 $item->allOption1->map(function ($item2) {
-                    $item2->allOption2 = DB::table('product_suboptions')->where('op_id', '=', $item2->id)->where('status','=',1)->get();
+                    $item2->allOption2 = DB::table('product_suboptions')->where('op_id', '=', $item2->id)->where('status', '=', 1)->get();
                     return $item2;
                 });
                 return $item;
             });
-            $allOption = DB::table('product_options')->select('id')->where('product_id', '=', $product_id)->where('status','=',1)->pluck('id');
+            $allOption = DB::table('product_options')->select('id')->where('product_id', '=', $product_id)->where('status', '=', 1)->pluck('id');
             $allSubOption = DB::table('product_suboptions')
                 ->whereIn('op_id', $allOption)
-                ->where('status','=',1)
+                ->where('status', '=', 1)
                 ->select('sub_op_name')
                 ->distinct()
                 ->get();
@@ -210,7 +210,8 @@ class ApiController extends Controller
         ], 201);
     }
 
-    public function addProductToCart(Request $request){
+    public function addProductToCart(Request $request)
+    {
         $objs = new carts();
         $objs->user_id = $request->input('user_id');
         $objs->shop_id = $request->input('shopId');
@@ -225,11 +226,26 @@ class ApiController extends Controller
         ], 201);
     }
 
-    public function getAllCartItem($id){
-        $objs = carts::all();
+    public function getAllCartItem($id)
+    {
+        $objs = DB::table('carts')->join('products', 'carts.product_id', '=', 'products.id')
+        ->join('shops', 'carts.shop_id', '=', 'shops.id')
+        ->join('product_option', 'carts.product_options_id', '=', 'product_options.id')
+        ->join('product_suboptions', 'carts.product_suboptions_id', '=', 'product_suboptions.id')
+        ->select([
+            'shop.id' => 'shop_id',
+            'product.name_product' => 'name_product',
+            'product.detail_product' => 'detail_product',
+            'product.price' => 'price',
+            'product.price_sales' => 'price_sales',
+            'product.img_product' => 'img_product',
+            'product_options.op_name' => 'op_name',
+            'product_suboptions.sub_op_name' => 'sub_op_name',
+            'carts.num' => 'num',
+        ])->get();
 
         return response()->json([
             'cartItem' => $objs,
-        ],201);
+        ], 201);
     }
 }
