@@ -272,6 +272,16 @@ class ApiController extends Controller
     public function getAllCartItem($id)
     {
         $objs = DB::table('carts')
+            ->join('shops', 'carts.shop_id', '=', 'shops.id')
+            ->get()
+            ->map(function ($item) {
+                $item->product = DB::table('products')
+                    ->where('products.id', '=', $item->product_id)
+                    ->get();
+                return $item;
+            });
+
+        /* $objs = DB::table('carts')
         ->join('products', 'carts.product_id', '=', 'products.id')
         ->join('shops', 'carts.shop_id', '=', 'shops.id')
         ->join('product_options', 'carts.product_options_id', '=', 'product_options.id')
@@ -286,7 +296,7 @@ class ApiController extends Controller
             'product_options.op_name' => 'op_name',
             'product_suboptions.sub_op_name' => 'sub_op_name',
             'carts.num' => 'num',
-        ])->get();
+        ])->get(); */
 
         return response()->json([
             'cartItem' => $objs,
