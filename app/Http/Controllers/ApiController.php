@@ -10,6 +10,8 @@ use App\Models\carts;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Intervention\Image\ImageManagerStatic as Image;
+use App\Models\User;
+use Illuminate\Support\Facades\Hash;
 
 class ApiController extends Controller
 {
@@ -59,7 +61,14 @@ class ApiController extends Controller
             'phone' => $data['phone'],
             'password' => Hash::make($data['password']),
         ]);
+
         return redirect()->route('verify')->with(['phone' => $data['phone']]);
+
+        return response()->json([
+            'msg' => 'success please Verifying Phone number OTP',
+            'phone' => $data['phone'],
+        ], 201);
+
     }
 
     public function get_allproduct()
