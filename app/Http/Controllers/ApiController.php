@@ -29,7 +29,7 @@ class ApiController extends Controller
         $objs = DB::table('shop_list_products')
             ->join('products', 'shop_list_products.product_id', '=', 'products.id')
             ->where('shop_list_products.shop_id', '=', $id)
-            ->where('products.status','=',1)
+            ->where('products.active','=',1)
             ->get();
 
         return response()->json([
@@ -45,7 +45,7 @@ class ApiController extends Controller
             ->join('products', 'shop_list_products.product_id', '=', 'products.id')
             ->where('shop_list_products.shop_id', '=', $shop_id)
             ->where('products.id', '=', $product_id)
-            ->where('products.status','=',1)
+            ->where('products.active','=',1)
             ->get();
         if ($objs !== null && $objs[0]->type == 2) {
             $objs->map(function ($item) {
