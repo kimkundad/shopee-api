@@ -278,14 +278,25 @@ class ApiController extends Controller
     {
         $objs = DB::table('carts')
             ->join('shops', 'carts.shop_id', '=', 'shops.id')
+            ->select([
+                'shops.name' => 'name_shop'
+            ])
+            ->orderBy('carts.created_at', 'desc')
             ->get()
             ->map(function ($item) {
                 $item->product = DB::table('products')
                     ->where('products.id', '=', $item->product_id)
+                    ->select([
+                        'products.name_product' => 'name_product',
+                        'products.detail_product' => 'detail_product',
+                        'products.price',
+                        'products.price_sales' => 'price_sales',
+                        'products.img_product' => 'img_product',
+                    ])
+                    ->orderBy('products.updated_at', 'desc')
                     ->get();
                 return $item;
             });
-
         /* $objs = DB::table('carts')
         ->join('products', 'carts.product_id', '=', 'products.id')
         ->join('shops', 'carts.shop_id', '=', 'shops.id')
