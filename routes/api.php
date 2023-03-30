@@ -32,9 +32,9 @@ Route::group([
     Route::post('/addProductToCart', [App\Http\Controllers\ApiController::class, 'addProductToCart']);
     Route::get('/getAllCartItem/{id}', [App\Http\Controllers\ApiController::class, 'getAllCartItem']);
 
-    Route::post('/createUser', [App\Http\Controllers\ApiController::class, 'createUser']);
-    Route::post('/verify', [App\Http\Controllers\ApiController::class, 'verify']);
-    Route::get('/logout', [App\Http\Controllers\ApiController::class, 'logout']);
+    Route::post('/createUser', [App\Http\Controllers\AuthController::class, 'createUser']);
+    Route::post('/verify', [App\Http\Controllers\AuthController::class, 'verify']);
+    Route::get('/logout', [App\Http\Controllers\AuthController::class, 'logout']);
 });
 
 Route::group([
