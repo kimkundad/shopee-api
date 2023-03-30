@@ -41,7 +41,7 @@ class ApiController extends Controller
     }
 
 
-    protected function createUser(Request $request)
+    public function createUser(Request $request)
     {
         $data = $request->validate([
             'name' => ['required', 'string', 'max:255'],
