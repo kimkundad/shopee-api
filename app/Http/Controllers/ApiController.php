@@ -18,7 +18,7 @@ use Illuminate\Support\Facades\Validator;
 
 class ApiController extends Controller
 {
-    
+
     //
     public function get_category_all()
     {
@@ -66,8 +66,6 @@ class ApiController extends Controller
             'phone' => $data['phone'],
             'password' => Hash::make($data['password']),
         ]);
-
-        return redirect()->route('verify')->with(['phone' => $data['phone']]);
 
         return response()->json([
             'msg' => 'success please Verifying Phone number OTP',
