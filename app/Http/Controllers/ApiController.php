@@ -230,7 +230,7 @@ class ApiController extends Controller
     {
         $objs = DB::table('carts')->join('products', 'carts.product_id', '=', 'products.id')
         ->join('shops', 'carts.shop_id', '=', 'shops.id')
-        ->join('product_option', 'carts.product_options_id', '=', 'product_options.id')
+        ->join('product_options', 'carts.product_options_id', '=', 'product_options.id')
         ->join('product_suboptions', 'carts.product_suboptions_id', '=', 'product_suboptions.id')
         ->select([
             'shop.id' => 'shop_id',
