@@ -208,4 +208,19 @@ class ApiController extends Controller
             'product' => $objs,
         ], 201);
     }
+
+    public function addProductToCart(Request $request){
+        $objs = new cart();
+        $objs->user_id = $request['user_id'];
+        $objs->shop_id = $request['shopId'];
+        $objs->product_id = $request['productId'];
+        $objs->product_option_id = $request['productOptionId'];
+        $objs->product_suboption_id = $request['productSubOptionId'];
+        $objs->num = $request['num'];
+        $objs->save();
+
+        return response()->json([
+            'status' => 'succes',
+        ], 201);
+    }
 }
