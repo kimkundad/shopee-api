@@ -224,4 +224,12 @@ class ApiController extends Controller
             'status' => $request->input('user_id'),
         ], 201);
     }
+
+    public function getAllCartItem($id){
+        $objs = carts::all();
+
+        return response()->json([
+            'cartItem' => $objs,
+        ],201);
+    }
 }
