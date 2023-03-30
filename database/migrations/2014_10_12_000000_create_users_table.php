@@ -19,6 +19,7 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->boolean('isVerified')->default(false);
             $table->timestamp('email_verified_at')->nullable();
+            $table->timestamp('phone_verified_at')->nullable();
             $table->string('password');
             $table->string('provider')->nullable();
             $table->string('provider_id')->nullable();
