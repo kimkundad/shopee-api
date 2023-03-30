@@ -136,4 +136,17 @@ class AuthController extends Controller
     }
 
 
+    public function phonize($phoneNumber, $country) {
+
+        $countryCodes = array(
+            'th' => '+66',
+            'de' => '+43',
+            'it' => '+39'
+        );
+    
+        return preg_replace('/[^0-9+]/', '',
+               preg_replace('/^0/', $countryCodes[$country], $phoneNumber));
+    }
+
+
 }
