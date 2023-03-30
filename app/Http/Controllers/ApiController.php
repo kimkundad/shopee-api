@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\category;
 use App\Models\product;
 use App\Models\shop;
+use App\Models\carts;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Intervention\Image\ImageManagerStatic as Image;
@@ -29,10 +30,31 @@ class ApiController extends Controller
         $objs = DB::table('shop_list_products')
             ->join('products', 'shop_list_products.product_id', '=', 'products.id')
             ->where('shop_list_products.shop_id', '=', $id)
+            ->where('products.active', '=', 1)
             ->get();
 
         return response()->json([
             'product' => $objs,
+        ], 201);
+    }
+
+    public function get_allproduct()
+    {
+
+        $objs = DB::table('products')->select('*')->get();
+
+        return response()->json([
+            'product' => $objs,
+        ], 201);
+    }
+
+    public function get_all_shops()
+    {
+
+        $objs = DB::table('shops')->select('*')->get();
+
+        return response()->json([
+            'shops' => $objs,
         ], 201);
     }
 
@@ -44,24 +66,26 @@ class ApiController extends Controller
             ->join('products', 'shop_list_products.product_id', '=', 'products.id')
             ->where('shop_list_products.shop_id', '=', $shop_id)
             ->where('products.id', '=', $product_id)
+            ->where('products.active', '=', 1)
             ->get();
         if ($objs !== null && $objs[0]->type == 2) {
             $objs->map(function ($item) {
-                $item->allOption1 = DB::table('product_options')->where('product_id', '=', $item->product_id)->get();
+                $item->allOption1 = DB::table('product_options')->where('product_id', '=', $item->product_id)->where('status', '=', 1)->get();
                 return $item;
             });
         } else if ($objs !== null && $objs[0]->type == 3) {
             $objs->map(function ($item) {
-                $item->allOption1 = DB::table('product_options')->where('product_id', '=', $item->product_id)->get();
+                $item->allOption1 = DB::table('product_options')->where('product_id', '=', $item->product_id)->where('status', '=', 1)->get();
                 $item->allOption1->map(function ($item2) {
-                    $item2->allOption2 = DB::table('product_suboptions')->where('op_id', '=', $item2->id)->get();
+                    $item2->allOption2 = DB::table('product_suboptions')->where('op_id', '=', $item2->id)->where('status', '=', 1)->get();
                     return $item2;
                 });
                 return $item;
             });
-            $allOption = DB::table('product_options')->select('id')->where('product_id', '=', $product_id)->pluck('id');
+            $allOption = DB::table('product_options')->select('id')->where('product_id', '=', $product_id)->where('status', '=', 1)->pluck('id');
             $allSubOption = DB::table('product_suboptions')
                 ->whereIn('op_id', $allOption)
+                ->where('status', '=', 1)
                 ->select('sub_op_name')
                 ->distinct()
                 ->get();
@@ -193,6 +217,46 @@ class ApiController extends Controller
             ->get();
         return response()->json([
             'product' => $objs,
+        ], 201);
+    }
+
+    public function addProductToCart(Request $request)
+    {
+        $objs = new carts();
+        $objs->user_id = $request->input('user_id');
+        $objs->shop_id = $request->input('shopId');
+        $objs->product_id = $request->input('productId');
+        $objs->product_options_id = $request->input('productOptionId');
+        $objs->product_suboptions_id = $request->input('productSubOptionId');
+        $objs->num = $request->input('num');
+        $objs->save();
+
+        return response()->json([
+            'status' => $request->input('user_id'),
+        ], 201);
+    }
+
+    public function getAllCartItem($id)
+    {
+        $objs = DB::table('carts')
+        ->join('products', 'carts.product_id', '=', 'products.id')
+        ->join('shops', 'carts.shop_id', '=', 'shops.id')
+        ->join('product_options', 'carts.product_options_id', '=', 'product_options.id')
+        ->join('product_suboptions', 'carts.product_suboptions_id', '=', 'product_suboptions.id')
+        ->select([
+            'shops.id' => 'shop_id',
+            'products.name_product' => 'name_product',
+            'products.detail_product' => 'detail_product',
+            'products.price',
+            'products.price_sales' => 'price_sales',
+            'products.img_product' => 'img_product',
+            'product_options.op_name' => 'op_name',
+            'product_suboptions.sub_op_name' => 'sub_op_name',
+            'carts.num' => 'num',
+        ])->get();
+
+        return response()->json([
+            'cartItem' => $objs,
         ], 201);
     }
 }
