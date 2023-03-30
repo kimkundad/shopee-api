@@ -18,6 +18,7 @@ use Illuminate\Support\Facades\Validator;
 
 class ApiController extends Controller
 {
+    
     //
     public function get_category_all()
     {
