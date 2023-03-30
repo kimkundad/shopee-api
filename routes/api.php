@@ -34,6 +34,7 @@ Route::group([
 
     Route::post('/createUser', [App\Http\Controllers\AuthController::class, 'createUser']);
     Route::post('/verify', [App\Http\Controllers\AuthController::class, 'verify']);
+    Route::post('/login', [App\Http\Controllers\AuthController::class, 'login']);
     Route::get('/logout', [App\Http\Controllers\AuthController::class, 'logout']);
 });
 

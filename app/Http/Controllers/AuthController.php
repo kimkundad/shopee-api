@@ -13,7 +13,47 @@ class AuthController extends Controller
 {
     //
     
+    public function login(Request $request)
+    {
+        $request->validate([
+            'phone' => 'required',
+            'password' => 'required|string',
+        ]);
 
+        $credentials = $request->only('phone', 'password');
+
+        $token = auth('api')->attempt($credentials);
+     
+        if (!$token) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Unauthorized',
+            ], 401);
+        }
+
+        $user = auth('api')->user();
+        return response()->json([
+                'status' => 'success',
+                'user' => $user,
+                'authorisation' => [
+                    'token' => $token,
+                    'type' => 'bearer',
+                ]
+            ]);
+
+    }
+
+    public function refresh()
+    {
+        return response()->json([
+            'status' => 'success',
+            'user' => Auth::user(),
+            'authorisation' => [
+                'token' => Auth::refresh(),
+                'type' => 'bearer',
+            ]
+        ]);
+    }
 
     public function createUser(Request $request)
     {
@@ -99,16 +139,18 @@ class AuthController extends Controller
         $twilio = new Client($twilio_sid, $token);
         $verification = $twilio->verify->v2->services($twilio_verify_sid)
             ->verificationChecks
-            ->create($request->verification_code, array('to' => $phone2));
+            ->create(['code' => $request->verification_code, 'to' => $phone2]);
         if ($verification->valid) {
             $user = tap(User::where('phone', $request->phone))->update(['isVerified' => true]);
+
+            $myuser = User::where('phone', $request->phone)->first();
             /* Authenticate user */
          //   Auth::login($user->first());
-            $token = Auth::login($user);
+            $token = Auth::login($myuser);
             return response()->json([
                 'status' => 'success',
                 'msg' => 'Phone number verified',
-                'user' => $user,
+                'user' => $myuser,
                 'authorisation' => [
                     'token' => $token,
                     'type' => 'bearer',
