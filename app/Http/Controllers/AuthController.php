@@ -132,6 +132,7 @@ class AuthController extends Controller
         $phone2 = '';
         $phone2 = $this->phonize($phone, $country);
         
+        
         /* Get credentials from .env */
         $token = getenv("TWILIO_AUTH_TOKEN");
         $twilio_sid = getenv("TWILIO_SID");
