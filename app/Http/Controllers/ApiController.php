@@ -237,7 +237,7 @@ class ApiController extends Controller
             'shops.id' => 'shop_id',
             'products.name_product' => 'name_product',
             'products.detail_product' => 'detail_product',
-            /* 'products.price' => 'price', */
+            'products.price',
             'products.price_sales' => 'price_sales',
             'products.img_product' => 'img_product',
             'product_options.op_name' => 'op_name',
