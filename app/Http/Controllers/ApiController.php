@@ -49,9 +49,14 @@ class ApiController extends Controller
     {
         $data = $request->validate([
             'name' => ['required', 'string', 'max:255'],
-            'phone' => ['required', 'numeric', 'unique:users'],
+            'phone' => 'required',
             'password' => ['required', 'string', 'min:8', 'confirmed'],
         ]);
+
+        $country = 'th';
+        $phone   = $data['phone'];
+        $phone2 = '';
+        $phone2 = '+'.$this->phonize($phone, $country);
 
         /* Get credentials from .env */
         $token = getenv("TWILIO_AUTH_TOKEN");
@@ -60,10 +65,11 @@ class ApiController extends Controller
         $twilio = new Client($twilio_sid, $token);
         $twilio->verify->v2->services($twilio_verify_sid)
             ->verifications
-            ->create($data['phone'], "sms");
+            ->create($phone2, "sms");
         User::create([
             'name' => $data['name'],
             'phone' => $data['phone'],
+            'email' => $data['phone'],
             'password' => Hash::make($data['password']),
         ]);
 
@@ -72,6 +78,19 @@ class ApiController extends Controller
             'phone' => $data['phone'],
         ], 201);
 
+    }
+
+
+    public function phonize($phoneNumber, $country) {
+
+        $countryCodes = array(
+            'th' => '+66',
+            'de' => '+43',
+            'it' => '+39'
+        );
+    
+        return preg_replace('/[^0-9+]/', '',
+               preg_replace('/^0/', $countryCodes[$country], $phoneNumber));
     }
 
     public function get_allproduct()
