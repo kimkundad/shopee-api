@@ -293,7 +293,7 @@ class ApiController extends Controller
                         'products.img_product' => 'img_product',
                         'products.updated_at',
                     ])
-                    ->where('product_id', '=', $item->product_id)
+                    ->where('products.id', '=', $item->product_id)
 
                     ->orderBy('products.updated_at', 'desc')
                     ->get();
