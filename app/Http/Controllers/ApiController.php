@@ -211,14 +211,14 @@ class ApiController extends Controller
     }
 
     public function addProductToCart(Request $request){
-        /* $objs = new cart();
-        $objs->user_id = $request['user_id'];
-        $objs->shop_id = $request['shopId'];
-        $objs->product_id = $request['productId'];
-        $objs->product_option_id = $request['productOptionId'];
-        $objs->product_suboption_id = $request['productSubOptionId'];
-        $objs->num = $request['num'];
-        $objs->save(); */
+        $objs = new cart();
+        $objs->user_id = $request->input('user_id');
+        $objs->shop_id = $request->input('shopId');
+        $objs->product_id = $request->input('productId');
+        $objs->product_option_id = $request->input('productOptionId');
+        $objs->product_suboption_id = $request->input('productSubOptionId');
+        $objs->num = $request->input('num');
+        $objs->save();
 
         return response()->json([
             'status' => $request->input('user_id'),
