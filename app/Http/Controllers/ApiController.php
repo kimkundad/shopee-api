@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\category;
 use App\Models\product;
 use App\Models\shop;
+use App\Models\cart;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Intervention\Image\ImageManagerStatic as Image;
