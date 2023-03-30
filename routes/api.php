@@ -33,6 +33,8 @@ Route::group([
     Route::get('/getAllCartItem/{id}', [App\Http\Controllers\ApiController::class, 'getAllCartItem']);
 
     Route::post('/createUser', [App\Http\Controllers\ApiController::class, 'createUser']);
+    Route::post('/verify', [App\Http\Controllers\ApiController::class, 'verify']);
+    Route::get('/logout', [App\Http\Controllers\ApiController::class, 'logout']);
 });
 
 Route::group([
