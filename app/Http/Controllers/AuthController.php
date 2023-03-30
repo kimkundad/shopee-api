@@ -33,7 +33,7 @@ class AuthController extends Controller
 
         $user = auth('api')->user();
 
-        if($user->isVerified === false) {
+        if($user->isVerified == false) {
 
             $response = array(
                 'success' => false,
