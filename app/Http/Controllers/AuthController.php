@@ -39,8 +39,8 @@ class AuthController extends Controller
         $country = 'th';
         $phone   = $request->phone;
         $phone2 = '';
-        $phone2 = '+'.$this->phonize($phone, $country);
-        
+        $phone2 = $this->phonize($phone, $country);
+ 
         /* Get credentials from .env */
         $token = getenv("TWILIO_AUTH_TOKEN");
         $twilio_sid = getenv("TWILIO_SID");
@@ -90,7 +90,7 @@ class AuthController extends Controller
         $country = 'th';
         $phone   = $request->phone;
         $phone2 = '';
-        $phone2 = '+'.$this->phonize($phone, $country);
+        $phone2 = $this->phonize($phone, $country);
         
         /* Get credentials from .env */
         $token = getenv("TWILIO_AUTH_TOKEN");
