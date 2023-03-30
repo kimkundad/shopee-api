@@ -29,6 +29,7 @@ class ApiController extends Controller
         $objs = DB::table('shop_list_products')
             ->join('products', 'shop_list_products.product_id', '=', 'products.id')
             ->where('shop_list_products.shop_id', '=', $id)
+            ->where('products.status','=',1)
             ->get();
 
         return response()->json([
@@ -44,24 +45,26 @@ class ApiController extends Controller
             ->join('products', 'shop_list_products.product_id', '=', 'products.id')
             ->where('shop_list_products.shop_id', '=', $shop_id)
             ->where('products.id', '=', $product_id)
+            ->where('products.status','=',1)
             ->get();
         if ($objs !== null && $objs[0]->type == 2) {
             $objs->map(function ($item) {
-                $item->allOption1 = DB::table('product_options')->where('product_id', '=', $item->product_id)->get();
+                $item->allOption1 = DB::table('product_options')->where('product_id', '=', $item->product_id)->where('status','=',1)->get();
                 return $item;
             });
         } else if ($objs !== null && $objs[0]->type == 3) {
             $objs->map(function ($item) {
-                $item->allOption1 = DB::table('product_options')->where('product_id', '=', $item->product_id)->get();
+                $item->allOption1 = DB::table('product_options')->where('product_id', '=', $item->product_id)->where('status','=',1)->get();
                 $item->allOption1->map(function ($item2) {
-                    $item2->allOption2 = DB::table('product_suboptions')->where('op_id', '=', $item2->id)->get();
+                    $item2->allOption2 = DB::table('product_suboptions')->where('op_id', '=', $item2->id)->where('status','=',1)->get();
                     return $item2;
                 });
                 return $item;
             });
-            $allOption = DB::table('product_options')->select('id')->where('product_id', '=', $product_id)->pluck('id');
+            $allOption = DB::table('product_options')->select('id')->where('product_id', '=', $product_id)->where('status','=',1)->pluck('id');
             $allSubOption = DB::table('product_suboptions')
                 ->whereIn('op_id', $allOption)
+                ->where('status','=',1)
                 ->select('sub_op_name')
                 ->distinct()
                 ->get();
