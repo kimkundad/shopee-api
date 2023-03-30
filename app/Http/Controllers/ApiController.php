@@ -221,7 +221,7 @@ class ApiController extends Controller
         $objs->save(); */
 
         return response()->json([
-            'status' => $request,
+            'status' => $request->input('user_id'),
         ], 201);
     }
 }
