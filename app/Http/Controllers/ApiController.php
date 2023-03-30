@@ -215,8 +215,8 @@ class ApiController extends Controller
         $objs->user_id = $request->input('user_id');
         $objs->shop_id = $request->input('shopId');
         $objs->product_id = $request->input('productId');
-        $objs->product_option_id = $request->input('productOptionId');
-        $objs->product_suboption_id = $request->input('productSubOptionId');
+        $objs->product_options_id = $request->input('productOptionId');
+        $objs->product_suboptions_id = $request->input('productSubOptionId');
         $objs->num = $request->input('num');
         $objs->save();
 
