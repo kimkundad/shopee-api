@@ -32,7 +32,18 @@ class AuthController extends Controller
         }
 
         $user = auth('api')->user();
-        return response()->json([
+
+        if($user->isVerified === false) {
+
+            $response = array(
+                'success' => false,
+                'message' => 'คุณยังไม่ได้ทำการ Verify เบอร์โทรศัพท์'
+            );
+            return response()->json($response);
+
+        }else{
+
+            return response()->json([
                 'status' => 'success',
                 'user' => $user,
                 'authorisation' => [
@@ -40,6 +51,10 @@ class AuthController extends Controller
                     'type' => 'bearer',
                 ]
             ]);
+
+        }
+
+       
 
     }
 
@@ -132,7 +147,7 @@ class AuthController extends Controller
         $phone2 = '';
         $phone2 = $this->phonize($phone, $country);
         
-        
+
         /* Get credentials from .env */
         $token = getenv("TWILIO_AUTH_TOKEN");
         $twilio_sid = getenv("TWILIO_SID");
