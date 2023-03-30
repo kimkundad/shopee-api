@@ -72,6 +72,8 @@ class AuthController extends Controller
             'phone' => ['required', 'string'],
         ]);
 
+        //$request->verification_code
+
         if ($validator->fails()) {
 
             $message = $validator->errors()->first();
@@ -86,7 +88,7 @@ class AuthController extends Controller
             }
 
         $country = 'th';
-        $phone   = $data['phone'];
+        $phone   = $request->phone;
         $phone2 = '';
         $phone2 = '+'.$this->phonize($phone, $country);
         
@@ -97,9 +99,9 @@ class AuthController extends Controller
         $twilio = new Client($twilio_sid, $token);
         $verification = $twilio->verify->v2->services($twilio_verify_sid)
             ->verificationChecks
-            ->create($data['verification_code'], array('to' => $phone2));
+            ->create($request->verification_code, array('to' => $phone2));
         if ($verification->valid) {
-            $user = tap(User::where('phone', $data['phone']))->update(['isVerified' => true]);
+            $user = tap(User::where('phone', $request->phone))->update(['isVerified' => true]);
             /* Authenticate user */
          //   Auth::login($user->first());
             $token = Auth::login($user);
@@ -111,13 +113,13 @@ class AuthController extends Controller
                     'token' => $token,
                     'type' => 'bearer',
                 ],
-                'phone' => $data['phone'],
+                'phone' => $request->phone,
             ], 201);
         }
 
         return response()->json([
             'msg' => 'Invalid verification code entered!',
-            'phone' => $data['phone'],
+            'phone' => $request->phone,
         ], 400);
 
     }
