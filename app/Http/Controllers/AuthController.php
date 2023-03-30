@@ -12,10 +12,7 @@ use Illuminate\Support\Facades\Validator;
 class AuthController extends Controller
 {
     //
-    public function __construct()
-    {
-        $this->middleware('auth:api', ['except' => ['login','createUser']]);
-    }
+    
 
 
     public function createUser(Request $request)
