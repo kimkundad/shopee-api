@@ -228,17 +228,18 @@ class ApiController extends Controller
 
     public function getAllCartItem($id)
     {
-        $objs = DB::table('carts')->join('products', 'carts.product_id', '=', 'products.id')
+        $objs = DB::table('carts')
+        ->join('products', 'carts.product_id', '=', 'products.id')
         ->join('shops', 'carts.shop_id', '=', 'shops.id')
         ->join('product_options', 'carts.product_options_id', '=', 'product_options.id')
         ->join('product_suboptions', 'carts.product_suboptions_id', '=', 'product_suboptions.id')
         ->select([
             'shop.id' => 'shop_id',
-            'product.name_product' => 'name_product',
-            'product.detail_product' => 'detail_product',
-            'product.price' => 'price',
-            'product.price_sales' => 'price_sales',
-            'product.img_product' => 'img_product',
+            'products.name_product' => 'name_product',
+            'products.detail_product' => 'detail_product',
+            'products.price' => 'price',
+            'products.price_sales' => 'price_sales',
+            'products.img_product' => 'img_product',
             'product_options.op_name' => 'op_name',
             'product_suboptions.sub_op_name' => 'sub_op_name',
             'carts.num' => 'num',
