@@ -48,6 +48,16 @@ class ApiController extends Controller
         ], 201);
     }
 
+    public function get_all_shops()
+    {
+
+        $objs = DB::table('shops')->select('*')->get();
+
+        return response()->json([
+            'shops' => $objs,
+        ], 201);
+    }
+
     public function get_product(Request $request)
     {
         $product_id = $request->input('product_id');
