@@ -100,6 +100,36 @@ class ApiController extends Controller
         ], 201);
     }
 
+    public function get_filter_shops(Request $request)
+    {
+        $type = $request->query('type');
+
+        if ($type == 'asc') {
+            $stores = DB::table('shops')
+                ->select('*')
+                ->orderBy('name_shop', 'asc')
+                ->get();
+        } else if ($type == 'createdDateShop') {
+            $stores = DB::table('shops')
+                ->select('*')
+                ->orderBy('created_at', 'asc')
+                ->get();
+        } else if ($type == 'modifiedDateShop') {
+            $stores = DB::table('shops')
+                ->select('*')
+                ->orderBy('updated_at', 'asc')
+                ->get();
+        } else{
+            $stores = DB::table('shops')
+                ->select('*')
+                ->get();
+        }
+
+        return response()->json([
+            'shops' => $stores,
+        ], 201);
+    }
+
     public function get_product(Request $request)
     {
         $product_id = $request->input('product_id');
