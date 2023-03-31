@@ -64,6 +64,19 @@ class ApiController extends Controller
         ], 201);
     }
 
+    public function get_search_shops(Request $request)
+    {
+        $search = $request->query('search');
+
+        $stores = shop::when($search, function ($query, $search) {
+            return $query->where('name_shop', 'like', '%' . $search . '%');
+        })->get();
+
+        return response()->json([
+            'shops' => $stores,
+        ], 201);
+    }
+
     public function get_product(Request $request)
     {
         $product_id = $request->input('product_id');
