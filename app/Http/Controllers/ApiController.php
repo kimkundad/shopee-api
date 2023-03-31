@@ -68,7 +68,7 @@ class ApiController extends Controller
     {
         $search = $request->query('search');
 
-        if($request->query('search') != null){
+        if($request->query('search') != 'null'){
             $stores = shop::when($search, function ($query, $search) {
                 return $query->where('name_shop', 'like', '%' . $search . '%');
             })->get();
