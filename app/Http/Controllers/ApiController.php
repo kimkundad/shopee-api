@@ -57,7 +57,12 @@ class ApiController extends Controller
     public function get_all_shops()
     {
 
-        $objs = DB::table('shops')->select('*')->get();
+        $objs = DB::table('shops')
+        ->select('*')
+        ->orderBy('name', 'asc')
+        ->orderBy('created_at', 'asc')
+        ->orderBy('updated_at', 'asc')
+        ->get();
 
         return response()->json([
             'shops' => $objs,
