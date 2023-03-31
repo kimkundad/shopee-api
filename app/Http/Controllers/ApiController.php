@@ -68,11 +68,11 @@ class ApiController extends Controller
     {
         $search = $request->query('search');
 
-        if (strlen(trim($search)) > 0) {
+        if ($search != null) {
             $stores = shop::when($search, function ($query, $search) {
                 return $query->where('name_shop', 'like', '%' . $search . '%');
             })->get();
-        } else {
+        }else{
             $stores = DB::table('shops')->select('*')->get();
         }
 
