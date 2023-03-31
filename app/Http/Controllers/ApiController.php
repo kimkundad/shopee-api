@@ -58,11 +58,8 @@ class ApiController extends Controller
     {
 
         $objs = DB::table('shops')
-        ->select('*')
-        ->orderBy('name', 'asc')
-        ->orderBy('created_at', 'asc')
-        ->orderBy('updated_at', 'asc')
-        ->get();
+            ->select('*')
+            ->get();
 
         return response()->json([
             'shops' => $objs,
@@ -73,11 +70,11 @@ class ApiController extends Controller
     {
         $search = $request->query('search');
 
-        if($search != 'null'){
+        if ($search != 'null') {
             $stores = shop::when($search, function ($query, $search) {
                 return $query->where('name_shop', 'like', '%' . $search . '%');
             })->get();
-        }else{
+        } else {
             $stores = DB::table('shops')->select('*')->get();
         }
 
@@ -90,11 +87,11 @@ class ApiController extends Controller
     {
         $search = $request->query('search');
 
-        if($search != 'null'){
+        if ($search != 'null') {
             $stores = shop::when($search, function ($query, $search) {
                 $query->whereDate('created_at', $search);
             })->get();
-        }else{
+        } else {
             $stores = DB::table('shops')->select('*')->get();
         }
 
