@@ -66,12 +66,16 @@ class ApiController extends Controller
 
     public function get_search_shops(Request $request)
     {
-        dd($request->query('search'));
         $search = $request->query('search');
 
-        $stores = shop::when($search, function ($query, $search) {
-            return $query->where('name_shop', 'like', '%' . $search . '%');
-        })->get();
+        if($request->query('search') != null){
+            $stores = shop::when($search, function ($query, $search) {
+                return $query->where('name_shop', 'like', '%' . $search . '%');
+            })->get();
+        }else{
+            $stores = DB::table('shops')->select('*')->get();
+        }
+
 
         return response()->json([
             'shops' => $stores,
