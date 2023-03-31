@@ -76,6 +76,22 @@ class ApiController extends Controller
             $stores = DB::table('shops')->select('*')->get();
         }
 
+        return response()->json([
+            'shops' => $stores,
+        ], 201);
+    }
+
+    public function get_search_date_shops(Request $request)
+    {
+        $search = $request->query('search');
+
+        if($search != 'null'){
+            $stores = shop::when($search, function ($query, $search) {
+                $query->whereDate('created_at', $search);
+            })->get();
+        }else{
+            $stores = DB::table('shops')->select('*')->get();
+        }
 
         return response()->json([
             'shops' => $stores,
