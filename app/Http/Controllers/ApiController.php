@@ -358,7 +358,10 @@ class ApiController extends Controller
 
     public function getAllUsers()
     {
-        $objs = DB::table('users')->select('*')->get();
+        $objs = DB::table('users')->select('users.*', 'roles.name as role_name', 'users.name as user_name', 'users.created_at as user_created_at')
+        ->join('role_user', 'role_user.user_id', '=', 'users.id')
+        ->join('roles', 'roles.id', '=', 'role_user.role_id')
+        ->get();
 
         return response()->json([
             'users' => $objs,
