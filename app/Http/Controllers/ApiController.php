@@ -119,7 +119,7 @@ class ApiController extends Controller
                 ->select('*')
                 ->orderBy('updated_at', 'asc')
                 ->get();
-        } else{
+        } else {
             $stores = DB::table('shops')
                 ->select('*')
                 ->get();
@@ -353,6 +353,15 @@ class ApiController extends Controller
 
         return response()->json([
             'cartItem' => $objs,
+        ], 201);
+    }
+
+    public function getAllUsers()
+    {
+        $objs = DB::table('users')->select('*')->get();
+
+        return response()->json([
+            'users' => $objs,
         ], 201);
     }
 }
