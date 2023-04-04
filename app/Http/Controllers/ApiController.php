@@ -398,7 +398,7 @@ class ApiController extends Controller
 
         // set permissions and owner admin
         DB::table('sub_admins')->insert([
-            'owner_id' => 1,
+            'owner_admin' => 1,
             'sub_admin' => $lastInsertId,
             'permissions' => $json_permission
         ]);
