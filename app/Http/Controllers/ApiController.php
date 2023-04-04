@@ -361,6 +361,7 @@ class ApiController extends Controller
         $objs = DB::table('users')->select('users.*', 'users.id as userID', 'roles.name as role_name', 'users.name as user_name', 'users.created_at as user_created_at')
             ->join('role_user', 'role_user.user_id', '=', 'users.id')
             ->join('roles', 'roles.id', '=', 'role_user.role_id')
+            ->orderBy('users.id', 'desc')
             ->get();
 
         return response()->json([
