@@ -400,7 +400,7 @@ class ApiController extends Controller
         DB::table('sub_admins')->insert([
             'owner_admin' => 1,
             'sub_admin' => $lastInsertId,
-            'permissions' => $json_permission
+            'permission' => $json_permission
         ]);
 
         return response()->json([
