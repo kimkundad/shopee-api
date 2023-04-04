@@ -386,6 +386,8 @@ class ApiController extends Controller
             'name' => $request['name_sub_admin'],
             'email' => $request['email_sub_admin'],
             'password' => Hash::make($request['password_sub_admin']),
+            'created_at' =>  date('Y-m-d H:i:s'),
+            'updated_at' => date('Y-m-d H:i:s'),
         ]);
 
         // รับค่า ID ของแถวที่เพิ่งถูกเพิ่มล่าสุดเข้าไปในตาราง users
@@ -401,7 +403,9 @@ class ApiController extends Controller
         DB::table('sub_admins')->insert([
             'owner_admin' => 1,
             'sub_admin' => $lastInsertId,
-            'permission' => $json_permission
+            'permission' => $json_permission,
+            'created_at' =>  date('Y-m-d H:i:s'),
+            'updated_at' => date('Y-m-d H:i:s'),
         ]);
 
         return response()->json([
