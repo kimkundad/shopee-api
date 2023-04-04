@@ -356,6 +356,7 @@ class ApiController extends Controller
         ], 201);
     }
 
+    // ดึงข้อมูลของ users และ role ของ users ออกมาทั้งหมด
     public function getAllUsers()
     {
         $objs = DB::table('users')->select('users.*', 'users.id as userID', 'roles.name as role_name', 'users.name as user_name', 'users.created_at as user_created_at')
@@ -369,6 +370,7 @@ class ApiController extends Controller
         ], 201);
     }
 
+    // ฟังก์ชันสร้าง Sub-Admin
     public function createSubAdmin(Request $request)
     {
         $permission = [
@@ -413,6 +415,7 @@ class ApiController extends Controller
         ], 201);
     }
 
+    // ฟังก์ชันลบข้อมูล Sub-Admin
     public function deleteSubAdmin(Request $request)
     {
         // delete user role sub-admin
@@ -429,6 +432,7 @@ class ApiController extends Controller
         ], 201);
     }
 
+    // ฟังก์ชัน filter ค้นหาข้อมูล Sub-admin จากวันที่สร้าง
     public function getSearchDateSubAdmin(Request $request)
     {
         $search = $request->query('search');
@@ -438,6 +442,31 @@ class ApiController extends Controller
                 ->join('role_user', 'role_user.user_id', '=', 'users.id')
                 ->join('roles', 'roles.id', '=', 'role_user.role_id')
                 ->whereDate('users.created_at', $search)
+                ->orderBy('users.id', 'desc')
+                ->get();
+        } else {
+            $objs = DB::table('users')->select('users.*', 'users.id as userID', 'roles.name as role_name', 'users.name as user_name', 'users.created_at as user_created_at')
+                ->join('role_user', 'role_user.user_id', '=', 'users.id')
+                ->join('roles', 'roles.id', '=', 'role_user.role_id')
+                ->orderBy('users.id', 'desc')
+                ->get();
+        }
+
+        return response()->json([
+            'users' => $objs,
+        ], 201);
+    }
+
+    // ฟังก์ชันค้นหาข้อมูล Sub-Admin จากชื่อของ sub-admin
+    public function getSearchName(Request $request)
+    {
+        $search = $request->query('search');
+
+        if ($search != 'null') {
+            $objs = DB::table('users')->select('users.*', 'users.id as userID', 'roles.name as role_name', 'users.name as user_name', 'users.created_at as user_created_at')
+                ->join('role_user', 'role_user.user_id', '=', 'users.id')
+                ->join('roles', 'roles.id', '=', 'role_user.role_id')
+                ->where('users.name', 'like', '%' . $search . '%')
                 ->orderBy('users.id', 'desc')
                 ->get();
         } else {
