@@ -359,12 +359,52 @@ class ApiController extends Controller
     public function getAllUsers()
     {
         $objs = DB::table('users')->select('users.*', 'users.id as userID', 'roles.name as role_name', 'users.name as user_name', 'users.created_at as user_created_at')
-        ->join('role_user', 'role_user.user_id', '=', 'users.id')
-        ->join('roles', 'roles.id', '=', 'role_user.role_id')
-        ->get();
+            ->join('role_user', 'role_user.user_id', '=', 'users.id')
+            ->join('roles', 'roles.id', '=', 'role_user.role_id')
+            ->get();
 
         return response()->json([
             'users' => $objs,
+        ], 201);
+    }
+
+    public function createSubAdmin(Request $request)
+    {
+        $permission = [
+            'set_permission_dashboard' => $request['set_permission_dashboard'],
+            'set_permission_my_shop' => $request['set_permission_my_shop'],
+            'set_permission_stock' => $request['set_permission_stock'],
+            'set_permission_report' => $request['set_permission_report'],
+            'set_permission_admin_manage' => $request['set_permission_admin_manage'],
+            'set_permission_settings' => $request['set_permission_settings']
+        ];
+
+        $json_permission = json_encode($permission);
+
+        DB::table('users')->insert([
+            'name' => $request['name_sub_admin'],
+            'email' => $request['email_sub_admin'],
+            'password' => Hash::make($request['password_sub_admin']),
+        ]);
+
+        // รับค่า ID ของแถวที่เพิ่งถูกเพิ่มล่าสุดเข้าไปในตาราง users
+        $lastInsertId = DB::getPdo()->lastInsertId();
+
+        // insert role sub admin
+        DB::table('role_user')->insert([
+            'role_id' => 4,
+            'user_id' => $lastInsertId
+        ]);
+
+        // set permissions and owner admin
+        DB::table('sub_admins')->insert([
+            'owner_id' => 1,
+            'sub_admin' => $lastInsertId,
+            'permissions' => $json_permission
+        ]);
+
+        return response()->json([
+            'success' => 'Insert Sub-Admin successfully!',
         ], 201);
     }
 }
