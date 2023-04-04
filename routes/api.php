@@ -36,6 +36,7 @@ Route::group([
     Route::get('/getAllCartItem/{id}', [App\Http\Controllers\ApiController::class, 'getAllCartItem']);
     Route::get('/getAllUsers', [App\Http\Controllers\ApiController::class, 'getAllUsers']);
     Route::post('/createSubAdmin', [App\Http\Controllers\ApiController::class, 'createSubAdmin']);
+    Route::post('/deleteSubAdmin', [App\Http\Controllers\ApiController::class, 'deleteSubAdmin']);
 
     Route::post('/createUser', [App\Http\Controllers\AuthController::class, 'createUser']);
     Route::post('/verify', [App\Http\Controllers\AuthController::class, 'verify']);

@@ -412,4 +412,20 @@ class ApiController extends Controller
             'success' => 'Insert Sub-Admin successfully!',
         ], 201);
     }
+
+    public function deleteSubAdmin(Request $request)
+    {
+        // delete user role sub-admin
+        DB::table('users')->where('id', $request['userID'])->delete();
+
+        // delete role user sub-admin
+        DB::table('role_user')->where('user_id', $request['userID'])->delete();
+
+        // delete permissions and owner admin
+        DB::table('sub_admins')->where('sub_admin', $request['userID'])->delete();
+
+        return response()->json([
+            'success' => 'Delete Sub-Admin successfully!',
+        ], 201);
+    }
 }
