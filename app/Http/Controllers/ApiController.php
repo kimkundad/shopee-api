@@ -314,6 +314,7 @@ class ApiController extends Controller
             ['product_options_id', '=', $request->input('productOptionId')],
             ['product_suboptions_id', '=', $request->input('productSubOptionId')],
         ])->get();
+        dd($cartItem);
         if($cartItem !== null){
             $sum = $cartItem->num + $request->input('num');
             DB::table('carts')->where('id','=', $cartItem->id)->update([
