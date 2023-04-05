@@ -331,7 +331,7 @@ class ApiController extends Controller
                 'shops.name_shop AS name_shop',
             ])
             ->orderBy('carts.created_at', 'desc')
-            ->groupBy('shops.id', 'name_shop')
+            ->groupBy('shops.id', 'name_shop','carts.created_at')
             ->get()
             ->map(function ($item) {
                 $item->product = DB::table('carts')
