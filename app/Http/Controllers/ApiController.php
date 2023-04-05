@@ -299,7 +299,7 @@ class ApiController extends Controller
                         'image' => $filePaths,
                         'product' => $product_id,
                         'status' => 0,
-                    ])
+                    ]);
                 }
             }
             return response()->json([
