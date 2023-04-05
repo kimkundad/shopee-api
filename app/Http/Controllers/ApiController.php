@@ -248,40 +248,36 @@ class ApiController extends Controller
     }
 
     // เพิ่มสินค้าหน้าคลังสินค้า
-     public function addProduct(Request $request)
+    public function addProduct(Request $request)
     {
         try {
 
-            $image = $request->file('fileImage');
-            
-           $img = Image::make($image[0]['name']->getRealPath());
-           $img->resize(300, 300, function ($constraint) {
-            $constraint->aspectRatio();
-           });
-           $img->stream();
-           Storage::disk('do_spaces')->put('shopee/products/'.$image[0]['name']->hashName(), $img, 'public');
+            $product = new product();
+            $product->name_product = $request->name_product;
+            $product->detail_product = $request->detail_product;
+            $product->price = $request->price;
+            $product->price_sales = $request->price_sales;
+            $product->cost = $request->cost;
+            $product->stock = $request->stock;
+            $product->weight = $request->weight;
+            $product->sku = $request->sku;
 
-            $objs = new product();
-            $objs->name_product = $request['name_product'];
-            $objs->detail_product = $request['detail_product'];
-            $objs->cost = $request['cost'];
-            $objs->price = $request['price'];
-            $objs->category = $request['category'];
-            $objs->price_sales = $request['price_sales'];
-            $objs->stock = $request['stock'];
-            $objs->weight = $request['weight'];
-            $objs->img_product = $image->hashName();
-            $objs->width_product = $request['width_product'];
-            $objs->sku = $request['sku'];
-            $objs->height_product = $request['height_product'];
-            $objs->user_code = $request['user_code'];
-            $objs->active = 0;
-            $objs->save();
+            $files = $request->file('file');
+            $filePaths = [];
 
-            $fileImg = $request['fileImage'];
+            foreach ($files as $file) {
+                $fileName = $file->getClientOriginalName();
+                $path = $file->store('shopee/products/');
+                $filePaths[] = $path;
+            }
+
+            $product->img_product = json_encode($filePaths);
+
+            $product->save();
+
             $products = product::all();
             return response()->json([
-                'product' => $fileImg[0]['name'],
+                'product' => $files,
             ], 201);
         } catch (Exception $e) {
             return response()->json([
@@ -326,12 +322,12 @@ class ApiController extends Controller
             ['product_options_id', '=', $request->input('productOptionId')],
             ['product_suboptions_id', '=', $request->input('productSubOptionId')],
         ])->first();
-        if($cartItem !== null){
+        if ($cartItem !== null) {
             $sum = $cartItem->num + $request->input('num');
-            DB::table('carts')->where('id','=', $cartItem->id)->update([
+            DB::table('carts')->where('id', '=', $cartItem->id)->update([
                 'num' => $sum
             ]);
-        }else {
+        } else {
             $objs = new carts();
             $objs->user_id = $request->input('user_id');
             $objs->shop_id = $request->input('shopId');
@@ -390,8 +386,9 @@ class ApiController extends Controller
     }
 
     // ลบสินค้าออกจากรถเข็น
-    public function deleteItemCart($id){
-        DB::table('carts')->where('id','=',$id)->delete();
+    public function deleteItemCart($id)
+    {
+        DB::table('carts')->where('id', '=', $id)->delete();
 
         $objs = DB::table('carts')
             ->join('shops', 'carts.shop_id', '=', 'shops.id')
