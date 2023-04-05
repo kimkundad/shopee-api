@@ -266,9 +266,14 @@ class ApiController extends Controller
             $filePaths = [];
 
             foreach ($files as $file) {
-                $fileName = $file->getClientOriginalName();
-                $path = $file->store('shopee/products/');
-                $filePaths[] = $path;
+                $filename = time().'.'.$file->getClientOriginalExtension();
+                $image = Image::make($file->getRealPath());
+                $image->resize(300, 300, function ($constraint) {
+                    $constraint->aspectRatio();
+                });
+                $image->stream();
+                Storage::disk('do_spaces')->put('shopee/products/'.$filename, $image->__toString(), 'public');
+                $images[] = $filename;
             }
 
             $product->img_product = json_encode($filePaths);
