@@ -246,7 +246,9 @@ class ApiController extends Controller
             ], 400);
         }
     }
-    /*  public function addProduct(Request $request)
+
+    // เพิ่มสินค้าหน้าคลังสินค้า
+     public function addProduct(Request $request)
     {
         try {
             $objs = new product();
@@ -274,7 +276,7 @@ class ApiController extends Controller
                 'error' => $e->getMessage(),
             ], 400);
         }
-    } */
+    }
 
     // ดึงข้อมูลร้านค้า
     public function get_shop_name($id)
@@ -307,14 +309,27 @@ class ApiController extends Controller
     // เพิ่มสินค้าลงในรถเข็น
     public function addProductToCart(Request $request)
     {
-        $objs = new carts();
-        $objs->user_id = $request->input('user_id');
-        $objs->shop_id = $request->input('shopId');
-        $objs->product_id = $request->input('productId');
-        $objs->product_options_id = $request->input('productOptionId');
-        $objs->product_suboptions_id = $request->input('productSubOptionId');
-        $objs->num = $request->input('num');
-        $objs->save();
+        $cartItem = DB::table('carts')->where([
+            ['product_id', '=', $request->input('productId')],
+            ['product_options_id', '=', $request->input('productOptionId')],
+            ['product_suboptions_id', '=', $request->input('productSubOptionId')],
+        ])->get();
+        if($cartItem !== null){
+            $sum = $cartItem + $request->input('num');
+            DB::table('carts')->where('id','=', $cartItem->id)->update([
+                'num' => $sum;
+            ]);
+        }else {
+            $objs = new carts();
+            $objs->user_id = $request->input('user_id');
+            $objs->shop_id = $request->input('shopId');
+            $objs->product_id = $request->input('productId');
+            $objs->product_options_id = $request->input('productOptionId');
+            $objs->product_suboptions_id = $request->input('productSubOptionId');
+            $objs->num = $request->input('num');
+            $objs->save();
+        }
+        
 
         return response()->json([
             'status' => $request->input('user_id'),
