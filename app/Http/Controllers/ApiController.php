@@ -347,8 +347,8 @@ class ApiController extends Controller
                         'products.type AS type_product',
                         'products.price_sales' => 'price_sales',
                         'products.img_product' => 'img_product',
-                        'products.option1' => 'option1',
-                        'products.option2' => 'option2',
+                        /* 'products.option1' => 'option1',
+                        'products.option2' => 'option2', */
                         'carts.num' => 'num',
                         'product_options.op_name' => 'op_name',
                         'product_options.price AS price_type_2',
@@ -356,7 +356,6 @@ class ApiController extends Controller
                         'product_suboptions.price AS price_type_3',
                     ])
                     ->where('shop_list_products.shop_id', '=', $item->id)
-                    ->where('products.id', '=', 'carts.product_id')
                     ->get();
                 return $item;
             });
