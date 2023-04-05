@@ -280,7 +280,7 @@ class ApiController extends Controller
 
             $files = $request->file('file');
             $filePaths = null;
-
+            $product_id = 0;
             foreach ($files as $file) {
                 $filename = time().'.'.$file->getClientOriginalExtension();
                 $image = Image::make($file->getRealPath());
@@ -290,12 +290,18 @@ class ApiController extends Controller
                 $image->stream();
                 Storage::disk('do_spaces')->put('shopee/products/'.$file->hashName(), $image, 'public');
                 $filePaths = $file->hashName();
+                if($file->first()){
+                    $product->img_product = $filePaths;
+                    $product->save();
+                    $product_id = product::orderBy('created_at','desc')->first();
+                }else{
+                    DB::table('product_images')->insert([
+                        'image' => $filePaths,
+                        'product' => $product_id,
+                        'status' => 0,
+                    ])
+                }
             }
-            $product->img_product = $filePaths;
-
-            $product->save();
-
-            $products = product::all();
             return response()->json([
                 'product' => $files,
             ], 201);
