@@ -261,6 +261,8 @@ class ApiController extends Controller
             $product->stock = $request->stock;
             $product->weight = $request->weight;
             $product->sku = $request->sku;
+            $product->type = 1;
+            $product->active = 1;
 
             $files = $request->file('file');
             $filePaths = [];
