@@ -330,7 +330,7 @@ class ApiController extends Controller
                 'shops.id',
                 'shops.name_shop AS name_shop',
             ])
-            ->orderBy('carts.created_at', 'desc')
+            ->orderByRaw('MAX(carts.created_at) DESC')
             ->groupBy('shops.id', 'name_shop')
             ->get()
             ->map(function ($item) {
