@@ -30,6 +30,8 @@ class ApiController extends Controller
             'full_paht_img' => env('APP_URL') . '/images/shopee/category/'
         ], 201);
     }
+
+    //ดึงข้อมูลสินค้าทั้งหมดมาแสดงในหน้าร้าน
     public function get_all_product($id)
     {
 
@@ -44,6 +46,7 @@ class ApiController extends Controller
         ], 201);
     }
 
+    // ดึงข้อมูลสินค้าทั้งหมด
     public function get_allproduct()
     {
 
@@ -130,6 +133,7 @@ class ApiController extends Controller
         ], 201);
     }
 
+    // ดึงข้อมูลสินค้ามาแสดงหน้ารายละเอียดสินค้า
     public function get_product(Request $request)
     {
         $product_id = $request->input('product_id');
@@ -175,6 +179,8 @@ class ApiController extends Controller
             ], 201);
         }
     }
+
+    // ตั้งค่าเปิดปิดใช้งานสินค้า
     public function set_active_product(Request $request)
     {
         try {
@@ -200,6 +206,8 @@ class ApiController extends Controller
             ], 400);
         }
     }
+
+    // ตั้งค่าเปิดปิดใช้งานสินค้าทั้งหมด
     public function set_active_allProduct(Request $request)
     {
         try {
@@ -220,6 +228,8 @@ class ApiController extends Controller
             ], 400);
         }
     }
+
+    // ลบสินค้าในหน้าคลังสินค้าหลังบ้าน
     public function delete_product(Request $request)
     {
         try {
@@ -236,7 +246,7 @@ class ApiController extends Controller
             ], 400);
         }
     }
-    public function addProduct(Request $request)
+   /*  public function addProduct(Request $request)
     {
         try {
             $objs = new product();
@@ -264,8 +274,9 @@ class ApiController extends Controller
                 'error' => $e->getMessage(),
             ], 400);
         }
-    }
+    } */
 
+    // ดึงข้อมูลร้านค้า
     public function get_shop_name($id)
     {
 
@@ -276,6 +287,7 @@ class ApiController extends Controller
         ], 201);
     }
 
+    // ค้นหาสินค้าในหน้าแรกของร้านค้า
     public function search_product(Request $request, $id)
     {
         $search = $request->input('search');
@@ -292,6 +304,7 @@ class ApiController extends Controller
         ], 201);
     }
 
+    // เพิ่มสินค้าลงในรถเข็น
     public function addProductToCart(Request $request)
     {
         $objs = new carts();
@@ -308,49 +321,45 @@ class ApiController extends Controller
         ], 201);
     }
 
+    // ดึงข้อมูลในรถเข็นมาแสดง
     public function getAllCartItem($id)
     {
         $objs = DB::table('carts')
             ->join('shops', 'carts.shop_id', '=', 'shops.id')
             ->select([
-                'shops.name' => 'name_shop'
+                'shops.id',
+                'shops.name_shop AS name_shop',
             ])
             ->orderBy('carts.created_at', 'desc')
+            ->groupBy('shops.id', 'name_shop')
             ->get()
             ->map(function ($item) {
-                $item->product = DB::table('products')
+                $item->product = DB::table('carts')
+                    ->join('shop_list_products', 'shop_list_products.shop_id', '=', 'carts.shop_id')
+                    ->join('products', 'products.id', '=', 'carts.product_id')
+                    ->leftjoin('product_options','product_options.id','=','carts.product_options_id')
+                    ->leftjoin('product_suboptions','product_suboptions.id','=','carts.product_suboptions_id')
                     ->select([
-                        'products.id' => 'product_id',
+                        DB::raw('DISTINCT carts.id'),
                         'products.name_product' => 'name_product',
                         'products.detail_product' => 'detail_product',
-                        'products.price',
+                        'products.price AS price_type_1',
+                        'products.type AS type_product',
                         'products.price_sales' => 'price_sales',
                         'products.img_product' => 'img_product',
-                        'products.updated_at',
+                        'products.option1' => 'option1',
+                        'products.option2' => 'option12',
+                        'carts.num' => 'num',
+                        'product_options.op_name' => 'op_name',
+                        'product_options.price AS price_type_2',
+                        'product_suboptions.sub_op_name' => 'sub_op_name',
+                        'product_suboptions.price AS price_type_3',
                     ])
-                    ->where('products.id', '=', $item->product_id)
-
-                    ->orderBy('products.updated_at', 'desc')
+                    ->where('shop_list_products.shop_id', '=', $item->id)
+                    ->where('products.id', '=', 'carts.product_id')
                     ->get();
                 return $item;
             });
-        /* $objs = DB::table('carts')
-        ->join('products', 'carts.product_id', '=', 'products.id')
-        ->join('shops', 'carts.shop_id', '=', 'shops.id')
-        ->join('product_options', 'carts.product_options_id', '=', 'product_options.id')
-        ->join('product_suboptions', 'carts.product_suboptions_id', '=', 'product_suboptions.id')
-        ->select([
-            'shops.id' => 'shop_id',
-            'products.name_product' => 'name_product',
-            'products.detail_product' => 'detail_product',
-            'products.price',
-            'products.price_sales' => 'price_sales',
-            'products.img_product' => 'img_product',
-            'product_options.op_name' => 'op_name',
-            'product_suboptions.sub_op_name' => 'sub_op_name',
-            'carts.num' => 'num',
-        ])->get(); */
-
         return response()->json([
             'cartItem' => $objs,
         ], 201);
