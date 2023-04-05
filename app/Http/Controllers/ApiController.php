@@ -516,6 +516,44 @@ class ApiController extends Controller
         ], 201);
     }
 
+    // ฟังก์ชันสร้าง Sub-Admin
+    public function updateSubAdmin(Request $request)
+    {
+        $userID = $request['userID'];
+        $password = $request['password_sub_admin'];
+        $permission = [
+            'set_permission_dashboard' => $request['set_permission_dashboard'],
+            'set_permission_my_shop' => $request['set_permission_my_shop'],
+            'set_permission_stock' => $request['set_permission_stock'],
+            'set_permission_report' => $request['set_permission_report'],
+            'set_permission_admin_manage' => $request['set_permission_admin_manage'],
+            'set_permission_settings' => $request['set_permission_settings']
+        ];
+        $json_permission = json_encode($permission);
+        if($password != ''){
+            DB::table('users')->where('id', $userID)->update([
+                'name' => $request['name_sub_admin'],
+                'email' => $request['email_sub_admin'],
+                'password' => Hash::make($password),
+                'updated_at' => date('Y-m-d H:i:s'),
+            ]);
+        }else{
+            DB::table('users')->where('id', $userID)->update([
+                'name' => $request['name_sub_admin'],
+                'email' => $request['email_sub_admin'],
+                'updated_at' => date('Y-m-d H:i:s'),
+            ]);
+        }
+        // set permissions and owner admin
+        DB::table('sub_admins')->where('sub_admin', $userID)->update([
+            'permission' => $json_permission,
+            'updated_at' => date('Y-m-d H:i:s'),
+        ]);
+        return response()->json([
+            'success' => 'Update Sub-Admin successfully!',
+        ], 201);
+    }
+
     // ฟังก์ชันลบข้อมูล Sub-Admin
     public function deleteSubAdmin(Request $request)
     {
