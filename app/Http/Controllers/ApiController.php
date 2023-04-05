@@ -313,8 +313,8 @@ class ApiController extends Controller
             ['product_id', '=', $request->input('productId')],
             ['product_options_id', '=', $request->input('productOptionId')],
             ['product_suboptions_id', '=', $request->input('productSubOptionId')],
-        ])->get();
-        /* if($cartItem !== null){
+        ])->first();
+        if($cartItem !== null){
             $sum = $cartItem->num + $request->input('num');
             DB::table('carts')->where('id','=', $cartItem->id)->update([
                 'num' => $sum
@@ -328,7 +328,7 @@ class ApiController extends Controller
             $objs->product_suboptions_id = $request->input('productSubOptionId');
             $objs->num = $request->input('num');
             $objs->save();
-        } */
+        }
         return response()->json([
             'status' => $cartItem,
         ], 201);
