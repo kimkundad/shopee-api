@@ -348,7 +348,7 @@ class ApiController extends Controller
                         'products.price_sales' => 'price_sales',
                         'products.img_product' => 'img_product',
                         'products.option1' => 'option1',
-                        'products.option2' => 'option12',
+                        'products.option2' => 'option2',
                         'carts.num' => 'num',
                         'product_options.op_name' => 'op_name',
                         'product_options.price AS price_type_2',
