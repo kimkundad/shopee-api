@@ -264,7 +264,7 @@ class ApiController extends Controller
             $product->type = 1;
             $product->active = 1;
 
-            $files = $request->file('file');
+            /* $files = $request->file('file');
             $filePaths = [];
 
             foreach ($files as $file) {
@@ -276,8 +276,21 @@ class ApiController extends Controller
                 $image->stream();
                 Storage::disk('do_spaces')->put('shopee/products/'.$file->hashName(), $image, 'public');
                 $filePaths[] = $file->hashName();
-            }
+            } */
 
+            $files = $request->file('file');
+            $filePaths = null;
+
+            foreach ($files as $file) {
+                $filename = time().'.'.$file->getClientOriginalExtension();
+                $image = Image::make($file->getRealPath());
+                $image->resize(300, 300, function ($constraint) {
+                    $constraint->aspectRatio();
+                });
+                $image->stream();
+                Storage::disk('do_spaces')->put('shopee/products/'.$file->hashName(), $image, 'public');
+                $filePaths = $file->hashName();
+            }
             $product->img_product = json_encode($filePaths);
 
             $product->save();
