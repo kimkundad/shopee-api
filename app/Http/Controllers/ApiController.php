@@ -251,6 +251,17 @@ class ApiController extends Controller
      public function addProduct(Request $request)
     {
         try {
+
+            $image = $request->file('fileImage');
+            
+           $input['imagename'] = time().'.'.$image[0]['name']->getClientOriginalExtension();
+           $img = Image::make($image[0]['name']->getRealPath());
+           $img->resize(300, 300, function ($constraint) {
+            $constraint->aspectRatio();
+           });
+           $img->stream();
+           Storage::disk('do_spaces')->put('shopee/products/'.$image[0]['name']->hashName(), $img, 'public');
+
             $objs = new product();
             $objs->name_product = $request['name_product'];
             $objs->detail_product = $request['detail_product'];
@@ -260,6 +271,7 @@ class ApiController extends Controller
             $objs->price_sales = $request['price_sales'];
             $objs->stock = $request['stock'];
             $objs->weight = $request['weight'];
+            $objs->img_product = $image->hashName();
             $objs->width_product = $request['width_product'];
             $objs->sku = $request['sku'];
             $objs->height_product = $request['height_product'];
@@ -267,9 +279,10 @@ class ApiController extends Controller
             $objs->active = 0;
             $objs->save();
 
+            $fileImg = $request['fileImage'];
             $products = product::all();
             return response()->json([
-                'product' => $products,
+                'product' => $fileImg[0]['name'],
             ], 201);
         } catch (Exception $e) {
             return response()->json([
