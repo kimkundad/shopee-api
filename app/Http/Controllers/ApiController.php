@@ -273,7 +273,7 @@ class ApiController extends Controller
                 });
                 $image->stream();
                 Storage::disk('do_spaces')->put('shopee/products/'.$file->hashName(), $image->__toString(), 'public');
-                $filePaths[] = $filename;
+                $filePaths[] = $file->hashName();
             }
 
             $product->img_product = json_encode($filePaths);
