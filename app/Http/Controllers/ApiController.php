@@ -329,6 +329,7 @@ class ApiController extends Controller
             ->select([
                 'shops.id',
                 'shops.name_shop AS name_shop',
+                'carts.created_at',
             ])
             ->orderBy('carts.created_at', 'desc')
             ->distinct('shops.id')
