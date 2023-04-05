@@ -294,7 +294,7 @@ class ApiController extends Controller
                 if($first){
                     $product->img_product = $filePaths;
                     $product->save();
-                    $product_id = product::select('id')->rderBy('created_at','desc')->first();
+                    $product_id = product::select('id')->orderBy('created_at','desc')->first();
                     $first = false;
                 }else{
                     DB::table('product_images')->insert([
