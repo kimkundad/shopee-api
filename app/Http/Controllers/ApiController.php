@@ -246,7 +246,7 @@ class ApiController extends Controller
             ], 400);
         }
     }
-   /*  public function addProduct(Request $request)
+    /*  public function addProduct(Request $request)
     {
         try {
             $objs = new product();
@@ -331,15 +331,15 @@ class ApiController extends Controller
                 'shops.name_shop AS name_shop',
             ])
             ->orderBy('carts.created_at', 'desc')
-            ->groupBy('shops.id', 'name_shop','carts.created_at')
-            ->distinct('carts.id')
+            ->distinct('shops.id')
+            ->groupBy('shops.id', 'name_shop', 'carts.created_at')
             ->get()
             ->map(function ($item) {
                 $item->product = DB::table('carts')
                     ->join('shop_list_products', 'shop_list_products.shop_id', '=', 'carts.shop_id')
                     ->join('products', 'products.id', '=', 'carts.product_id')
-                    ->leftjoin('product_options','product_options.id','=','carts.product_options_id')
-                    ->leftjoin('product_suboptions','product_suboptions.id','=','carts.product_suboptions_id')
+                    ->leftjoin('product_options', 'product_options.id', '=', 'carts.product_options_id')
+                    ->leftjoin('product_suboptions', 'product_suboptions.id', '=', 'carts.product_suboptions_id')
                     ->select([
                         DB::raw('DISTINCT carts.id'),
                         'products.name_product' => 'name_product',
