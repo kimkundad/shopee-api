@@ -299,7 +299,7 @@ class ApiController extends Controller
                 }else{
                     DB::table('product_images')->insert([
                         'image' => $filePaths,
-                        'product_id' => $product_id,
+                        'product_id' => $product_id['id'],
                         'status' => 0,
                     ]);
                 }
