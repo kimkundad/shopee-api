@@ -327,7 +327,7 @@ class ApiController extends Controller
         $objs = DB::table('carts')
             ->join('shops', 'carts.shop_id', '=', 'shops.id')
             ->select([
-                DB::raw('DISTINCT shops.id'),
+                'shops.id',
                 'shops.name_shop AS name_shop',
             ])
             ->orderBy('carts.created_at', 'desc')
