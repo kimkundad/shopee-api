@@ -282,7 +282,7 @@ class ApiController extends Controller
             $filePaths = null;
             $product_id = 0;
             $first = true; 
-            foreach ($files as $ $file) {
+            foreach ($files as $file) {
                 $filename = time().'.'.$file->getClientOriginalExtension();
                 $image = Image::make($file->getRealPath());
                 $image->resize(300, 300, function ($constraint) {
