@@ -405,7 +405,7 @@ class ApiController extends Controller
             });
         return response()->json([
             'cartItem' => $objs,
-        ])
+        ]);
     }
 
     // ดึงข้อมูลของ users และ role ของ users ออกมาทั้งหมด
