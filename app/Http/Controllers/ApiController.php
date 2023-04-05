@@ -272,7 +272,7 @@ class ApiController extends Controller
                     $constraint->aspectRatio();
                 });
                 $image->stream();
-                Storage::disk('do_spaces')->put('shopee/products/'.$file->hashName(), $image->__toString(), 'public');
+                Storage::disk('do_spaces')->put('shopee/products/'.$file->hashName(), $image, 'public');
                 $filePaths[] = $file->hashName();
             }
 
