@@ -254,7 +254,6 @@ class ApiController extends Controller
 
             $image = $request->file('fileImage');
             
-           $input['imagename'] = time().'.'.$image[0]['name']->getClientOriginalExtension();
            $img = Image::make($image[0]['name']->getRealPath());
            $img->resize(300, 300, function ($constraint) {
             $constraint->aspectRatio();
