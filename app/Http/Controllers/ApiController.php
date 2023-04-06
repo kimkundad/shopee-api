@@ -636,7 +636,7 @@ class ApiController extends Controller
     // ฟังก์ชันสร้างร้านค้า
     public function createShop(Request $request)
     {
-        dd($request['imgShop']);
+        dd($request->file('imgShop'));
         // DB::table('shops')->insert([
         //     'name_shop' => $request['nameShop'],
         //     'detail_shop' => $request['detailShop'],
