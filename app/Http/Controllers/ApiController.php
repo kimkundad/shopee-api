@@ -636,28 +636,35 @@ class ApiController extends Controller
     // ฟังก์ชันสร้างร้านค้า
     public function createShop(Request $request)
     {
+        if ($request->hasFile('file')) {
+            $files = $request->file('file');
+            $filePaths = null;
+            foreach ($files as $file) {
+                $filename = time() . '.' . $file->getClientOriginalExtension();
+                $image = Image::make($file->getRealPath());
+                $image->resize(300, 300, function ($constraint) {
+                    $constraint->aspectRatio();
+                });
+                $image->stream();
+                Storage::disk('do_spaces')->put('shopee/shop/' . $file->hashName(), $image, 'public');
+                $filePaths = $file->hashName();
+            }
+        }
 
-        $files = $request->file('imgShop');
-        $filePaths = null;
-        $filename = time() . '.' . $files->getClientOriginalExtension();
-        $image = Image::make($files->getRealPath());
-        $image->resize(300, 300, function ($constraint) {
-            $constraint->aspectRatio();
-        });
-        $image->stream();
-        Storage::disk('do_spaces')->put('shopee/shop/' . $files->hashName(), $image, 'public');
-        $filePaths = $files->hashName();
-
-        $files2 = $request->file('imgCoverShop');
-        $filePaths2 = null;
-        $filename2 = time() . '.' . $files2->getClientOriginalExtension();
-        $image2 = Image::make($files2->getRealPath());
-        $image2->resize(300, 300, function ($constraint) {
-            $constraint->aspectRatio();
-        });
-        $image2->stream();
-        Storage::disk('do_spaces')->put('shopee/cover_img_shop/' . $files2->hashName(), $image2, 'public');
-        $filePaths2 = $files2->hashName();
+        if ($request->hasFile('file2')) {
+            $files2 = $request->file('file2');
+            $filePaths2 = null;
+            foreach ($files2 as $file2) {
+                $filename2 = time() . '.' . $file2->getClientOriginalExtension();
+                $image2 = Image::make($file2->getRealPath());
+                $image2->resize(300, 300, function ($constraint) {
+                    $constraint->aspectRatio();
+                });
+                $image2->stream();
+                Storage::disk('do_spaces')->put('shopee/cover_img_shop/' . $file2->hashName(), $image2, 'public');
+                $filePaths2 = $file2->hashName();
+            }
+        }
 
         DB::table('shops')->insert([
             'name_shop' => $request['nameShop'],
