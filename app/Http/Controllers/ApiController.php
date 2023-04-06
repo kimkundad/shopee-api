@@ -147,7 +147,7 @@ class ApiController extends Controller
             ->get();
 
         $objs->map(function ($item) {
-            $item->allImage = DB::table('product_images')->where('product_id','=',$item->product_id)->get();
+            $item->allImage = DB::table('product_images')->where('product_id', '=', $item->product_id)->get();
             return $item;
         });
         if ($objs !== null && $objs[0]->type == 2) {
@@ -289,20 +289,20 @@ class ApiController extends Controller
             $product_id = 0;
             $first = true;
             foreach ($files as $file) {
-                $filename = time().'.'.$file->getClientOriginalExtension();
+                $filename = time() . '.' . $file->getClientOriginalExtension();
                 $image = Image::make($file->getRealPath());
                 $image->resize(300, 300, function ($constraint) {
                     $constraint->aspectRatio();
                 });
                 $image->stream();
-                Storage::disk('do_spaces')->put('shopee/products/'.$file->hashName(), $image, 'public');
+                Storage::disk('do_spaces')->put('shopee/products/' . $file->hashName(), $image, 'public');
                 $filePaths = $file->hashName();
-                if($first){
+                if ($first) {
                     $product->img_product = $filePaths;
                     $product->save();
-                    $product_id = product::select('id')->orderBy('created_at','desc')->first();
+                    $product_id = product::select('id')->orderBy('created_at', 'desc')->first();
                     $first = false;
-                }else{
+                } else {
                     DB::table('product_images')->insert([
                         'image' => $filePaths,
                         'product_id' => $product_id['id'],
@@ -538,14 +538,14 @@ class ApiController extends Controller
             'set_permission_settings' => $request['set_permission_settings']
         ];
         $json_permission = json_encode($permission);
-        if($password != ''){
+        if ($password != '') {
             DB::table('users')->where('id', $userID)->update([
                 'name' => $request['name_sub_admin'],
                 'email' => $request['email_sub_admin'],
                 'password' => Hash::make($password),
                 'updated_at' => date('Y-m-d H:i:s'),
             ]);
-        }else{
+        } else {
             DB::table('users')->where('id', $userID)->update([
                 'name' => $request['name_sub_admin'],
                 'email' => $request['email_sub_admin'],
@@ -636,18 +636,40 @@ class ApiController extends Controller
     // ฟังก์ชันสร้างร้านค้า
     public function createShop(Request $request)
     {
-        dd($request->file('imgShop'));
-        // DB::table('shops')->insert([
-        //     'name_shop' => $request['nameShop'],
-        //     'detail_shop' => $request['detailShop'],
-        //     'img_shop' => $request['imgShop'],
-        //     'cover_img_shop' => $request['imgCoverShop'],
-        //     'created_at' =>  date('Y-m-d H:i:s'),
-        //     'updated_at' => date('Y-m-d H:i:s'),
-        // ]);
 
-        // return response()->json([
-        //     'success' => 'Create Shop successfully!',
-        // ], 201);
+        $files = $request->file('imgShop');
+        $filePaths = null;
+        $filename = time() . '.' . $files->getClientOriginalExtension();
+        $image = Image::make($files->getRealPath());
+        $image->resize(300, 300, function ($constraint) {
+            $constraint->aspectRatio();
+        });
+        $image->stream();
+        Storage::disk('do_spaces')->put('shopee/shop/' . $files->hashName(), $image, 'public');
+        $filePaths = $files->hashName();
+
+        $files2 = $request->file('imgCoverShop');
+        $filePaths2 = null;
+        $filename2 = time() . '.' . $files2->getClientOriginalExtension();
+        $image2 = Image::make($files2->getRealPath());
+        $image2->resize(300, 300, function ($constraint) {
+            $constraint->aspectRatio();
+        });
+        $image2->stream();
+        Storage::disk('do_spaces')->put('shopee/cover_img_shop/' . $files2->hashName(), $image2, 'public');
+        $filePaths2 = $files2->hashName();
+
+        DB::table('shops')->insert([
+            'name_shop' => $request['nameShop'],
+            'detail_shop' => $request['detailShop'],
+            'img_shop' => $filePaths,
+            'cover_img_shop' => $filePaths2,
+            'created_at' =>  date('Y-m-d H:i:s'),
+            'updated_at' => date('Y-m-d H:i:s'),
+        ]);
+
+        return response()->json([
+            'success' => 'Create Shop successfully!',
+        ], 201);
     }
 }
