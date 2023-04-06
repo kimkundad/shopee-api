@@ -41,6 +41,8 @@ Route::group([
     Route::get('/getSearchDateSubAdmin', [App\Http\Controllers\ApiController::class, 'getSearchDateSubAdmin']); // route การทำ filter ค้นหาข้อมูล sub-admin จาก วันที่ที่สร้าง
     Route::get('/getSearchName', [App\Http\Controllers\ApiController::class, 'getSearchName']); // route การทำ filter ค้นหาข้อมูล sub-admin จากชื่อ
     Route::post('/deleteCartItem/{id}', [App\Http\Controllers\ApiController::class, 'deleteItemCart']);
+    Route::post('/createShop', [App\Http\Controllers\ApiController::class, 'createShop']);
+    Route::post('/DeleteShop', [App\Http\Controllers\ApiController::class, 'DeleteShop']);
 
     Route::post('/createUser', [App\Http\Controllers\AuthController::class, 'createUser']);
     Route::post('/verify', [App\Http\Controllers\AuthController::class, 'verify']);
@@ -52,9 +54,6 @@ Route::group([
     'middleware' => 'api',
     'prefix' => 'auth'
 ], function ($router) {
-    Route::post('/login', [AuthController::class, 'login']);
-    Route::post('/register', [AuthController::class, 'register']);
-    Route::post('/logout', [AuthController::class, 'logout']);
-    Route::post('/refresh', [AuthController::class, 'refresh']);
-    Route::get('/user-profile', [AuthController::class, 'userProfile']);
+
+    Route::get('/user-profile', [App\Http\Controllers\AuthController::class, 'userProfile']);
 });
