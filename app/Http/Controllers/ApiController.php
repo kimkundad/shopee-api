@@ -324,7 +324,7 @@ class ApiController extends Controller
     public function get_shop_name($id)
     {
 
-        $objs = shop::where('code_shop', '=', $id)->get();
+        $objs = shop::where('url_shop', '=', $id)->get();
 
         return response()->json([
             'shop' => $objs,
