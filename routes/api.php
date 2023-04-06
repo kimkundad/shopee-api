@@ -41,6 +41,7 @@ Route::group([
     Route::get('/getSearchDateSubAdmin', [App\Http\Controllers\ApiController::class, 'getSearchDateSubAdmin']); // route การทำ filter ค้นหาข้อมูล sub-admin จาก วันที่ที่สร้าง
     Route::get('/getSearchName', [App\Http\Controllers\ApiController::class, 'getSearchName']); // route การทำ filter ค้นหาข้อมูล sub-admin จากชื่อ
     Route::post('/deleteCartItem/{id}', [App\Http\Controllers\ApiController::class, 'deleteItemCart']);
+    Route::post('/createShop', [App\Http\Controllers\ApiController::class, 'createShop']);
 
     Route::post('/createUser', [App\Http\Controllers\AuthController::class, 'createUser']);
     Route::post('/verify', [App\Http\Controllers\AuthController::class, 'verify']);

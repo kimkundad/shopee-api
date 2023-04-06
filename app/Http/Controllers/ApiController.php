@@ -287,7 +287,7 @@ class ApiController extends Controller
             $files = $request->file('file');
             $filePaths = null;
             $product_id = 0;
-            $first = true; 
+            $first = true;
             foreach ($files as $file) {
                 $filename = time().'.'.$file->getClientOriginalExtension();
                 $image = Image::make($file->getRealPath());
@@ -630,6 +630,23 @@ class ApiController extends Controller
 
         return response()->json([
             'users' => $objs,
+        ], 201);
+    }
+
+    // ฟังก์ชันสร้างร้านค้า
+    public function createShop(Request $request)
+    {
+        DB::table('shops')->insert([
+            'name_shop' => $request['nameShop'],
+            'detail_shop' => $request['detailShop'],
+            'img_shop' => $request['imgShop'],
+            'cover_img_shop' => $request['imgCoverShop'],
+            'created_at' =>  date('Y-m-d H:i:s'),
+            'updated_at' => date('Y-m-d H:i:s'),
+        ]);
+
+        return response()->json([
+            'success' => 'Create Shop successfully!',
         ], 201);
     }
 }
