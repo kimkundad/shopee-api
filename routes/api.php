@@ -55,5 +55,5 @@ Route::group([
     'prefix' => 'auth'
 ], function ($router) {
 
-    Route::get('/user-profile', [AuthController::class, 'userProfile']);
+    Route::get('/user-profile', [App\Http\Controllers\AuthController::class, 'userProfile']);
 });
