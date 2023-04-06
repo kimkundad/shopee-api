@@ -639,7 +639,7 @@ class ApiController extends Controller
 
         $files = $request->file('imgShop');
         $filePaths = null;
-        $filename = time() . '.' . $files->getClientOriginalExtension();
+        // $filename = time() . '.' . $files->getClientOriginalExtension();
         $image = Image::make($files->getRealPath());
         $image->resize(300, 300, function ($constraint) {
             $constraint->aspectRatio();
@@ -650,7 +650,7 @@ class ApiController extends Controller
 
         $files2 = $request->file('imgCoverShop');
         $filePaths2 = null;
-        $filename2 = time() . '.' . $files2->getClientOriginalExtension();
+        // $filename2 = time() . '.' . $files2->getClientOriginalExtension();
         $image2 = Image::make($files2->getRealPath());
         $image2->resize(300, 300, function ($constraint) {
             $constraint->aspectRatio();
