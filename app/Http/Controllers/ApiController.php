@@ -636,17 +636,18 @@ class ApiController extends Controller
     // ฟังก์ชันสร้างร้านค้า
     public function createShop(Request $request)
     {
-        DB::table('shops')->insert([
-            'name_shop' => $request['nameShop'],
-            'detail_shop' => $request['detailShop'],
-            'img_shop' => $request['imgShop'],
-            'cover_img_shop' => $request['imgCoverShop'],
-            'created_at' =>  date('Y-m-d H:i:s'),
-            'updated_at' => date('Y-m-d H:i:s'),
-        ]);
+        dd($request['imgShop']);
+        // DB::table('shops')->insert([
+        //     'name_shop' => $request['nameShop'],
+        //     'detail_shop' => $request['detailShop'],
+        //     'img_shop' => $request['imgShop'],
+        //     'cover_img_shop' => $request['imgCoverShop'],
+        //     'created_at' =>  date('Y-m-d H:i:s'),
+        //     'updated_at' => date('Y-m-d H:i:s'),
+        // ]);
 
-        return response()->json([
-            'success' => 'Create Shop successfully!',
-        ], 201);
+        // return response()->json([
+        //     'success' => 'Create Shop successfully!',
+        // ], 201);
     }
 }
