@@ -679,4 +679,21 @@ class ApiController extends Controller
             'success' => 'Create Shop successfully!',
         ], 201);
     }
+
+    // ฟังก์ชันลบร้านค้า
+    public function DeleteShop(Request $request)
+    {
+        $shopID = $request['shopID'];
+
+        $imgshop = DB::table('shops')->select('*')->where('id', $shopID)->first();
+
+        Storage::disk('do_spaces')->delete('shopee/cover_img_shop/' . $imgshop->cover_img_shop);
+        Storage::disk('do_spaces')->delete('shopee/shop/' . $imgshop->img_shop);
+
+        DB::table('shops')->where('id', $shopID)->delete();
+
+        return response()->json([
+            'success' => 'Delete Shop successfully!',
+        ], 201);
+    }
 }
