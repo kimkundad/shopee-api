@@ -361,7 +361,7 @@ class ApiController extends Controller
                     'status' => 0,
                 ]);
                 foreach ($dataOption as $item) {
-                    if ($item->indexImageOption1 == $index) {
+
                         DB::table('product_options')->insert([
                             'product_id' => $product->id,
                             'img_id' => $id_image,
@@ -372,7 +372,7 @@ class ApiController extends Controller
                             'sku' => $item->skuOption1,
                             'status' => 1,
                         ]);
-                    }
+
                 }
             }
         }
