@@ -376,8 +376,9 @@ class ApiController extends Controller
                 }
             }
         } */
+        $dataOption = json_decode($request->dataOption, true);
         return response()->json([
-            'product' => json_decode($request->dataOption, true),
+            'product' => $dataOption,
         ], 201);
     }
 
