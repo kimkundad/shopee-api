@@ -808,4 +808,16 @@ class ApiController extends Controller
             'success' => 'Delete Shop successfully!',
         ], 201);
     }
+
+    // ฟังก์ชันลบร้านค้า
+    public function changeStatusShop(Request $request)
+    {
+        $shopID = $request['shopID'];
+        DB::table('shops')->where('id', $shopID)->update([
+            'status' => $request['newStatus'],
+        ]);
+        return response()->json([
+            'success' => 'Change Status Shop successfully!',
+        ], 201);
+    }
 }
