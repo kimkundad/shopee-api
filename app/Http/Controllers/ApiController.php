@@ -362,7 +362,6 @@ class ApiController extends Controller
                 ]);
 
                 foreach ($dataOption as $item) {
-                    dd($item);
                     if ($item->indexImageOption1 == $index) {
                         DB::table('product_options')->insert([
                             'product_id' => $product->id,
