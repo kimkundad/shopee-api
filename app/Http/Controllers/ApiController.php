@@ -322,7 +322,7 @@ class ApiController extends Controller
 
     // เพิ่มสินค้าหลายตัวเลือก
     public function addProductMultiOption(Request $request) {
-       /*  $product = new product();
+        /* $product = new product();
             $product->name_product = $request->name_product;
             $product->detail_product = $request->detail_product;
             $product->price = $request->price;
@@ -338,8 +338,8 @@ class ApiController extends Controller
             $filePaths = null;
             $product_id = 0;
             $first = true;
-            $dataOption = $request->input('dataOption'); */
-           /*  foreach ($files as $index => $file) {
+            $dataOption = $request->input('dataOption');
+            foreach ($files as $index => $file) {
                 $filename = time() . '.' . $file->getClientOriginalExtension();
                 $image = Image::make($file->getRealPath());
                 $image->resize(300, 300, function ($constraint) {
@@ -376,7 +376,7 @@ class ApiController extends Controller
                 }
             } */
             return response()->json([
-                'product' => $request->input('dataOption'),
+                'product' => $request->dataOption,
             ], 201);
     }
 
