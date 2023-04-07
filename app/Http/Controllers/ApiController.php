@@ -321,63 +321,65 @@ class ApiController extends Controller
     }
 
     // เพิ่มสินค้าหลายตัวเลือก
-    public function addProductMultiOption(Request $request) {
+    public function addProductMultiOption(Request $request)
+    {
         $product = new product();
-            $product->name_product = $request->name_product;
-            $product->detail_product = $request->detail_product;
-            $product->price = $request->price;
-            $product->price_sales = $request->price_sales;
-            $product->cost = $request->cost;
-            $product->stock = $request->stock;
-            $product->weight = $request->weight;
-            $product->sku = $request->sku;
-            $product->type = 2;
-            $product->active = 1;
+        $product->name_product = $request->name_product;
+        $product->detail_product = $request->detail_product;
+        $product->price = $request->price;
+        $product->price_sales = $request->price_sales;
+        $product->cost = $request->cost;
+        $product->stock = $request->stock;
+        $product->weight = $request->weight;
+        $product->sku = $request->sku;
+        $product->type = 2;
+        $product->active = 1;
 
-            $files = $request->file('file');
-            $filePaths = null;
-            $product_id = 0;
-            $first = true;
-            $dataOption = json_decode($request->dataOption,true);
-            foreach ($files as $index => $file) {
-                $filename = time() . '.' . $file->getClientOriginalExtension();
-                $image = Image::make($file->getRealPath());
-                $image->resize(300, 300, function ($constraint) {
-                    $constraint->aspectRatio();
-                });
-                $image->stream();
-                Storage::disk('do_spaces')->put('shopee/products/' . $file->hashName(), $image, 'public');
-                $filePaths = $file->hashName();
-                if ($first) {
-                    $product->img_product = $filePaths;
-                    $product->save();
-                    $product_id = product::select('id')->orderBy('created_at', 'desc')->first();
-                    $first = false;
-                } else {
-                    $id_image = DB::table('product_images')->insertGetId([
-                        'image' => $filePaths,
-                        'product_id' => $product_id['id'],
-                        'status' => 0,
-                    ]);
-                    foreach($dataOption as $item){
-                        if($item->indexImageOption1 == $index){
-                            DB::table('product_options')->insert([
-                                'product_id' => $product->id,
-                                'img_id' => $id_image,
-                                'op_name' => $item->nameOption1,
-                                'img_name' => $filePaths,
-                                'price' => $item->priceOption1,
-                                'stock' => $item->stockOption1,
-                                'sku' => $item->skuOption1,
-                                'status' => 1,
-                            ]);
-                        }
+        $files = $request->file('file');
+        $filePaths = null;
+        $product_id = 0;
+        $first = true;
+        $jsonData = $request->input('dataOption');
+        $dataOption = json_decode($jsonData, true);
+        foreach ($files as $index => $file) {
+            $filename = time() . '.' . $file->getClientOriginalExtension();
+            $image = Image::make($file->getRealPath());
+            $image->resize(300, 300, function ($constraint) {
+                $constraint->aspectRatio();
+            });
+            $image->stream();
+            Storage::disk('do_spaces')->put('shopee/products/' . $file->hashName(), $image, 'public');
+            $filePaths = $file->hashName();
+            if ($first) {
+                $product->img_product = $filePaths;
+                $product->save();
+                $product_id = product::select('id')->orderBy('created_at', 'desc')->first();
+                $first = false;
+            } else {
+                $id_image = DB::table('product_images')->insertGetId([
+                    'image' => $filePaths,
+                    'product_id' => $product_id['id'],
+                    'status' => 0,
+                ]);
+                foreach ($dataOption as $item) {
+                    if ($item->indexImageOption1 == $index) {
+                        DB::table('product_options')->insert([
+                            'product_id' => $product->id,
+                            'img_id' => $id_image,
+                            'op_name' => $item->nameOption1,
+                            'img_name' => $filePaths,
+                            'price' => $item->priceOption1,
+                            'stock' => $item->stockOption1,
+                            'sku' => $item->skuOption1,
+                            'status' => 1,
+                        ]);
                     }
                 }
             }
-            return response()->json([
-                'product' => $request->dataOption,
-            ], 201);
+        }
+        return response()->json([
+            'product' => $request->dataOption,
+        ], 201);
     }
 
     // ดึงข้อมูลร้านค้า
