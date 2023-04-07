@@ -323,7 +323,7 @@ class ApiController extends Controller
     // เพิ่มสินค้าหลายตัวเลือก
     public function addProductMultiOption(Request $request)
     {
-        /* $product = new product();
+        $product = new product();
         $product->name_product = $request->name_product;
         $product->detail_product = $request->detail_product;
         $product->price = $request->price;
@@ -360,7 +360,21 @@ class ApiController extends Controller
                     'product_id' => $product_id['id'],
                     'status' => 0,
                 ]);
-                foreach ($dataOption as $item) {
+                for ($i=0; $i < count($dataOption); $i++) {
+                    if ($dataOption[$i]->indexImageOption1 == $index) {
+                        DB::table('product_options')->insert([
+                            'product_id' => $product->id,
+                            'img_id' => $id_image,
+                            'op_name' => $dataOption[$i]->nameOption1,
+                            'img_name' => $filePaths,
+                            'price' => $dataOption[$i]->priceOption1,
+                            'stock' => $dataOption[$i]->stockOption1,
+                            'sku' => $dataOption[$i]->skuOption1,
+                            'status' => 1,
+                        ]);
+                    }
+                }
+                /* foreach ($dataOption as $item) {
                     if ($item->indexImageOption1 == $index) {
                         DB::table('product_options')->insert([
                             'product_id' => $product->id,
@@ -373,12 +387,11 @@ class ApiController extends Controller
                             'status' => 1,
                         ]);
                     }
-                }
+                } */
             }
-        } */
-        $dataOption = json_decode($request->dataOption, true);
+        }
         return response()->json([
-            'product' => $dataOption,
+            'product' => json_decode($request->dataOption, true),
         ], 201);
     }
 
