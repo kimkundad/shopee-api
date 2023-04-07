@@ -360,8 +360,22 @@ class ApiController extends Controller
                     'product_id' => $product_id['id'],
                     'status' => 0,
                 ]);
-                foreach ($dataOption as $item) {
-
+                for ($i=0; $i < ; $i++) { 
+                    if ($dataOption[i]->indexImageOption1 == $index) {
+                        DB::table('product_options')->insert([
+                            'product_id' => $product->id,
+                            'img_id' => $id_image,
+                            'op_name' => $dataOption[i]->nameOption1,
+                            'img_name' => $filePaths,
+                            'price' => $dataOption[i]->priceOption1,
+                            'stock' => $dataOption[i]->stockOption1,
+                            'sku' => $dataOption[i]->skuOption1,
+                            'status' => 1,
+                        ]);
+                    }
+                }
+                /* foreach ($dataOption as $item) {
+                    if ($item->indexImageOption1 == $index) {
                         DB::table('product_options')->insert([
                             'product_id' => $product->id,
                             'img_id' => $id_image,
@@ -372,8 +386,8 @@ class ApiController extends Controller
                             'sku' => $item->skuOption1,
                             'status' => 1,
                         ]);
-
-                }
+                    }
+                } */
             }
         }
         return response()->json([
