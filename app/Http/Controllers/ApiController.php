@@ -338,7 +338,7 @@ class ApiController extends Controller
             $filePaths = null;
             $product_id = 0;
             $first = true;
-            $dataOption = $request->input('dataOption');
+            $dataOption = json_decode($request->dataOption,true);
             foreach ($files as $index => $file) {
                 $filename = time() . '.' . $file->getClientOriginalExtension();
                 $image = Image::make($file->getRealPath());
