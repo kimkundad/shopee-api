@@ -323,7 +323,7 @@ class ApiController extends Controller
     // เพิ่มสินค้าหลายตัวเลือก
     public function addProductMultiOption(Request $request)
     {
-        /* $product = new product();
+        $product = new product();
         $product->name_product = $request->name_product;
         $product->detail_product = $request->detail_product;
         $product->price = $request->price;
@@ -362,24 +362,23 @@ class ApiController extends Controller
                 ]);
 
                 foreach ($dataOption as $item) {
-                    if ($item->indexImageOption1 == $index) {
+                    if ($item['indexImageOption1'] == $index) {
                         DB::table('product_options')->insert([
                             'product_id' => $product->id,
                             'img_id' => $id_image,
-                            'op_name' => $item->nameOption1,
+                            'op_name' => $item['nameOption1'],
                             'img_name' => $filePaths,
-                            'price' => $item->priceOption1,
-                            'stock' => $item->stockOption1,
-                            'sku' => $item->skuOption1,
+                            'price' => $item['priceOption1'],
+                            'stock' => $item['stockOption1'],
+                            'sku' => $item['skuOption1'],
                             'status' => 1,
                         ]);
                     }
                 }
             }
-        } */
-        $dataOption = json_decode($request->dataOption, true);
+        }
         return response()->json([
-            'product' => $dataOption[0]->indexImageOption1,
+            'product' => 'a',
         ], 201);
     }
 
