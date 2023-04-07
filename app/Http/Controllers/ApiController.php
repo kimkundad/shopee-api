@@ -379,7 +379,7 @@ class ApiController extends Controller
         } */
         $dataOption = json_decode($request->dataOption, true);
         return response()->json([
-            'product' => $dataOption[0]->indexImageOption1,
+            'product' => $dataOption[0],
         ], 201);
     }
 
