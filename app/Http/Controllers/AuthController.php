@@ -50,17 +50,18 @@ class AuthController extends Controller
                     'token' => $token,
                     'type' => 'bearer',
                 ]
-            ]);
+            ], 200);
 
         }
 
-       
 
     }
 
 
     public function userProfile() {
-        return response()->json(auth('api')->user());
+        return response()->json(
+            [auth('api')->user()], 200
+        );
     }
 
     public function refresh()
@@ -78,7 +79,6 @@ class AuthController extends Controller
     public function createUser(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'name' => ['required', 'string', 'max:255'],
             'phone' => ['required', 'numeric', 'unique:users'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
         ]);
@@ -111,7 +111,7 @@ class AuthController extends Controller
             ->create($phone2, "sms");
 
         User::create([
-            'name' => $request->name,
+            'name' => $request->phone,
             'phone' => $request->phone,
             'email' => $request->phone,
             'password' => Hash::make($request->password),
