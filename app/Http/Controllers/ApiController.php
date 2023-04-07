@@ -361,15 +361,15 @@ class ApiController extends Controller
                     'status' => 0,
                 ]);
                 for ($i=0; $i < count($dataOption); $i++) {
-                    if ($dataOption[$i]->indexImageOption1 == $index) {
+                    if ($dataOption[$i]->indexImageOption1[0] == $index) {
                         DB::table('product_options')->insert([
                             'product_id' => $product->id,
                             'img_id' => $id_image,
-                            'op_name' => $dataOption[$i]->nameOption1,
+                            'op_name' => $dataOption[$i]->nameOption1[0],
                             'img_name' => $filePaths,
-                            'price' => $dataOption[$i]->priceOption1,
-                            'stock' => $dataOption[$i]->stockOption1,
-                            'sku' => $dataOption[$i]->skuOption1,
+                            'price' => $dataOption[$i]->priceOption1[0],
+                            'stock' => $dataOption[$i]->stockOption1[0],
+                            'sku' => $dataOption[$i]->skuOption1[0],
                             'status' => 1,
                         ]);
                     }
