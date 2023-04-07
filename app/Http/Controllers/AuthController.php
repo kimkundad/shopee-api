@@ -33,15 +33,7 @@ class AuthController extends Controller
 
         $user = auth('api')->user();
 
-        if($user->isVerified == false) {
-
-            $response = array(
-                'success' => false,
-                'message' => 'คุณยังไม่ได้ทำการ Verify เบอร์โทรศัพท์'
-            );
-            return response()->json($response);
-
-        }else{
+       
 
             return response()->json([
                 'status' => 'success',
@@ -52,7 +44,7 @@ class AuthController extends Controller
                 ]
             ], 200);
 
-        }
+    
 
 
     }
