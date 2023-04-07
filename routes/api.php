@@ -29,23 +29,23 @@ Route::group([
     Route::get('/shop/{id}', [App\Http\Controllers\ApiController::class, 'get_shop_name']);
     Route::post('/searchProduct/{id}', [App\Http\Controllers\ApiController::class, 'search_product']);
     Route::get('/getAllProduct', [App\Http\Controllers\ApiController::class, 'get_allproduct']);
-    Route::get('/getAllShops', [App\Http\Controllers\ApiController::class, 'get_all_shops']);
-    Route::get('/getSearchShops', [App\Http\Controllers\ApiController::class, 'get_search_shops']);
-    Route::get('/getSearchDateShops', [App\Http\Controllers\ApiController::class, 'get_search_date_shops']);
-    Route::get('/getFilterShops', [App\Http\Controllers\ApiController::class, 'get_filter_shops']);
+    Route::get('/getAllShops', [App\Http\Controllers\ApiController::class, 'get_all_shops']); // route ดึงข้อมูลร้านค้าออกมาทั้งหมด create by อั้นเอง
+    Route::get('/getSearchShops', [App\Http\Controllers\ApiController::class, 'get_search_shops']); // route ค้นหาชื่อร้านค้า create by อั้นเอง
+    Route::get('/getSearchDateShops', [App\Http\Controllers\ApiController::class, 'get_search_date_shops']); // route ค้นหาวันที่สร้างร้านค้า create by อั้นเอง
+    Route::get('/getFilterShops', [App\Http\Controllers\ApiController::class, 'get_filter_shops']); // route ในการ filter ร้า่นค้า ออกมาตาม ตัวอักษร, วันที่สร้าง, วันที่อัพเดท create by อั้นเอง
     Route::post('/addProductToCart', [App\Http\Controllers\ApiController::class, 'addProductToCart']);
     Route::get('/getAllCartItem/{id}', [App\Http\Controllers\ApiController::class, 'getAllCartItem']);
-    Route::get('/getAllUsers', [App\Http\Controllers\ApiController::class, 'getAllUsers']); // route ของการดึงข้อมูล users ออกมาทั้งหมด
-    Route::post('/createSubAdmin', [App\Http\Controllers\ApiController::class, 'createSubAdmin']); // route สร้างข้อมูล sub-admin ขึ้นมา
-    Route::post('/updateSubAdmin', [App\Http\Controllers\ApiController::class, 'updateSubAdmin']); // route อัพเดทข้อมูล sub-admin
-    Route::post('/deleteSubAdmin', [App\Http\Controllers\ApiController::class, 'deleteSubAdmin']); // route ลบข้อมูลข้อง sub-admin ออก
-    Route::get('/getSearchDateSubAdmin', [App\Http\Controllers\ApiController::class, 'getSearchDateSubAdmin']); // route การทำ filter ค้นหาข้อมูล sub-admin จาก วันที่ที่สร้าง
-    Route::get('/getSearchName', [App\Http\Controllers\ApiController::class, 'getSearchName']); // route การทำ filter ค้นหาข้อมูล sub-admin จากชื่อ
+    Route::get('/getAllUsers', [App\Http\Controllers\ApiController::class, 'getAllUsers']); // route ของการดึงข้อมูล users ออกมาทั้งหมด create by อั้นเอง
+    Route::post('/createSubAdmin', [App\Http\Controllers\ApiController::class, 'createSubAdmin']); // route สร้างข้อมูล sub-admin ขึ้นมา create by อั้นเอง
+    Route::post('/updateSubAdmin', [App\Http\Controllers\ApiController::class, 'updateSubAdmin']); // route อัพเดทข้อมูล sub-admin create by อั้นเอง
+    Route::post('/deleteSubAdmin', [App\Http\Controllers\ApiController::class, 'deleteSubAdmin']); // route ลบข้อมูลข้อง sub-admin ออก create by อั้นเอง
+    Route::get('/getSearchDateSubAdmin', [App\Http\Controllers\ApiController::class, 'getSearchDateSubAdmin']); // route การทำ filter ค้นหาข้อมูล sub-admin จาก วันที่ที่สร้าง create by อั้นเอง
+    Route::get('/getSearchName', [App\Http\Controllers\ApiController::class, 'getSearchName']); // route การทำ filter ค้นหาข้อมูล sub-admin จากชื่อ create by อั้นเอง
     Route::post('/deleteCartItem/{id}', [App\Http\Controllers\ApiController::class, 'deleteItemCart']);
-    Route::post('/createShop', [App\Http\Controllers\ApiController::class, 'createShop']);
-    Route::post('/editShop', [App\Http\Controllers\ApiController::class, 'editShop']);
-    Route::post('/DeleteShop', [App\Http\Controllers\ApiController::class, 'DeleteShop']);
-    Route::post('/changeStatusShop', [App\Http\Controllers\ApiController::class, 'changeStatusShop']);
+    Route::post('/createShop', [App\Http\Controllers\ApiController::class, 'createShop']); // route สร้างข้อมูลร้านค้า create by อั้นเอง
+    Route::post('/editShop', [App\Http\Controllers\ApiController::class, 'editShop']); // route แก้ไขข้อมูลร้านค้า create by อั้นเอง
+    Route::post('/DeleteShop', [App\Http\Controllers\ApiController::class, 'DeleteShop']); // route ลบข้อมูลร้านค้า create by อั้นเอง
+    Route::post('/changeStatusShop', [App\Http\Controllers\ApiController::class, 'changeStatusShop']); // route เปลี่ยนสถานะ เปิด/ปิด ของร้านค้า create by อั้นเอง
 
     Route::post('/createUser', [App\Http\Controllers\AuthController::class, 'createUser']);
     Route::post('/verify', [App\Http\Controllers\AuthController::class, 'verify']);
