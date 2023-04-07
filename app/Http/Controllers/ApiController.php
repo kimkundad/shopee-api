@@ -680,6 +680,58 @@ class ApiController extends Controller
         ], 201);
     }
 
+    // ฟังก์ชันสร้างร้านค้า
+    public function editShop(Request $request)
+    {
+        if ($request->hasFile('file')) {
+            $files = $request->file('file');
+            $filePaths = null;
+            foreach ($files as $file) {
+                $filename = time() . '.' . $file->getClientOriginalExtension();
+                $image = Image::make($file->getRealPath());
+                $image->resize(300, 300, function ($constraint) {
+                    $constraint->aspectRatio();
+                });
+                $image->stream();
+                Storage::disk('do_spaces')->put('shopee/shop/' . $file->hashName(), $image, 'public');
+                $filePaths = $file->hashName();
+            }
+
+            DB::table('shops')->where('id', $request['shopID'])->update([
+                'img_shop' => $filePaths,
+            ]);
+        }
+
+        if ($request->hasFile('file2')) {
+            $files2 = $request->file('file2');
+            $filePaths2 = null;
+            foreach ($files2 as $file2) {
+                $filename2 = time() . '.' . $file2->getClientOriginalExtension();
+                $image2 = Image::make($file2->getRealPath());
+                $image2->resize(300, 300, function ($constraint) {
+                    $constraint->aspectRatio();
+                });
+                $image2->stream();
+                Storage::disk('do_spaces')->put('shopee/cover_img_shop/' . $file2->hashName(), $image2, 'public');
+                $filePaths2 = $file2->hashName();
+            }
+
+            DB::table('shops')->where('id', $request['shopID'])->update([
+                'cover_img_shop' => $filePaths2,
+            ]);
+        }
+
+        DB::table('shops')->where('id', $request['shopID'])->update([
+            'name_shop' => $request['editNameShop'],
+            'detail_shop' => $request['editDetailShop'],
+            'updated_at' => date('Y-m-d H:i:s'),
+        ]);
+
+        return response()->json([
+            'success' => 'Edit Shop successfully!',
+        ], 201);
+    }
+
     // ฟังก์ชันลบร้านค้า
     public function DeleteShop(Request $request)
     {
