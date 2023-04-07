@@ -320,6 +320,68 @@ class ApiController extends Controller
         }
     }
 
+    // เพิ่มสินค้าหลายตัวเลือก
+    public function addProductMultiOption(Request $request)
+    {
+        $product = new product();
+        $product->name_product = $request->name_product;
+        $product->detail_product = $request->detail_product;
+        $product->price = $request->price;
+        $product->price_sales = $request->price_sales;
+        $product->cost = $request->cost;
+        $product->stock = $request->stock;
+        $product->weight = $request->weight;
+        $product->sku = $request->sku;
+        $product->type = 2;
+        $product->active = 1;
+
+        $files = $request->file('file');
+        $filePaths = null;
+        $product_id = 0;
+        $first = true;
+        $dataOption = json_decode($request->dataOption, true);
+        foreach ($files as $index => $file) {
+            $filename = time() . '.' . $file->getClientOriginalExtension();
+            $image = Image::make($file->getRealPath());
+            $image->resize(300, 300, function ($constraint) {
+                $constraint->aspectRatio();
+            });
+            $image->stream();
+            Storage::disk('do_spaces')->put('shopee/products/' . $file->hashName(), $image, 'public');
+            $filePaths = $file->hashName();
+            if ($first) {
+                $product->img_product = $filePaths;
+                $product->save();
+                $product_id = product::select('id')->orderBy('created_at', 'desc')->first();
+                $first = false;
+            } else {
+                $id_image = DB::table('product_images')->insertGetId([
+                    'image' => $filePaths,
+                    'product_id' => $product_id['id'],
+                    'status' => 0,
+                ]);
+
+                foreach ($dataOption as $item) {
+                    if ($item['indexImageOption'] == $index) {
+                        DB::table('product_options')->insert([
+                            'product_id' => $product->id,
+                            'img_id' => $id_image,
+                            'op_name' => $item['nameOption'],
+                            'img_name' => $filePaths,
+                            'price' => $item['priceOption'],
+                            'stock' => $item['stockOption'],
+                            'sku' => $item['skuOption'],
+                            'status' => 1,
+                        ]);
+                    }
+                }
+            }
+        }
+        return response()->json([
+            'product' => 'a',
+        ], 201);
+    }
+
     // ดึงข้อมูลร้านค้า
     public function get_shop_name($id)
     {
@@ -464,7 +526,7 @@ class ApiController extends Controller
         ]);
     }
 
-    // ดึงข้อมูลของ users และ role ของ users ออกมาทั้งหมด
+    // -------------------------------ดึงข้อมูลของ users และ role ของ users ออกมาทั้งหมด create by อั้นเอง----------------------------
     public function getAllUsers()
     {
         $objs = DB::table('users')->select('users.*', 'users.id as userID', 'roles.name as role_name', 'users.name as user_name', 'users.created_at as user_created_at', 'sub_admins.*')
@@ -479,7 +541,7 @@ class ApiController extends Controller
         ], 201);
     }
 
-    // ฟังก์ชันสร้าง Sub-Admin
+    // -------------------------------ฟังก์ชันสร้าง Sub-Admin create by อั้นเอง---------------------------------
     public function createSubAdmin(Request $request)
     {
         $permission = [
@@ -524,7 +586,7 @@ class ApiController extends Controller
         ], 201);
     }
 
-    // ฟังก์ชันสร้าง Sub-Admin
+    // -------------------------------ฟังก์ชันแก้ไขข้อมูล Sub-Admin create by อั้นเอง-------------------------
     public function updateSubAdmin(Request $request)
     {
         $userID = $request['userID'];
@@ -562,7 +624,7 @@ class ApiController extends Controller
         ], 201);
     }
 
-    // ฟังก์ชันลบข้อมูล Sub-Admin
+    // ------------------------------------ฟังก์ชันลบข้อมูล Sub-Admin create by อั้นเอง----------------------------------
     public function deleteSubAdmin(Request $request)
     {
         // delete user role sub-admin
@@ -579,7 +641,7 @@ class ApiController extends Controller
         ], 201);
     }
 
-    // ฟังก์ชัน filter ค้นหาข้อมูล Sub-admin จากวันที่สร้าง
+    // ------------------------------------ฟังก์ชัน filter ค้นหาข้อมูล Sub-admin จากวันที่สร้าง create by อั้นเอง-------------------------------
     public function getSearchDateSubAdmin(Request $request)
     {
         $search = $request->query('search');
@@ -606,7 +668,7 @@ class ApiController extends Controller
         ], 201);
     }
 
-    // ฟังก์ชันค้นหาข้อมูล Sub-Admin จากชื่อของ sub-admin
+    // --------------------------------ฟังก์ชันค้นหาข้อมูล Sub-Admin จากชื่อของ sub-admin create by อั้นเอง------------------------------
     public function getSearchName(Request $request)
     {
         $search = $request->query('search');
@@ -633,7 +695,7 @@ class ApiController extends Controller
         ], 201);
     }
 
-    // ฟังก์ชันสร้างร้านค้า
+    // ---------------------------------ฟังก์ชันสร้างร้านค้า create by อั้นเอง----------------------------
     public function createShop(Request $request)
     {
         if ($request->hasFile('file')) {
@@ -680,7 +742,7 @@ class ApiController extends Controller
         ], 201);
     }
 
-    // ฟังก์ชันสร้างร้านค้า
+    // -----------------------------------ฟังก์ชันแก้ไขข้อมูลร้านค้า create by อั้นเอง---------------------------------
     public function editShop(Request $request)
     {
         if ($request->hasFile('file')) {
@@ -732,7 +794,7 @@ class ApiController extends Controller
         ], 201);
     }
 
-    // ฟังก์ชันลบร้านค้า
+    // ------------------------------------ฟังก์ชันลบร้านค้า create by อั้นเอง------------------------------------
     public function DeleteShop(Request $request)
     {
         $shopID = $request['shopID'];
@@ -746,6 +808,18 @@ class ApiController extends Controller
 
         return response()->json([
             'success' => 'Delete Shop successfully!',
+        ], 201);
+    }
+
+    // ----------------------------------ฟังก์ชันเ เปลี่ยนสถานะ เปิด/ปิด ของร้านค้า create by อั้นเอง----------------------------
+    public function changeStatusShop(Request $request)
+    {
+        $shopID = $request['shopID'];
+        DB::table('shops')->where('id', $shopID)->update([
+            'status' => $request['newStatus'],
+        ]);
+        return response()->json([
+            'success' => 'Change Status Shop successfully!',
         ], 201);
     }
 }
