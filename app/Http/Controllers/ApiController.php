@@ -370,7 +370,7 @@ class ApiController extends Controller
                                 'stock' => $item->stockOption1,
                                 'sku' => $item->skuOption1,
                                 'status' => 1,
-                            ])
+                            ]);
                         }
                     }
                 }
