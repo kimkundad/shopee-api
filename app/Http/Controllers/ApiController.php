@@ -323,7 +323,7 @@ class ApiController extends Controller
     // เพิ่มสินค้าหลายตัวเลือก
     public function addProductMultiOption(Request $request)
     {
-        $product = new product();
+        /* $product = new product();
         $product->name_product = $request->name_product;
         $product->detail_product = $request->detail_product;
         $product->price = $request->price;
@@ -376,9 +376,10 @@ class ApiController extends Controller
                     }
                 }
             }
-        }
+        } */
+        $dataOption = json_decode($request->dataOption, true);
         return response()->json([
-            'product' => json_decode($request->dataOption, true),
+            'product' => $dataOption[0]->indexImageOption1,
         ], 201);
     }
 
