@@ -9,6 +9,7 @@ use App\Models\shop;
 use App\Models\carts;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 use Intervention\Image\ImageManagerStatic as Image;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
@@ -360,16 +361,16 @@ class ApiController extends Controller
                     'product_id' => $product_id['id'],
                     'status' => 0,
                 ]);
-                for ($i=0; $i < ; $i++) { 
-                    if ($dataOption[i]->indexImageOption1 == $index) {
+                for ($i=0; $i < Str::length($dataOption); $i++) { 
+                    if ($dataOption[$i]->indexImageOption1 == $index) {
                         DB::table('product_options')->insert([
                             'product_id' => $product->id,
                             'img_id' => $id_image,
-                            'op_name' => $dataOption[i]->nameOption1,
+                            'op_name' => $dataOption[$i]->nameOption1,
                             'img_name' => $filePaths,
-                            'price' => $dataOption[i]->priceOption1,
-                            'stock' => $dataOption[i]->stockOption1,
-                            'sku' => $dataOption[i]->skuOption1,
+                            'price' => $dataOption[$i]->priceOption1,
+                            'stock' => $dataOption[$i]->stockOption1,
+                            'sku' => $dataOption[$i]->skuOption1,
                             'status' => 1,
                         ]);
                     }
