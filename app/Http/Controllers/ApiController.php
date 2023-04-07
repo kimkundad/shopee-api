@@ -526,7 +526,7 @@ class ApiController extends Controller
         ]);
     }
 
-    // ดึงข้อมูลของ users และ role ของ users ออกมาทั้งหมด
+    // -------------------------------ดึงข้อมูลของ users และ role ของ users ออกมาทั้งหมด create by อั้นเอง----------------------------
     public function getAllUsers()
     {
         $objs = DB::table('users')->select('users.*', 'users.id as userID', 'roles.name as role_name', 'users.name as user_name', 'users.created_at as user_created_at', 'sub_admins.*')
@@ -541,7 +541,7 @@ class ApiController extends Controller
         ], 201);
     }
 
-    // ฟังก์ชันสร้าง Sub-Admin
+    // -------------------------------ฟังก์ชันสร้าง Sub-Admin create by อั้นเอง---------------------------------
     public function createSubAdmin(Request $request)
     {
         $permission = [
@@ -586,7 +586,7 @@ class ApiController extends Controller
         ], 201);
     }
 
-    // ฟังก์ชันสร้าง Sub-Admin
+    // -------------------------------ฟังก์ชันแก้ไขข้อมูล Sub-Admin create by อั้นเอง-------------------------
     public function updateSubAdmin(Request $request)
     {
         $userID = $request['userID'];
@@ -624,7 +624,7 @@ class ApiController extends Controller
         ], 201);
     }
 
-    // ฟังก์ชันลบข้อมูล Sub-Admin
+    // ------------------------------------ฟังก์ชันลบข้อมูล Sub-Admin create by อั้นเอง----------------------------------
     public function deleteSubAdmin(Request $request)
     {
         // delete user role sub-admin
@@ -641,7 +641,7 @@ class ApiController extends Controller
         ], 201);
     }
 
-    // ฟังก์ชัน filter ค้นหาข้อมูล Sub-admin จากวันที่สร้าง
+    // ------------------------------------ฟังก์ชัน filter ค้นหาข้อมูล Sub-admin จากวันที่สร้าง create by อั้นเอง-------------------------------
     public function getSearchDateSubAdmin(Request $request)
     {
         $search = $request->query('search');
@@ -668,7 +668,7 @@ class ApiController extends Controller
         ], 201);
     }
 
-    // ฟังก์ชันค้นหาข้อมูล Sub-Admin จากชื่อของ sub-admin
+    // --------------------------------ฟังก์ชันค้นหาข้อมูล Sub-Admin จากชื่อของ sub-admin create by อั้นเอง------------------------------
     public function getSearchName(Request $request)
     {
         $search = $request->query('search');
@@ -695,7 +695,7 @@ class ApiController extends Controller
         ], 201);
     }
 
-    // ฟังก์ชันสร้างร้านค้า
+    // ---------------------------------ฟังก์ชันสร้างร้านค้า create by อั้นเอง----------------------------
     public function createShop(Request $request)
     {
         if ($request->hasFile('file')) {
@@ -742,7 +742,7 @@ class ApiController extends Controller
         ], 201);
     }
 
-    // ฟังก์ชันสร้างร้านค้า
+    // -----------------------------------ฟังก์ชันแก้ไขข้อมูลร้านค้า create by อั้นเอง---------------------------------
     public function editShop(Request $request)
     {
         if ($request->hasFile('file')) {
@@ -794,7 +794,7 @@ class ApiController extends Controller
         ], 201);
     }
 
-    // ฟังก์ชันลบร้านค้า
+    // ------------------------------------ฟังก์ชันลบร้านค้า create by อั้นเอง------------------------------------
     public function DeleteShop(Request $request)
     {
         $shopID = $request['shopID'];
@@ -811,7 +811,7 @@ class ApiController extends Controller
         ], 201);
     }
 
-    // ฟังก์ชันลบร้านค้า
+    // ----------------------------------ฟังก์ชันเ เปลี่ยนสถานะ เปิด/ปิด ของร้านค้า create by อั้นเอง----------------------------
     public function changeStatusShop(Request $request)
     {
         $shopID = $request['shopID'];
