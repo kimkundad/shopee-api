@@ -45,6 +45,7 @@ Route::group([
     Route::post('/createShop', [App\Http\Controllers\ApiController::class, 'createShop']);
     Route::post('/editShop', [App\Http\Controllers\ApiController::class, 'editShop']);
     Route::post('/DeleteShop', [App\Http\Controllers\ApiController::class, 'DeleteShop']);
+    Route::post('/changeStatusShop', [App\Http\Controllers\ApiController::class, 'changeStatusShop']);
 
     Route::post('/createUser', [App\Http\Controllers\AuthController::class, 'createUser']);
     Route::post('/verify', [App\Http\Controllers\AuthController::class, 'verify']);
