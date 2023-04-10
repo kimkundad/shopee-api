@@ -848,7 +848,7 @@ class ApiController extends Controller
     public function getListProduct(Request $request)
     {
         $shopID = $request['shopID'];
-        $list_products = DB::table('shop_list_products')->where('shop_id', $shopID)->get();
+        $list_products = DB::table('shop_list_products')->select('*')->where('shop_id', $shopID)->get();
         return response()->json([
             'list_products' => $list_products,
             'success' => 'Change Status Shop successfully!',
