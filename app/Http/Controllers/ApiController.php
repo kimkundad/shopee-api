@@ -736,15 +736,20 @@ class ApiController extends Controller
             // รับค่า ID ของแถวที่เพิ่งถูกเพิ่มล่าสุดเข้าไปในตาราง users
             $lastInsertId = DB::getPdo()->lastInsertId();
 
-            $selectedProducts = $request->input('selectProduct');
-            foreach ($selectedProducts as $productId) {
-                DB::table('shop_list_products')->insert([
-                    'product_id' => $productId['id'],
-                    'shop_id' => $lastInsertId,
-                    'created_at' =>  date('Y-m-d H:i:s'),
-                    'updated_at' => date('Y-m-d H:i:s'),
-                ]);
+            if ($request->input('selectProduct')) {
+                $selectedProducts = $request->input('selectProduct');
+                if (is_array($selectedProducts)) {
+                    foreach ($selectedProducts as $productId) {
+                        DB::table('shop_list_products')->insert([
+                            'product_id' => $productId['id'],
+                            'shop_id' => $lastInsertId,
+                            'created_at' =>  date('Y-m-d H:i:s'),
+                            'updated_at' => date('Y-m-d H:i:s'),
+                        ]);
+                    }
+                }
             }
+
 
             return response()->json([
                 'success' => 'Create Shop successfully!',
