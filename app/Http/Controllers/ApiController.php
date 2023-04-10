@@ -698,7 +698,6 @@ class ApiController extends Controller
     // ---------------------------------ฟังก์ชันสร้างร้านค้า create by อั้นเอง----------------------------
     public function createShop(Request $request)
     {
-        dd($request);
         if ($request->hasFile('file') && $request->hasFile('file2')) {
             $files = $request->file('file');
             $filePaths = null;
@@ -737,12 +736,12 @@ class ApiController extends Controller
             // รับค่า ID ของแถวที่เพิ่งถูกเพิ่มล่าสุดเข้าไปในตาราง users
             $lastInsertId = DB::getPdo()->lastInsertId();
 
-            if ($request->input('selectProduct')) {
-                $selectedProducts = $request->input('selectProduct');
+            if ($request->input('selectID')) {
+                $selectedProducts = $request->input('selectID');
                 if (is_array($selectedProducts)) {
                     foreach ($selectedProducts as $productId) {
                         DB::table('shop_list_products')->insert([
-                            'product_id' => $productId['id'],
+                            'product_id' => $productId,
                             'shop_id' => $lastInsertId,
                             'created_at' =>  date('Y-m-d H:i:s'),
                             'updated_at' => date('Y-m-d H:i:s'),
