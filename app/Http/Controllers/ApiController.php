@@ -845,9 +845,9 @@ class ApiController extends Controller
     }
 
     //-------------------- ดึงข้อมูล Product ของร้านค้านั้นๆ -------------------------
-    public function getListProduct(Request $request)
+    public function getListProduct($shopid)
     {
-        $shopID = $request['shopID'];
+        $shopID = $shopid;
         $list_products = DB::table('shop_list_products')->select('*')->where('shop_id', $shopID)->get();
         return response()->json([
             'list_products' => $list_products,

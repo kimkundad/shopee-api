@@ -46,7 +46,7 @@ Route::group([
     Route::post('/editShop', [App\Http\Controllers\ApiController::class, 'editShop']); // route แก้ไขข้อมูลร้านค้า create by อั้นเอง
     Route::post('/DeleteShop', [App\Http\Controllers\ApiController::class, 'DeleteShop']); // route ลบข้อมูลร้านค้า create by อั้นเอง
     Route::post('/changeStatusShop', [App\Http\Controllers\ApiController::class, 'changeStatusShop']); // route เปลี่ยนสถานะ เปิด/ปิด ของร้านค้า create by อั้นเอง
-    Route::get('/getListProduct', [App\Http\Controllers\ApiController::class, 'getListProduct']); // route การทำ filter ค้นหาข้อมูล sub-admin จากชื่อ create by อั้นเอง
+    Route::get('/getListProduct/{shopid}', [App\Http\Controllers\ApiController::class, 'getListProduct']); // route การทำ filter ค้นหาข้อมูล sub-admin จากชื่อ create by อั้นเอง
 
     Route::post('/createUser', [App\Http\Controllers\AuthController::class, 'createUser']);
     Route::post('/verify', [App\Http\Controllers\AuthController::class, 'verify']);
