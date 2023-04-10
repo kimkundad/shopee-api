@@ -825,6 +825,8 @@ class ApiController extends Controller
 
         DB::table('shops')->where('id', $shopID)->delete();
 
+        DB::table('shop_list_products')->where('shop_id', $shopID)->delete();
+
         return response()->json([
             'success' => 'Delete Shop successfully!',
         ], 201);
