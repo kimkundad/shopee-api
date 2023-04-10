@@ -698,6 +698,7 @@ class ApiController extends Controller
     // ---------------------------------ฟังก์ชันสร้างร้านค้า create by อั้นเอง----------------------------
     public function createShop(Request $request)
     {
+        dd($request);
         if ($request->hasFile('file') && $request->hasFile('file2')) {
             $files = $request->file('file');
             $filePaths = null;
