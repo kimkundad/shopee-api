@@ -851,7 +851,7 @@ class ApiController extends Controller
                 foreach ($selectedProducts as $productId) {
                     DB::table('shop_list_products')->insert([
                         'product_id' => $productId,
-                        'shop_id' => $request['shopID'],
+                        'shop_id' => $request->shopID,
                         'created_at' =>  date('Y-m-d H:i:s'),
                         'updated_at' => date('Y-m-d H:i:s'),
                     ]);
