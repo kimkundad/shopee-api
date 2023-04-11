@@ -324,7 +324,7 @@ class ApiController extends Controller
     // เพิ่มสินค้าหลายตัวเลือก
     public function addProductMultiOption(Request $request)
     {
-        if($request->sub_option == "ตัวเลือกที่ 2"){
+        if ($request->sub_option == "ตัวเลือกที่ 2") {
             $product = new product();
             $product->name_product = $request->name_product;
             $product->detail_product = $request->detail_product;
@@ -336,7 +336,7 @@ class ApiController extends Controller
             $product->sku = $request->sku;
             $product->type = 2;
             $product->active = 1;
-        }else{
+        } else {
             $product = new product();
             $product->name_product = $request->name_product;
             $product->detail_product = $request->detail_product;
@@ -349,7 +349,7 @@ class ApiController extends Controller
             $product->type = 3;
             $product->active = 1;
         }
-        
+
 
         $files = $request->file('file');
         $filePaths = null;
@@ -410,7 +410,6 @@ class ApiController extends Controller
                             ]);
                         }
                     }
-                    
                 }
             }
         }
@@ -844,6 +843,21 @@ class ApiController extends Controller
             'detail_shop' => $request['editDetailShop'],
             'updated_at' => date('Y-m-d H:i:s'),
         ]);
+
+        if ($request->input('selectID')) {
+            DB::table('shop_list_products')->where('shop_id', $request['shopID'])->delete();
+            $selectedProducts = $request->input('selectID');
+            if (is_array($selectedProducts)) {
+                foreach ($selectedProducts as $productId) {
+                    DB::table('shop_list_products')->insert([
+                        'product_id' => $productId,
+                        'shop_id' => $request['shopID'],
+                        'created_at' =>  date('Y-m-d H:i:s'),
+                        'updated_at' => date('Y-m-d H:i:s'),
+                    ]);
+                }
+            }
+        }
 
         return response()->json([
             'success' => 'Edit Shop successfully!',
