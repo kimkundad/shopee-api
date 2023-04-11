@@ -323,17 +323,32 @@ class ApiController extends Controller
     // เพิ่มสินค้าหลายตัวเลือก
     public function addProductMultiOption(Request $request)
     {
-        $product = new product();
-        $product->name_product = $request->name_product;
-        $product->detail_product = $request->detail_product;
-        $product->price = $request->price;
-        $product->price_sales = $request->price_sales;
-        $product->cost = $request->cost;
-        $product->stock = $request->stock;
-        $product->weight = $request->weight;
-        $product->sku = $request->sku;
-        $product->type = 2;
-        $product->active = 1;
+        if($request->sub_option == "ตัวเลือกที่ 2"){
+            $product = new product();
+            $product->name_product = $request->name_product;
+            $product->detail_product = $request->detail_product;
+            $product->price = $request->price;
+            $product->price_sales = $request->price_sales;
+            $product->cost = $request->cost;
+            $product->stock = $request->stock;
+            $product->weight = $request->weight;
+            $product->sku = $request->sku;
+            $product->type = 2;
+            $product->active = 1;
+        }else{
+            $product = new product();
+            $product->name_product = $request->name_product;
+            $product->detail_product = $request->detail_product;
+            $product->price = $request->price;
+            $product->price_sales = $request->price_sales;
+            $product->cost = $request->cost;
+            $product->stock = $request->stock;
+            $product->weight = $request->weight;
+            $product->sku = $request->sku;
+            $product->type = 3;
+            $product->active = 1;
+        }
+        
 
         $files = $request->file('file');
         $filePaths = null;
@@ -363,7 +378,7 @@ class ApiController extends Controller
 
                 foreach ($dataOption as $item) {
                     if ($item['indexImageOption'] == $index) {
-                        DB::table('product_options')->insert([
+                        $id_pro_option = DB::table('product_options')->lastInsertId([
                             'product_id' => $product->id,
                             'img_id' => $id_image,
                             'op_name' => $item['nameOption'],
@@ -371,6 +386,16 @@ class ApiController extends Controller
                             'price' => $item['priceOption'],
                             'stock' => $item['stockOption'],
                             'sku' => $item['skuOption'],
+                            'status' => 1,
+                        ]);
+                    }
+                    foreach ($item['subOption'] as $subItem) {
+                        DB::table('product_suboptions')->insert([
+                            'op_id' => $id_pro_option,
+                            'sub_op_name' => $subItem['nameSubOption'],
+                            'price' => $subItem['priceSubOption'],
+                            'stock' => $subItem['stockSubOption'],
+                            'sku' => $subItem['skuSubOption'],
                             'status' => 1,
                         ]);
                     }
