@@ -399,17 +399,18 @@ class ApiController extends Controller
                             'sku' => $item['skuOption'],
                             'status' => 1,
                         ]); */
+                        foreach ($item['subOption'] as $subItem) {
+                            DB::table('product_suboptions')->insert([
+                                'op_id' => $pro_option->id,
+                                'sub_op_name' => $subItem['nameSubOption'],
+                                'price' => $subItem['priceSubOption'],
+                                'stock' => $subItem['stockSubOption'],
+                                'sku' => $subItem['skuSubOption'],
+                                'status' => 1,
+                            ]);
+                        }
                     }
-                    foreach ($item['subOption'] as $subItem) {
-                        DB::table('product_suboptions')->insert([
-                            'op_id' => $pro_option->id,
-                            'sub_op_name' => $subItem['nameSubOption'],
-                            'price' => $subItem['priceSubOption'],
-                            'stock' => $subItem['stockSubOption'],
-                            'sku' => $subItem['skuSubOption'],
-                            'status' => 1,
-                        ]);
-                    }
+                    
                 }
             }
         }
