@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\product_option;
 use Illuminate\Http\Request;
 use App\Models\category;
 use App\Models\product;
@@ -378,7 +379,17 @@ class ApiController extends Controller
 
                 foreach ($dataOption as $item) {
                     if ($item['indexImageOption'] == $index) {
-                        $id_pro_option = DB::table('product_options')->lastInsertId([
+                        $pro_option = new product_option;
+                        $pro_option->product_id = $product->id;
+                        $pro_option->img_id = $id_image;
+                        $pro_option->op_name = $item['nameOption'];
+                        $pro_option->img_name = $filePaths;
+                        $pro_option->price = $item['priceOption'];
+                        $pro_option->stock = $item['stockOption'];
+                        $pro_option->sku = $item['skuOption'];
+                        $pro_option->status = 1;
+                        $pro_option->save();
+                        /* $id_pro_option = DB::table('product_options')->lastInsertId([
                             'product_id' => $product->id,
                             'img_id' => $id_image,
                             'op_name' => $item['nameOption'],
@@ -387,11 +398,11 @@ class ApiController extends Controller
                             'stock' => $item['stockOption'],
                             'sku' => $item['skuOption'],
                             'status' => 1,
-                        ]);
+                        ]); */
                     }
                     foreach ($item['subOption'] as $subItem) {
                         DB::table('product_suboptions')->insert([
-                            'op_id' => $id_pro_option,
+                            'op_id' => $pro_option->id,
                             'sub_op_name' => $subItem['nameSubOption'],
                             'price' => $subItem['priceSubOption'],
                             'stock' => $subItem['stockSubOption'],
