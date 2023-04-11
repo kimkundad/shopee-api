@@ -723,48 +723,67 @@ class ApiController extends Controller
     // ---------------------------------ฟังก์ชันสร้างร้านค้า create by อั้นเอง----------------------------
     public function createShop(Request $request)
     {
-        if ($request->hasFile('file')) {
+        if ($request->hasFile('file') && $request->hasFile('file2')) {
             $files = $request->file('file');
             $filePaths = null;
             foreach ($files as $file) {
                 $filename = time() . '.' . $file->getClientOriginalExtension();
                 $image = Image::make($file->getRealPath());
-                $image->resize(300, 300, function ($constraint) {
+                $image->resize(250, 250, function ($constraint) {
                     $constraint->aspectRatio();
                 });
                 $image->stream();
                 Storage::disk('do_spaces')->put('shopee/shop/' . $file->hashName(), $image, 'public');
                 $filePaths = $file->hashName();
             }
-        }
 
-        if ($request->hasFile('file2')) {
             $files2 = $request->file('file2');
             $filePaths2 = null;
             foreach ($files2 as $file2) {
                 $filename2 = time() . '.' . $file2->getClientOriginalExtension();
                 $image2 = Image::make($file2->getRealPath());
-                $image2->resize(300, 300, function ($constraint) {
+                $image2->resize(450, 200, function ($constraint) {
                     $constraint->aspectRatio();
                 });
                 $image2->stream();
                 Storage::disk('do_spaces')->put('shopee/cover_img_shop/' . $file2->hashName(), $image2, 'public');
                 $filePaths2 = $file2->hashName();
             }
+
+            DB::table('shops')->insert([
+                'name_shop' => $request['nameShop'],
+                'detail_shop' => $request['detailShop'],
+                'img_shop' => $filePaths,
+                'cover_img_shop' => $filePaths2,
+                'created_at' =>  date('Y-m-d H:i:s'),
+                'updated_at' => date('Y-m-d H:i:s'),
+            ]);
+            // รับค่า ID ของแถวที่เพิ่งถูกเพิ่มล่าสุดเข้าไปในตาราง users
+            $lastInsertId = DB::getPdo()->lastInsertId();
+
+            if ($request->input('selectID')) {
+                $selectedProducts = $request->input('selectID');
+                if (is_array($selectedProducts)) {
+                    foreach ($selectedProducts as $productId) {
+                        DB::table('shop_list_products')->insert([
+                            'product_id' => $productId,
+                            'shop_id' => $lastInsertId,
+                            'created_at' =>  date('Y-m-d H:i:s'),
+                            'updated_at' => date('Y-m-d H:i:s'),
+                        ]);
+                    }
+                }
+            }
+
+
+            return response()->json([
+                'success' => 'Create Shop successfully!',
+            ], 201);
+        } else {
+            return response()->json([
+                'errors' => 'Insert Shop Errors!',
+            ], 500);
         }
-
-        DB::table('shops')->insert([
-            'name_shop' => $request['nameShop'],
-            'detail_shop' => $request['detailShop'],
-            'img_shop' => $filePaths,
-            'cover_img_shop' => $filePaths2,
-            'created_at' =>  date('Y-m-d H:i:s'),
-            'updated_at' => date('Y-m-d H:i:s'),
-        ]);
-
-        return response()->json([
-            'success' => 'Create Shop successfully!',
-        ], 201);
     }
 
     // -----------------------------------ฟังก์ชันแก้ไขข้อมูลร้านค้า create by อั้นเอง---------------------------------
@@ -831,6 +850,8 @@ class ApiController extends Controller
 
         DB::table('shops')->where('id', $shopID)->delete();
 
+        DB::table('shop_list_products')->where('shop_id', $shopID)->delete();
+
         return response()->json([
             'success' => 'Delete Shop successfully!',
         ], 201);
@@ -845,6 +866,17 @@ class ApiController extends Controller
         ]);
         return response()->json([
             'success' => 'Change Status Shop successfully!',
+        ], 201);
+    }
+
+    //-------------------- ดึงข้อมูล Product ของร้านค้านั้นๆ -------------------------
+    public function getListProduct($shopid)
+    {
+        $shopID = $shopid;
+        $list_products = DB::table('shop_list_products')->select('*')->where('shop_id', $shopID)->get();
+        return response()->json([
+            'list_products' => $list_products,
+            'success' => 'Get List Product Shop successfully!',
         ], 201);
     }
 }
