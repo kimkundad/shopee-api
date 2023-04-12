@@ -275,6 +275,9 @@ class ApiController extends Controller
             $product->cost = $request->cost;
             $product->stock = $request->stock;
             $product->weight = $request->weight;
+            $product->width_product = $request->width_product;
+            $product->length_product = $request->length_product;
+            $product->height_product = $request->height_product;
             $product->sku = $request->sku;
             $product->category = $request->category;
             $product->type = 1;
@@ -289,6 +292,9 @@ class ApiController extends Controller
             $product->cost = $request->cost;
             $product->stock = $request->stock;
             $product->weight = $request->weight;
+            $product->width_product = $request->width_product;
+            $product->length_product = $request->length_product;
+            $product->height_product = $request->height_product;
             $product->sku = $request->sku;
             $product->option1 = $request->option1;
             $product->category = $request->category;
@@ -303,6 +309,9 @@ class ApiController extends Controller
             $product->cost = $request->cost;
             $product->stock = $request->stock;
             $product->weight = $request->weight;
+            $product->width_product = $request->width_product;
+            $product->length_product = $request->length_product;
+            $product->height_product = $request->height_product;
             $product->sku = $request->sku;
             $product->option1 = $request->option1;
             $product->option1 = $request->option2;
@@ -378,6 +387,9 @@ class ApiController extends Controller
             'product' => 'a',
         ], 201);
     }
+
+    // แก้ไขข้อมูลสินค้า
+    public function 
 
     // ดึงข้อมูลร้านค้า
     public function get_shop_name($id)
