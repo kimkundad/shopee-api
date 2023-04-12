@@ -263,11 +263,10 @@ class ApiController extends Controller
         }
     }
 
-    // เพิ่มสินค้าหน้าคลังสินค้า
+    // เพิ่มสินค้า
     public function addProduct(Request $request)
     {
-        try {
-
+        if($request->option1 == "ตัวเลือกที่ 1"|| $request->option2 == "ตัวเลือกที่ 2"){
             $product = new product();
             $product->name_product = $request->name_product;
             $product->detail_product = $request->detail_product;
@@ -277,63 +276,10 @@ class ApiController extends Controller
             $product->stock = $request->stock;
             $product->weight = $request->weight;
             $product->sku = $request->sku;
-            $product->type = 1;
+            $product->type = 2;
             $product->active = 1;
-
-            /* $files = $request->file('file');
-            $filePaths = [];
-
-            foreach ($files as $file) {
-                $filename = time().'.'.$file->getClientOriginalExtension();
-                $image = Image::make($file->getRealPath());
-                $image->resize(300, 300, function ($constraint) {
-                    $constraint->aspectRatio();
-                });
-                $image->stream();
-                Storage::disk('do_spaces')->put('shopee/products/'.$file->hashName(), $image, 'public');
-                $filePaths[] = $file->hashName();
-            } */
-
-            $files = $request->file('file');
-            $filePaths = null;
-            $product_id = 0;
-            $first = true;
-            foreach ($files as $file) {
-                $filename = time() . '.' . $file->getClientOriginalExtension();
-                $image = Image::make($file->getRealPath());
-                $image->resize(300, 300, function ($constraint) {
-                    $constraint->aspectRatio();
-                });
-                $image->stream();
-                Storage::disk('do_spaces')->put('shopee/products/' . $file->hashName(), $image, 'public');
-                $filePaths = $file->hashName();
-                if ($first) {
-                    $product->img_product = $filePaths;
-                    $product->save();
-                    $product_id = product::select('id')->orderBy('created_at', 'desc')->first();
-                    $first = false;
-                } else {
-                    DB::table('product_images')->insert([
-                        'image' => $filePaths,
-                        'product_id' => $product_id['id'],
-                        'status' => 0,
-                    ]);
-                }
-            }
-            return response()->json([
-                'product' => $files,
-            ], 201);
-        } catch (Exception $e) {
-            return response()->json([
-                'error' => $e->getMessage(),
-            ], 400);
         }
-    }
-
-    // เพิ่มสินค้าหลายตัวเลือก
-    public function addProductMultiOption(Request $request)
-    {
-        if ($request->sub_option == "ตัวเลือกที่ 2") {
+        else if ($request->sub_option == "ตัวเลือกที่ 2") {
             $product = new product();
             $product->name_product = $request->name_product;
             $product->detail_product = $request->detail_product;
@@ -343,6 +289,7 @@ class ApiController extends Controller
             $product->stock = $request->stock;
             $product->weight = $request->weight;
             $product->sku = $request->sku;
+            $product->option1 = $request->option1;
             $product->type = 2;
             $product->active = 1;
         } else {
@@ -355,6 +302,8 @@ class ApiController extends Controller
             $product->stock = $request->stock;
             $product->weight = $request->weight;
             $product->sku = $request->sku;
+            $product->option1 = $request->option1;
+            $product->option1 = $request->option2;
             $product->type = 3;
             $product->active = 1;
         }

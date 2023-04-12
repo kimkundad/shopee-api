@@ -25,7 +25,6 @@ Route::group([
     Route::put('/setActiveAllProduct', [App\Http\Controllers\ApiController::class, 'set_active_AllProduct']);
     Route::post('/deleteProduct/{id}', [App\Http\Controllers\ApiController::class, 'delete_product']);
     Route::post('/addProduct', [App\Http\Controllers\ApiController::class, 'addProduct']);
-    Route::post('/addProductMultiOption', [App\Http\Controllers\ApiController::class, 'addProductMultiOption']);
     Route::get('/shop/{id}', [App\Http\Controllers\ApiController::class, 'get_shop_name']);
     Route::post('/searchProduct/{id}', [App\Http\Controllers\ApiController::class, 'search_product']);
     Route::get('/getAllProduct', [App\Http\Controllers\ApiController::class, 'get_allproduct']);
