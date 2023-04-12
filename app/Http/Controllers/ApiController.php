@@ -153,6 +153,9 @@ class ApiController extends Controller
             ->select('*','id as product_id')
             ->where('products.id', '=', $product_id)
             ->get();
+            return response()->json([
+                'product' => $objs,
+            ], 201);
         }
         
 
