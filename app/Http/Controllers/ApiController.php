@@ -276,7 +276,7 @@ class ApiController extends Controller
             $product->stock = $request->stock;
             $product->weight = $request->weight;
             $product->sku = $request->sku;
-            $product->type = 2;
+            $product->type = 1;
             $product->active = 1;
         }
         else if ($request->sub_option == "ตัวเลือกที่ 2") {
