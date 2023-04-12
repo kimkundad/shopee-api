@@ -146,44 +146,46 @@ class ApiController extends Controller
             ->where('products.id', '=', $product_id)
             ->where('products.active', '=', 1)
             ->get();
-
-        $objs->map(function ($item) {
-            $item->allImage = DB::table('product_images')->where('product_id', '=', $item->product_id)->get();
-            return $item;
-        });
-        if ($objs !== null && $objs[0]->type == 2) {
+        if ($objs !== null) {
             $objs->map(function ($item) {
-                $item->allOption1 = DB::table('product_options')->where('product_id', '=', $item->product_id)->where('status', '=', 1)->get();
+                $item->allImage = DB::table('product_images')->where('product_id', '=', $item->product_id)->get();
                 return $item;
             });
-        } else if ($objs !== null && $objs[0]->type == 3) {
-            $objs->map(function ($item) {
-                $item->allOption1 = DB::table('product_options')->where('product_id', '=', $item->product_id)->where('status', '=', 1)->get();
-                $item->allOption1->map(function ($item2) {
-                    $item2->allOption2 = DB::table('product_suboptions')->where('op_id', '=', $item2->id)->where('status', '=', 1)->get();
-                    return $item2;
+
+
+            if ($objs !== null && $objs[0]->type == 2) {
+                $objs->map(function ($item) {
+                    $item->allOption1 = DB::table('product_options')->where('product_id', '=', $item->product_id)->where('status', '=', 1)->get();
+                    return $item;
                 });
-                return $item;
-            });
-            $allOption = DB::table('product_options')->select('id')->where('product_id', '=', $product_id)->where('status', '=', 1)->pluck('id');
-            $allSubOption = DB::table('product_suboptions')
-                ->whereIn('op_id', $allOption)
-                ->where('status', '=', 1)
-                ->select('sub_op_name')
-                ->distinct()
-                ->get();
-        }
-
-        if ($objs[0]->type == 3) {
-            return response()->json([
-                'product' => $objs,
-                'allSupOption' => $allSubOption,
-            ], 201);
-        } else {
-            return response()->json([
-                'product' => $objs,
-                'allSupOption' => [],
-            ], 201);
+            } else if ($objs !== null && $objs[0]->type == 3) {
+                $objs->map(function ($item) {
+                    $item->allOption1 = DB::table('product_options')->where('product_id', '=', $item->product_id)->where('status', '=', 1)->get();
+                    $item->allOption1->map(function ($item2) {
+                        $item2->allOption2 = DB::table('product_suboptions')->where('op_id', '=', $item2->id)->where('status', '=', 1)->get();
+                        return $item2;
+                    });
+                    return $item;
+                });
+                $allOption = DB::table('product_options')->select('id')->where('product_id', '=', $product_id)->where('status', '=', 1)->pluck('id');
+                $allSubOption = DB::table('product_suboptions')
+                    ->whereIn('op_id', $allOption)
+                    ->where('status', '=', 1)
+                    ->select('sub_op_name')
+                    ->distinct()
+                    ->get();
+            }
+            if ($objs[0]->type == 3) {
+                return response()->json([
+                    'product' => $objs,
+                    'allSupOption' => $allSubOption,
+                ], 201);
+            } else {
+                return response()->json([
+                    'product' => $objs,
+                    'allSupOption' => [],
+                ], 201);
+            }
         }
     }
 
