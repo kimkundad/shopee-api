@@ -150,7 +150,8 @@ class ApiController extends Controller
             ->get();
         }else{
             $objs = DB::table('products')
-            ->where('id', '=', $product_id)
+            ->select('*','id as product_id')
+            ->where('products.id', '=', $product_id)
             ->get();
         }
         
