@@ -145,20 +145,20 @@ class ApiController extends Controller
             /* ->where('shop_list_products.shop_id', '=', $shop_id) */
             ->where('products.id', '=', $product_id)
             ->where('products.active', '=', 1)
-            ->first();
-        if ($objs !== null) {
+            ->get();
+        if ($objs) {
             $objs->map(function ($item) {
                 $item->allImage = DB::table('product_images')->where('product_id', '=', $item->product_id)->get();
                 return $item;
             });
 
 
-            if ($objs !== null && $objs->type == 2) {
+            if ($objs !== null && $objs[0]->type == 2) {
                 $objs->map(function ($item) {
                     $item->allOption1 = DB::table('product_options')->where('product_id', '=', $item->product_id)->where('status', '=', 1)->get();
                     return $item;
                 });
-            } else if ($objs !== null && $objs->type == 3) {
+            } else if ($objs !== null && $objs[0]->type == 3) {
                 $objs->map(function ($item) {
                     $item->allOption1 = DB::table('product_options')->where('product_id', '=', $item->product_id)->where('status', '=', 1)->get();
                     $item->allOption1->map(function ($item2) {
@@ -175,7 +175,7 @@ class ApiController extends Controller
                     ->distinct()
                     ->get();
             }
-            if ($objs->type == 3) {
+            if ($objs[0]->type == 3) {
                 return response()->json([
                     'product' => $objs,
                     'allSupOption' => $allSubOption,
