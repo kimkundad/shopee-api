@@ -140,7 +140,7 @@ class ApiController extends Controller
 
         $product_id = $request->input('product_id');
         $shop_id = $request->input('shop_id');
-        if($shop_id !== 'undefined'){
+        if($shop_id !== null){
             $objs = DB::table('shop_list_products')
             ->join('products', 'shop_list_products.product_id', '=', 'products.id')
             /* ->join('product_images','product_images.product_id','=','shop_list_products.product_id') */
@@ -153,9 +153,6 @@ class ApiController extends Controller
             ->select('*','id as product_id')
             ->where('products.id', '=', $product_id)
             ->get();
-            return response()->json([
-                'product' => $objs,
-            ], 201);
         }
         
 
