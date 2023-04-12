@@ -142,7 +142,7 @@ class ApiController extends Controller
         $objs = DB::table('shop_list_products')
             ->join('products', 'shop_list_products.product_id', '=', 'products.id')
             /* ->join('product_images','product_images.product_id','=','shop_list_products.product_id') */
-            ->where('shop_list_products.shop_id', '=', $shop_id)
+            /* ->where('shop_list_products.shop_id', '=', $shop_id) */
             ->where('products.id', '=', $product_id)
             ->where('products.active', '=', 1)
             ->get();
