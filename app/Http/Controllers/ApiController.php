@@ -137,16 +137,17 @@ class ApiController extends Controller
     // ดึงข้อมูลสินค้ามาแสดงหน้ารายละเอียดสินค้า
     public function get_product(Request $request)
     {
-        $product_id = $request->input('product_id');
-        $shop_id = $request->input('shop_id');
-        $objs = DB::table('shop_list_products')
-            ->join('products', 'shop_list_products.product_id', '=', 'products.id')
-            /* ->join('product_images','product_images.product_id','=','shop_list_products.product_id') */
-            /* ->where('shop_list_products.shop_id', '=', $shop_id) */
-            ->where('products.id', '=', $product_id)
-            ->where('products.active', '=', 1)
-            ->get();
-        if ($objs) {
+        if ($request->input('product_id') !== 'undefined') {
+            $product_id = $request->input('product_id');
+            $shop_id = $request->input('shop_id');
+            $objs = DB::table('shop_list_products')
+                ->join('products', 'shop_list_products.product_id', '=', 'products.id')
+                /* ->join('product_images','product_images.product_id','=','shop_list_products.product_id') */
+                /* ->where('shop_list_products.shop_id', '=', $shop_id) */
+                ->where('products.id', '=', $product_id)
+                ->where('products.active', '=', 1)
+                ->get();
+
             $objs->map(function ($item) {
                 $item->allImage = DB::table('product_images')->where('product_id', '=', $item->product_id)->get();
                 return $item;
