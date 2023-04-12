@@ -276,6 +276,7 @@ class ApiController extends Controller
             $product->stock = $request->stock;
             $product->weight = $request->weight;
             $product->sku = $request->sku;
+            $product->category = $request->category;
             $product->type = 1;
             $product->active = 1;
         }
@@ -290,6 +291,7 @@ class ApiController extends Controller
             $product->weight = $request->weight;
             $product->sku = $request->sku;
             $product->option1 = $request->option1;
+            $product->category = $request->category;
             $product->type = 2;
             $product->active = 1;
         } else {
@@ -304,6 +306,7 @@ class ApiController extends Controller
             $product->sku = $request->sku;
             $product->option1 = $request->option1;
             $product->option1 = $request->option2;
+            $product->category = $request->category;
             $product->type = 3;
             $product->active = 1;
         }
