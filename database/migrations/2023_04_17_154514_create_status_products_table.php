@@ -15,6 +15,7 @@ return new class extends Migration
     {
         Schema::create('status_products', function (Blueprint $table) {
             $table->id();
+            $table->integer('user_id');
             $table->integer('shop_id');
             $table->integer('product_id');
             $table->integer('product_option_id');
