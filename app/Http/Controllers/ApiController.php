@@ -348,7 +348,7 @@ class ApiController extends Controller
             }
         }
         foreach ($dataOption as $item) {
-            $filename = time() . '.' . $item['fileImageOption']->getClientOriginalExtension();
+            $filename = time() . '.' . $item['fileImageOption']->extension();
             $image = Image::make($item['fileImageOption']->getRealPath());
             $image->resize(300, 300, function ($constraint) {
                 $constraint->aspectRatio();
