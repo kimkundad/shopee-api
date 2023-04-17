@@ -348,14 +348,14 @@ class ApiController extends Controller
             }
         }
         foreach ($dataOption as $item) {
-            $filename = time() . '.' . $item->fileImageOption->getClientOriginalExtension();
-            $image = Image::make($item->fileImageOption->getRealPath());
+            $filename = time() . '.' . $item['fileImageOption']->getClientOriginalExtension();
+            $image = Image::make($item['fileImageOption']->getRealPath());
             $image->resize(300, 300, function ($constraint) {
                 $constraint->aspectRatio();
             });
             $image->stream();
-            Storage::disk('do_spaces')->put('shopee/products/' . $item->fileImageOption->hashName(), $image, 'public');
-            $filePaths = $item->fileImageOption->hashName();
+            Storage::disk('do_spaces')->put('shopee/products/' . $item['fileImageOption']->hashName(), $image, 'public');
+            $filePaths = $item['fileImageOption']->hashName();
             $id_image = DB::table('product_images')->insertGetId([
                 'image' => $filePaths,
                 'product_id' => $product_id['id'],
