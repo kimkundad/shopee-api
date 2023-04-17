@@ -347,8 +347,9 @@ class ApiController extends Controller
                 ]);
             }
         }
-        foreach ($dataOption as $index => $item) {
-            $file = $item->file(['fileImageOption']);
+
+        $filesOption = $request->file('fileOption');
+        foreach ($filesOption as $index => $file) {
             $filename = time() . '.' . $file->getClientOriginalExtension();
             $image = Image::make($file->getRealPath());
             $image->resize(300, 300, function ($constraint) {
@@ -357,33 +358,39 @@ class ApiController extends Controller
             $image->stream();
             Storage::disk('do_spaces')->put('shopee/products/' . $file->hashName(), $image, 'public');
             $filePaths = $file->hashName();
-            $id_image = DB::table('product_images')->insertGetId([
-                'image' => $filePaths,
-                'product_id' => $product_id['id'],
-                'status' => 0,
-            ]);
-            $pro_option = new product_option;
-            $pro_option->product_id = $product->id;
-            $pro_option->img_id = $id_image;
-            $pro_option->op_name = $item['nameOption'];
-            $pro_option->img_name = $filePaths;
-            $pro_option->price = $item['priceOption'];
-            $pro_option->stock = $item['stockOption'];
-            $pro_option->sku = $item['skuOption'];
-            $pro_option->status = 1;
-            $pro_option->save();
-
-            foreach ($item['subOption'] as $subItem) {
-                DB::table('product_suboptions')->insert([
-                    'op_id' => $pro_option->id,
-                    'sub_op_name' => $subItem['nameSubOption'],
-                    'price' => $subItem['priceSubOption'],
-                    'stock' => $subItem['stockSubOption'],
-                    'sku' => $subItem['skuSubOption'],
-                    'status' => 1,
-                ]);
+            foreach ($dataOption as $subIndex => $item) {
+                if($index == $subIndex){
+                    $id_image = DB::table('product_images')->insertGetId([
+                        'image' => $filePaths,
+                        'product_id' => $product_id['id'],
+                        'status' => 0,
+                    ]);
+                    $pro_option = new product_option;
+                    $pro_option->product_id = $product->id;
+                    $pro_option->img_id = $id_image;
+                    $pro_option->op_name = $item['nameOption'];
+                    $pro_option->img_name = $filePaths;
+                    $pro_option->price = $item['priceOption'];
+                    $pro_option->stock = $item['stockOption'];
+                    $pro_option->sku = $item['skuOption'];
+                    $pro_option->status = 1;
+                    $pro_option->save();
+        
+                    foreach ($item['subOption'] as $subItem) {
+                        DB::table('product_suboptions')->insert([
+                            'op_id' => $pro_option->id,
+                            'sub_op_name' => $subItem['nameSubOption'],
+                            'price' => $subItem['priceSubOption'],
+                            'stock' => $subItem['stockSubOption'],
+                            'sku' => $subItem['skuSubOption'],
+                            'status' => 1,
+                        ]);
+                    }
+                }
+                
             }
         }
+        
         return response()->json([
             'product' => 'a',
         ], 201);
