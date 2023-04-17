@@ -18,7 +18,6 @@ return new class extends Migration
             $table->integer('order_id');
             $table->integer('user_id');
             $table->integer('product_id');
-            $table->integer('user_id');
             $table->integer('option1');
             $table->integer('option2');
             $table->integer('num');
