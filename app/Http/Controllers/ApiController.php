@@ -347,8 +347,8 @@ class ApiController extends Controller
                 ]);
             }
         }
-        foreach ($dataOption as $item) {
-            $file = $item['fileImageOption'];
+        foreach ($dataOption as $index => $item) {
+            $file = $item->file('fileImageOption');
             $filename = time() . '.' . $file->getClientOriginalExtension();
             $image = Image::make($file->getRealPath());
             $image->resize(300, 300, function ($constraint) {
