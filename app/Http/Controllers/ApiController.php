@@ -142,19 +142,19 @@ class ApiController extends Controller
 
         $product_id = $request->input('product_id');
         $shop_id = $request->input('shop_id');
-        if($shop_id !== null){
+        if ($shop_id !== null) {
             $objs = DB::table('shop_list_products')
-            ->join('products', 'shop_list_products.product_id', '=', 'products.id')
-            /* ->join('product_images','product_images.product_id','=','shop_list_products.product_id') */
-            ->where('shop_list_products.shop_id', '=', $shop_id)
-            ->where('products.id', '=', $product_id)
-            ->where('products.active', '=', 1)
-            ->get();
-        }else{
+                ->join('products', 'shop_list_products.product_id', '=', 'products.id')
+                /* ->join('product_images','product_images.product_id','=','shop_list_products.product_id') */
+                ->where('shop_list_products.shop_id', '=', $shop_id)
+                ->where('products.id', '=', $product_id)
+                ->where('products.active', '=', 1)
+                ->get();
+        } else {
             $objs = DB::table('products')
-            ->select('*','id as product_id')
-            ->where('products.id', '=', $product_id)
-            ->get();
+                ->select('*', 'id as product_id')
+                ->where('products.id', '=', $product_id)
+                ->get();
         }
 
 
@@ -199,14 +199,15 @@ class ApiController extends Controller
     }
 
     // สร้าง order
-    public function created_order(Request $request){
+    public function created_order(Request $request)
+    {
 
         $order = new orders();
         $order->user_id = $request->user_id;
         $order->shop_id = $request->shop_id;
         $order->order_detail_id = 0;
         $order->num = $request->num;
-        $order->price = $request->price;
+        $order->price = $request->total;
         $order->discount = $request->discount;
         $order->status = $request->status;
         $order->save();
@@ -222,8 +223,18 @@ class ApiController extends Controller
 
         $price = $request->price;
         $num = $request->num;
+    }
 
-
+    // ดึงข้อมูล order
+    public function get_order(Request $request)
+    {
+        $user_id = $request->input('product_id');
+        $shop_id = $request->input('shop_id');
+        $orders = DB::table('orders')->join('order_details', 'order_details.order_id', '=', 'orders.id')
+            ->where('user_id', '=', $user_id)->where('shop_id', '=', $shop_id)->get();
+        return response()->json([
+            'orders' => $orders
+        ], 201);
     }
     // ตั้งค่าเปิดปิดใช้งานสินค้า
     public function set_active_product(Request $request)
@@ -295,7 +306,7 @@ class ApiController extends Controller
     // เพิ่มสินค้า
     public function addProduct(Request $request)
     {
-        if($request->option1 == "ตัวเลือกที่ 1"|| $request->option2 == "ตัวเลือกที่ 2"){
+        if ($request->option1 == "ตัวเลือกที่ 1" || $request->option2 == "ตัวเลือกที่ 2") {
             $product = new product();
             $product->name_product = $request->name_product;
             $product->detail_product = $request->detail_product;
@@ -311,8 +322,7 @@ class ApiController extends Controller
             $product->category = $request->category;
             $product->type = 1;
             $product->active = 1;
-        }
-        else if ($request->sub_option == "ตัวเลือกที่ 2") {
+        } else if ($request->sub_option == "ตัวเลือกที่ 2") {
             $product = new product();
             $product->name_product = $request->name_product;
             $product->detail_product = $request->detail_product;
@@ -418,14 +428,15 @@ class ApiController extends Controller
     }
 
     // แก้ไขข้อมูลสินค้า
-    public function editProduct(Request $request,$id) {
+    public function editProduct(Request $request, $id)
+    {
         DB::table('products')
-        ->join('product_options','product_options.product_id','=','products.id')
-        ->join('product_suboptions','product_suboptions.op_id','=','product_option.id')
-        ->join('shop_list_products','products.id','=','shop_list_products.product_id')
-        ->join('product_images','product_images.product_id','=','products.id')
-        ->where('products.id','=',$id)
-        ->delete();
+            ->join('product_options', 'product_options.product_id', '=', 'products.id')
+            ->join('product_suboptions', 'product_suboptions.op_id', '=', 'product_option.id')
+            ->join('shop_list_products', 'products.id', '=', 'shop_list_products.product_id')
+            ->join('product_images', 'product_images.product_id', '=', 'products.id')
+            ->where('products.id', '=', $id)
+            ->delete();
     }
 
     // ดึงข้อมูลร้านค้า
