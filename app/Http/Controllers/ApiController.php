@@ -823,6 +823,7 @@ class ApiController extends Controller
         DB::table('shops')->where('id', $request['shopID'])->update([
             'name_shop' => $request['editNameShop'],
             'detail_shop' => $request['editDetailShop'],
+            'theme' => $request->editThemeShop,
             'updated_at' => date('Y-m-d H:i:s'),
         ]);
 
