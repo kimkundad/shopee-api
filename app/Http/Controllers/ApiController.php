@@ -231,22 +231,28 @@ class ApiController extends Controller
         $user_id = $request->input('user_id');
         $shop_id = $request->input('shop_id');
         $orders = DB::table('orders')
-            ->join('shops','shops.id','=',$shop_id)
+            ->join('shops', 'shops.id', '=', $shop_id)
             ->select([
                 'shops.id as shop_id',
                 'shops.name_shop as name_shop',
-                '*'
+                'orders.status',
+                'orders.price',
+                'orders.num',
+                'orders.discount',
+                'orders.id'
             ])
             ->where('orders.user_id', '=', $user_id)
             ->where('orders.shop_id', '=', $shop_id)
             ->get()
             ->map(function ($item) {
                 $item->item = DB::table('order_details')
-                ->join('products','products.id','=','order_details.product_id')
-                ->join('product_options','product_options','=','order_details.option1')
-                ->join('product_suboptions','product_suboptions','=','order_details.option2')
-                ->where('order_details.order_id','=',$item->id)
-                ->get();
+                    ->join('products', 'products.id', '=', 'order_details.product_id')
+                    ->join('product_options', 'product_options', '=', 'order_details.option1')
+                    ->join('product_suboptions', 'product_suboptions', '=', 'order_details.option2')
+                    ->where('order_details.order_id', '=', $item->id)
+                    ->get();
+
+                return $item;
             });
 
         return response()->json([
