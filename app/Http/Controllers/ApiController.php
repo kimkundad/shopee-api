@@ -230,7 +230,7 @@ class ApiController extends Controller
     {
         $user_id = $request->input('user_id');
         $shop_id = $request->input('shop_id');
-        
+
         $orders = DB::table('orders')
             ->join('shops', 'shops.id', '=', 'orders.shop_id')
             ->where('orders.user_id', '=', $user_id)
@@ -248,7 +248,7 @@ class ApiController extends Controller
             ->get()
             ->map(function ($item) {
                 $item->item = DB::table('order_details')
-                    ->leftjoin('products', 'products.id', '=', 'order_details.product_id')
+                    ->join('products', 'products.id', '=', 'order_details.product_id')
                     ->leftjoin('product_options', 'product_options.id', '=', 'order_details.option1')
                     ->leftjoin('product_suboptions', 'product_suboptions.id', '=', 'order_details.option2')
                     ->where('order_details.order_id', '=', $item->id)
