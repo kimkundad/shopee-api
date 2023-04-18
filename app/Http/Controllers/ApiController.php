@@ -247,7 +247,7 @@ class ApiController extends Controller
             ->map(function ($item) {
                 $item->item = DB::table('order_details')
                     ->join('products', 'products.id', '=', 'order_details.product_id')
-                    ->join('product_options', 'product_options', '=', 'order_details.option1')
+                    ->join('product_options', 'product_options.id', '=', 'order_details.option1')
                     ->join('product_suboptions', 'product_suboptions.id', '=', 'order_details.option2')
                     ->where('order_details.order_id', '=', $item->id)
                     ->get();
