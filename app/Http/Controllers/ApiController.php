@@ -205,8 +205,8 @@ class ApiController extends Controller
         $order->user_id = $request->user_id;
         $order->shop_id = $request->shop_id;
         $order->order_detail_id = 0;
-        $order->num = $request->price;
-        $order->price = $request->num;
+        $order->num = $request->num;
+        $order->price = $request->price;
         $order->discount = $request->discount;
         $order->status = $request->status;
         $order->save();
