@@ -234,7 +234,7 @@ class ApiController extends Controller
             ->join('shops', 'shops.id', '=', 'orders.shop_id')
             ->where('orders.user_id', '=', $user_id)
             ->where('orders.shop_id', '=', $shop_id)
-            ->orderBy('orders.updated_date','desc')
+            ->orderBy('orders.updated_at','desc')
             ->select([
                 'shops.id as id_shop',
                 'shops.name_shop as name_shop',
@@ -251,7 +251,7 @@ class ApiController extends Controller
                     ->leftjoin('product_options', 'product_options.id', '=', 'order_details.option1')
                     ->leftjoin('product_suboptions', 'product_suboptions.id', '=', 'order_details.option2')
                     ->where('order_details.order_id', '=', $item->id)
-                    ->orderBy('order_details.updated_date','desc')
+                    ->orderBy('order_details.updated_at','desc')
                     ->get();
 
                 return $item;
