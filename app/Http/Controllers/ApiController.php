@@ -231,7 +231,7 @@ class ApiController extends Controller
         $user_id = $request->input('user_id');
         $shop_id = $request->input('shop_id');
         $orders = DB::table('orders')->join('order_details', 'order_details.order_id', '=', 'orders.id')
-            ->where('user_id', '=', $user_id)->where('shop_id', '=', $shop_id)->get();
+            ->where('orders.user_id', '=', $user_id)->where('orders.shop_id', '=', $shop_id)->get();
         return response()->json([
             'orders' => $orders
         ], 201);
