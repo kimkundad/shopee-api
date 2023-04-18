@@ -201,7 +201,7 @@ class ApiController extends Controller
     // สร้าง order
     public function created_order(Request $request){
 
-        $order = new order();
+        $order = new orders();
         $order->user_id = $request->user_id;
         $order->shop_id = $request->shop_id;
         $order->order_detail_id = 0;
