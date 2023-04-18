@@ -234,12 +234,21 @@ class ApiController extends Controller
             ->join('shops', 'shops.id', '=', 'orders.shop_id')
             ->where('orders.user_id', '=', $user_id)
             ->where('orders.shop_id', '=', $shop_id)
+            ->select([
+                'shops.id as id_shop',
+                'shops.name_shop as name_shop',
+                'orders.status',
+                'orders.price',
+                'orders.num',
+                'orders.discount',
+                'orders.id'
+            ])
             ->get()
             ->map(function ($item) {
                 $item->item = DB::table('order_details')
                     ->join('products', 'products.id', '=', 'order_details.product_id')
                     ->join('product_options', 'product_options', '=', 'order_details.option1')
-                    ->join('product_suboptions', 'product_suboptions', '=', 'order_details.option2')
+                    ->join('product_suboptions', 'product_suboptions.id', '=', 'order_details.option2')
                     ->where('order_details.order_id', '=', $item->id)
                     ->get();
 
