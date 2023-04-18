@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\orders;
-use App\Models\order_detail;
+use App\Models\order_details;
 use App\Models\product_option;
 use Illuminate\Http\Request;
 use App\Models\category;
@@ -211,7 +211,7 @@ class ApiController extends Controller
         $order->status = $request->status;
         $order->save();
 
-        $order_detail = new order_detail();
+        $order_detail = new order_details();
         $order_detail->product_id = $request->product_id;
         $order_detail->user_id = $request->user_id;
         $order_detail->order_id = $order->id;
