@@ -235,6 +235,7 @@ class ApiController extends Controller
             ->where('orders.user_id', '=', $user_id)
             ->where('orders.shop_id', '=', $shop_id)
             ->orderBy('orders.updated_at','desc')
+            ->groupBy('orders.status')
             ->select([
                 'shops.id as id_shop',
                 'shops.name_shop as name_shop',
@@ -244,7 +245,6 @@ class ApiController extends Controller
                 'orders.discount',
                 'orders.id'
             ])
-            ->groupBy('orders.status')
             ->get()
             ->map(function ($item) {
                 $item->item = DB::table('order_details')
