@@ -232,6 +232,8 @@ class ApiController extends Controller
         $shop_id = $request->input('shop_id');
         $orders = DB::table('orders')
             ->join('shops', 'shops.id', '=', $shop_id)
+            ->where('orders.user_id', '=', $user_id)
+            ->where('orders.shop_id', '=', $shop_id)
             ->select([
                 'shops.id as shop_id',
                 'shops.name_shop as name_shop',
@@ -241,8 +243,6 @@ class ApiController extends Controller
                 'orders.discount',
                 'orders.id'
             ])
-            ->where('orders.user_id', '=', $user_id)
-            ->where('orders.shop_id', '=', $shop_id)
             ->get()
             ->map(function ($item) {
                 $item->item = DB::table('order_details')
