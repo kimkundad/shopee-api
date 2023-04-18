@@ -260,8 +260,8 @@ class ApiController extends Controller
                         'order_details.num',
                         'products.option1',
                         'products.option2',
-                        'product_option.op_name',
-                        'product_option.price as op_price',
+                        'product_options.op_name',
+                        'product_options.price as op_price',
                         'product_suboptions.sub_op_name',
                         'product_suboptions.price as sub_op_price',
                     ])
