@@ -244,7 +244,7 @@ class ApiController extends Controller
                 'orders.id'
             ])
             ->get()
-            ->map(function ($item) {
+            /* ->map(function ($item) {
                 $item->item = DB::table('order_details')
                     ->join('products', 'products.id', '=', 'order_details.product_id')
                     ->join('product_options', 'product_options', '=', 'order_details.option1')
@@ -253,7 +253,7 @@ class ApiController extends Controller
                     ->get();
 
                 return $item;
-            });
+            }) */;
 
         return response()->json([
             'orders' => $orders
