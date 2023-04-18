@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\order;
+use App\Models\orders;
 use App\Models\order_detail;
 use App\Models\product_option;
 use Illuminate\Http\Request;
