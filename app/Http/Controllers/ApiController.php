@@ -235,8 +235,8 @@ class ApiController extends Controller
             ->where('orders.user_id', '=', $user_id)
             ->where('orders.shop_id', '=', $shop_id)
             ->select([
-                'shops.id' => 'id_shop',
-                'shops.name_shop as name_shop',
+                'shops.id as id_shop',
+                /* 'shops.name_shop as name_shop', */
                 /* 'orders.status',
                 'orders.price',
                 'orders.num',
