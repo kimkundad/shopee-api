@@ -248,9 +248,23 @@ class ApiController extends Controller
             ->get()
             ->map(function ($item) {
                 $item->item = DB::table('order_details')
-                    ->join('products', 'products.id', '=', 'order_details.product_id')
+                    ->leftjoin('products', 'products.id', '=', 'order_details.product_id')
                     ->leftjoin('product_options', 'product_options.id', '=', 'order_details.option1')
                     ->leftjoin('product_suboptions', 'product_suboptions.id', '=', 'order_details.option2')
+                    ->select([
+                        'products.name_product',
+                        'products.detail_product',
+                        'products.img_product',
+                        'products.type',
+                        'products.price',
+                        'order_details.num',
+                        'products.option1',
+                        'products.option2',
+                        'product_option.op_name',
+                        'product_option.price as op_price',
+                        'product_suboptions.sub_op_name',
+                        'product_suboptions.price as sub_op_price',
+                    ])
                     ->where('order_details.order_id', '=', $item->id)
                     ->orderBy('order_details.updated_at','desc')
                     ->get();
