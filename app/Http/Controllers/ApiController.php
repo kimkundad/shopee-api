@@ -230,12 +230,12 @@ class ApiController extends Controller
     {
         $user_id = $request->input('user_id');
         $shop_id = $request->input('shop_id');
+        
         $orders = DB::table('orders')
             ->join('shops', 'shops.id', '=', 'orders.shop_id')
             ->where('orders.user_id', '=', $user_id)
             ->where('orders.shop_id', '=', $shop_id)
             ->orderBy('orders.updated_at','desc')
-            ->groupBy('orders.status')
             ->select([
                 'shops.id as id_shop',
                 'shops.name_shop as name_shop',
