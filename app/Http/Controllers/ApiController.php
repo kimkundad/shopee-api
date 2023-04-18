@@ -244,6 +244,7 @@ class ApiController extends Controller
                 'orders.discount',
                 'orders.id'
             ])
+            ->groupBy('orders.status')
             ->get()
             ->map(function ($item) {
                 $item->item = DB::table('order_details')
