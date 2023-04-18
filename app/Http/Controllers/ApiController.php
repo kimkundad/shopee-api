@@ -209,6 +209,7 @@ class ApiController extends Controller
         $order->price = $request->num;
         $order->discount = $request->discount;
         $order->status = $request->status;
+        $order->save();
 
         $order_detail = new order_detail();
         $order_detail->product_id = $request->product_id;
@@ -217,6 +218,7 @@ class ApiController extends Controller
         $order_detail->option1 = $request->option1Id;
         $order_detail->option2 = $request->option2Id;
         $order_detail->num = $request->num;
+        $order_detail->save();
 
         $price = $request->price;
         $num = $request->num;
