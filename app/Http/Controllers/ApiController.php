@@ -154,7 +154,7 @@ class ApiController extends Controller
             ->where('products.id', '=', $product_id)
             ->get();
         }
-        
+
 
         $objs->map(function ($item) {
             $item->allImage = DB::table('product_images')->where('product_id', '=', $item->product_id)->get();
@@ -747,6 +747,7 @@ class ApiController extends Controller
                 'detail_shop' => $request['detailShop'],
                 'img_shop' => $filePaths,
                 'cover_img_shop' => $filePaths2,
+                'theme' => $request->themeShop,
                 'created_at' =>  date('Y-m-d H:i:s'),
                 'updated_at' => date('Y-m-d H:i:s'),
             ]);
