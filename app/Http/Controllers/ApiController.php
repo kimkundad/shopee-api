@@ -141,7 +141,7 @@ class ApiController extends Controller
     {
 
         $length = count($request->product_id);
-        if($length > 1){
+        if(true){
                 $products = DB::table('products')
                 ->leftjoin('product_options','product_options.product_id','=','product.id')
                 ->leftJoin('product_suboptions','product_suboptions','=','product_options.id')
