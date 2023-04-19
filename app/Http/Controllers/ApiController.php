@@ -281,8 +281,8 @@ class ApiController extends Controller
         ], 201);
     }
 
-    public function getUser($id) {
-        $user = DB::table('users')->where('id','=',$id)->first();
+    public function getUser(Request $request) {
+        $user = DB::table('users')->where('id','=',$request->user_id)->first();
         return response()->json([
             'user' => $user,
         ],201);
