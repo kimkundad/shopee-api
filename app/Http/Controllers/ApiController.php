@@ -140,8 +140,10 @@ class ApiController extends Controller
     public function get_product(Request $request)
     {
 
-        $length = count($request->product_id);
-        if(true){
+        $array = $request->product_id;
+        $length = count($array);
+
+        if($length > 1){
                 $products = DB::table('products')
                 ->leftjoin('product_options','product_options.product_id','=','product.id')
                 ->leftJoin('product_suboptions','product_suboptions','=','product_options.id')
@@ -149,7 +151,7 @@ class ApiController extends Controller
                 ->get();
 
                 return response()->json([
-                    'product' => $length,
+                    'product' => $products
                 ],201);
         }
 
