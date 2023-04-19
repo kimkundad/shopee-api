@@ -140,11 +140,11 @@ class ApiController extends Controller
     public function get_product(Request $request)
     {
 
-        if(true){
+        if(count($request->product_id)>1){
             $products = DB::table('products')
             /* ->leftjoin('product_options', 'product_options.product_id', '=', 'products.id')
             ->leftJoin('product_suboptions', 'product_suboptions.op_id', '=', 'product_options.id') */
-            ->whereIn('products.id', '=', $request->product_id)
+            ->whereIn('products.id', $request->product_id)
             ->get();
 
         return response()->json([
