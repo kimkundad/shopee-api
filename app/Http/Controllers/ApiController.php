@@ -145,7 +145,7 @@ class ApiController extends Controller
         $shop_id = $request->shop_id;
 
         return response()->json([
-            'product' => $request->product_id,
+            'product' => count($request->product_id),
             'allSupOption' => [],
         ], 201);
         /* if(count($request->product_id)>1){
