@@ -140,6 +140,14 @@ class ApiController extends Controller
     public function get_product(Request $request)
     {
 
+
+        $product_id = $request->product_id;
+        $shop_id = $request->shop_id;
+
+        return response()->json([
+            'product' => $request->product_id,
+            'allSupOption' => [],
+        ], 201);
         if(count($request->product_id)>1){
                 $products = DB::table('products')
                 ->leftjoin('product_options','product_options.product_id','=','product.id')
