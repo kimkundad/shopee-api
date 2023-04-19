@@ -155,7 +155,7 @@ class ApiController extends Controller
         $product_id = $request->product_id;
         $shop_id = $request->shop_id;
         return response()->json([
-            'product' => $product_id,
+            'product' => $request->product_id,
             'allSupOption' => [],
         ], 201);
         /* if ($shop_id !== null) {
