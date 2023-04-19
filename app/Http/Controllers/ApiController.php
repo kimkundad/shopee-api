@@ -151,7 +151,7 @@ class ApiController extends Controller
             'product' => $products
         ], 201);
         }
-        
+
 
         $product_id = $request->product_id;
         $shop_id = $request->shop_id;
@@ -972,6 +972,8 @@ class ApiController extends Controller
         DB::table('shops')->where('id', $shopID)->delete();
 
         DB::table('shop_list_products')->where('shop_id', $shopID)->delete();
+
+        DB::table('categorys_shop')->where('shop_id', $shopID)->delete();
 
         return response()->json([
             'success' => 'Delete Shop successfully!',
