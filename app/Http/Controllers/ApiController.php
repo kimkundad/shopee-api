@@ -574,6 +574,7 @@ class ApiController extends Controller
                     ->leftjoin('product_suboptions', 'product_suboptions.id', '=', 'carts.product_suboptions_id')
                     ->select([
                         DB::raw('DISTINCT carts.id'),
+                        'cart.product_id',
                         'products.name_product' => 'name_product',
                         'products.detail_product' => 'detail_product',
                         'products.price AS price_type_1',
