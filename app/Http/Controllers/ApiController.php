@@ -143,6 +143,7 @@ class ApiController extends Controller
         $shop_id = $request->shop_id;
         if(count($product_id)>1){
             $products = DB::table('products')
+            ->select('*', 'id as product_id')
             ->whereIn('products.id', $product_id)
             ->get();
             $products->map(function ($item) {
