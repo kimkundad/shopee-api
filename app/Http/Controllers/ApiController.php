@@ -140,15 +140,18 @@ class ApiController extends Controller
     public function get_product(Request $request)
     {
 
-        $products = DB::table('products')
-            ->leftjoin('product_options', 'product_options.product_id', '=', 'products.id')
-            ->leftJoin('product_suboptions', 'product_suboptions.op_id', '=', 'product_options.id')
-            ->where('products.id', '=', 2)
+        if(count($request->product_id)>1){
+            $products = DB::table('products')
+            /* ->leftjoin('product_options', 'product_options.product_id', '=', 'products.id')
+            ->leftJoin('product_suboptions', 'product_suboptions.op_id', '=', 'product_options.id') */
+            ->whereIn('products.id', '=', $request->product_id)
             ->get();
 
         return response()->json([
             'product' => $products
         ], 201);
+        }
+        
 
         $product_id = $request->product_id;
         $shop_id = $request->shop_id;
