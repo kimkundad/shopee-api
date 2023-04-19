@@ -140,17 +140,15 @@ class ApiController extends Controller
     public function get_product(Request $request)
     {
 
-        if(true){
-                $products = DB::table('products')
-                ->leftjoin('product_options','product_options.product_id','=','product.id')
-                ->leftJoin('product_suboptions','product_suboptions','=','product_options.id')
-                ->whereIn('products.id','=',["5","2"])
-                ->get();
+        $products = DB::table('products')
+            ->leftjoin('product_options', 'product_options.product_id', '=', 'product.id')
+            ->leftJoin('product_suboptions', 'product_suboptions', '=', 'product_options.id')
+            ->whereIn('products.id', '=', ["5", "2"])
+            ->get();
 
-                return response()->json([
-                    'product' => $products
-                ],201);
-        }
+        return response()->json([
+            'product' => $products
+        ], 201);
 
         $product_id = $request->product_id;
         $shop_id = $request->shop_id;
@@ -236,7 +234,7 @@ class ApiController extends Controller
 
         return response()->json([
             'order' => $order
-        ],201);
+        ], 201);
     }
 
     // ดึงข้อมูล order
@@ -291,11 +289,12 @@ class ApiController extends Controller
         ], 201);
     }
 
-    public function getUser(Request $request) {
-        $user = DB::table('users')->where('id','=',$request->user_id)->first();
+    public function getUser(Request $request)
+    {
+        $user = DB::table('users')->where('id', '=', $request->user_id)->first();
         return response()->json([
             'user' => $user,
-        ],201);
+        ], 201);
     }
     // แก้ไขข้อมูลผู้ใช้
     public function editUser(Request $request)
