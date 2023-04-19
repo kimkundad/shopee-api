@@ -48,6 +48,7 @@ Route::group([
     Route::get('/getListProduct/{shopid}', [App\Http\Controllers\ApiController::class, 'getListProduct']); // route การทำ filter ค้นหาข้อมูล sub-admin จากชื่อ create by อั้นเอง
     Route::post('/createdOrder', [App\Http\Controllers\ApiController::class, 'created_order']);
     Route::get('/getOrder', [App\Http\Controllers\ApiController::class, 'get_order']);
+    Route::post('/editUser', [App\Http\Controllers\ApiController::class, 'editUser']);
 
     Route::post('/createUser', [App\Http\Controllers\AuthController::class, 'createUser']);
     Route::post('/verify', [App\Http\Controllers\AuthController::class, 'verify']);

@@ -235,7 +235,7 @@ class ApiController extends Controller
             ->join('shops', 'shops.id', '=', 'orders.shop_id')
             ->where('orders.user_id', '=', $user_id)
             ->where('orders.shop_id', '=', $shop_id)
-            ->orderBy('orders.updated_at','desc')
+            ->orderBy('orders.updated_at', 'desc')
             ->select([
                 'shops.id as id_shop',
                 'shops.name_shop as name_shop',
@@ -266,7 +266,7 @@ class ApiController extends Controller
                         'product_suboptions.price as sub_op_price',
                     ])
                     ->where('order_details.order_id', '=', $item->id)
-                    ->orderBy('order_details.updated_at','desc')
+                    ->orderBy('order_details.updated_at', 'desc')
                     ->get();
 
                 return $item;
@@ -276,6 +276,15 @@ class ApiController extends Controller
             'orders' => $orders
         ], 201);
     }
+
+    // แก้ไขข้อมูลผู้ใช้
+    public function editUser(Request $request)
+    {
+        DB::table('users')->where('id', '=', $request->user_id)->update([
+            'name' => $request->name,
+        ]);
+    }
+
     // ตั้งค่าเปิดปิดใช้งานสินค้า
     public function set_active_product(Request $request)
     {
