@@ -149,7 +149,7 @@ class ApiController extends Controller
                 ->get();
 
                 return response()->json([
-                    'product' => $products
+                    'product' => $length,
                 ],201);
         }
 
