@@ -141,14 +141,7 @@ class ApiController extends Controller
     {
 
 
-        $product_id = $request->product_id;
-        $shop_id = $request->shop_id;
-
-        return response()->json([
-            'product' => count($request->product_id),
-            'allSupOption' => [],
-        ], 201);
-        /* if(count($request->product_id)>1){
+        if((int)(count($request->product_id))>(int)(1)){
                 $products = DB::table('products')
                 ->leftjoin('product_options','product_options.product_id','=','product.id')
                 ->leftJoin('product_suboptions','product_suboptions','=','product_options.id')
@@ -213,7 +206,7 @@ class ApiController extends Controller
                 'product' => $objs,
                 'allSupOption' => [],
             ], 201);
-        } */
+        }
     }
 
     // สร้าง order
