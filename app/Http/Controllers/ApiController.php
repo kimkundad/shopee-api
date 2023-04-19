@@ -139,10 +139,11 @@ class ApiController extends Controller
     // ดึงข้อมูลสินค้ามาแสดงหน้ารายละเอียดสินค้า
     public function get_product(Request $request)
     {
-
-        if(count($request->product_id)>1){
+        $product_id = $request->product_id;
+        $shop_id = $request->shop_id;
+        if(count($product_id)>1){
             $products = DB::table('products')
-            ->whereIn('products.id', $request->product_id)
+            ->whereIn('products.id', $product_id)
             ->get();
             $products->map(function ($item) {
                 $item->allOption1 = DB::table('product_options')->where('product_id', '=', $item->product_id)->where('status', '=', 1)->get();
