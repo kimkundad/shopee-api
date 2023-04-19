@@ -149,11 +149,11 @@ class ApiController extends Controller
 
                 return response()->json([
                     'product' => $products
-                ],201)
+                ],201);
         }
 
-        $product_id = $request->input('product_id');
-        $shop_id = $request->input('shop_id');
+        $product_id = $request->product_id;
+        $shop_id = $request->shop_id;
         if ($shop_id !== null) {
             $objs = DB::table('shop_list_products')
                 ->join('products', 'shop_list_products.product_id', '=', 'products.id')
