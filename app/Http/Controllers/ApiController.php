@@ -143,7 +143,7 @@ class ApiController extends Controller
         $products = DB::table('products')
             ->leftjoin('product_options', 'product_options.product_id', '=', 'product.id')
             ->leftJoin('product_suboptions', 'product_suboptions', '=', 'product_options.id')
-            ->whereIn('products.id', '=', ["5", "2"])
+            ->where('products.id', '=', 2)
             ->get();
 
         return response()->json([
