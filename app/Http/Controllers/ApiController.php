@@ -866,12 +866,12 @@ class ApiController extends Controller
             // รับค่า ID ของแถวที่เพิ่งถูกเพิ่มล่าสุดเข้าไปในตาราง users
             $lastInsertId = DB::getPdo()->lastInsertId();
 
-            if ($request->input('selectID')) {
-                $selectedProducts = $request->input('selectID');
-                if (is_array($selectedProducts)) {
-                    foreach ($selectedProducts as $productId) {
-                        DB::table('shop_list_products')->insert([
-                            'product_id' => $productId,
+            if ($request->input('category')) {
+                $InputCategory = $request->input('category');
+                if (is_array($InputCategory)) {
+                    foreach ($InputCategory as $category) {
+                        DB::table('categorys_shop')->insert([
+                            'category_name' => $category,
                             'shop_id' => $lastInsertId,
                             'created_at' =>  date('Y-m-d H:i:s'),
                             'updated_at' => date('Y-m-d H:i:s'),
