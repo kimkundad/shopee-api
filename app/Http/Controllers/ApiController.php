@@ -223,6 +223,10 @@ class ApiController extends Controller
 
         $price = $request->price;
         $num = $request->num;
+
+        return response()->json([
+            'order' => $order
+        ],201);
     }
 
     // ดึงข้อมูล order
