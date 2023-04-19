@@ -140,7 +140,7 @@ class ApiController extends Controller
     public function get_product(Request $request)
     {
 
-        if(count($request->product_id)>0){
+        /* if(count($request->product_id)>0){
                 $products = DB::table('products')
                 ->leftjoin('product_options','product_options.product_id','=','product.id')
                 ->leftJoin('product_suboptions','product_suboptions','=','product_options.id')
@@ -151,7 +151,7 @@ class ApiController extends Controller
                     'product' => $products
                 ],201);
         }
-
+ */
         $product_id = $request->product_id;
         $shop_id = $request->shop_id;
         if ($shop_id !== null) {
