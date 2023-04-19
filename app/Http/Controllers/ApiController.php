@@ -281,7 +281,7 @@ class ApiController extends Controller
         $user = DB::table('users')->where('id','=',$id)->first();
         return response()->json([
             'user' => $user,
-        ],201)
+        ],201);
     }
     // แก้ไขข้อมูลผู้ใช้
     public function editUser(Request $request)
