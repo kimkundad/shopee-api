@@ -140,6 +140,18 @@ class ApiController extends Controller
     public function get_product(Request $request)
     {
 
+        if(count($request->product_id)>0){
+                $products = DB::table('products')
+                ->leftjoin('product_options','product_options.product_id','=','product.id')
+                ->leftJoin('product_suboptions','product_suboptions','=','product_options.id')
+                ->whereIn('id','=',$request->product_id)
+                ->get();
+
+                return response()->json([
+                    'product' => $products
+                ],201)
+        }
+
         $product_id = $request->input('product_id');
         $shop_id = $request->input('shop_id');
         if ($shop_id !== null) {
@@ -156,7 +168,6 @@ class ApiController extends Controller
                 ->where('products.id', '=', $product_id)
                 ->get();
         }
-
 
         $objs->map(function ($item) {
             $item->allImage = DB::table('product_images')->where('product_id', '=', $item->product_id)->get();
