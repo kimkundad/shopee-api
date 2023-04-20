@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\addresses;
 use App\Models\orders;
+use App\Models\addresses;
 use App\Models\order_details;
 use App\Models\product_option;
 use Illuminate\Http\Request;
