@@ -638,7 +638,7 @@ class ApiController extends Controller
             ->orderByRaw('MAX(carts.created_at) DESC')
             ->groupBy('shops.id', 'name_shop')
             ->get()
-            ->map(function ($item) {
+            ->map(function ($item) use ($request) {
                 $item->product = DB::table('carts')
                     ->join('shop_list_products', 'shop_list_products.shop_id', '=', 'carts.shop_id')
                     ->join('products', 'products.id', '=', 'carts.product_id')
