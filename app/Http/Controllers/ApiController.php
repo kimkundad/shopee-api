@@ -1066,7 +1066,7 @@ class ApiController extends Controller
     public function getCategoryShop($shopid)
     {
         $shopID = $shopid;
-        $category_shop = DB::table('categorys_shop')->select('category_name')->where('shop_id', $shopID)->get();
+        $category_shop = DB::table('categorys_shop')->select('category_name')->where('shop_id', $shopID)->pluck('category_name')->toArray();
         return response()->json([
             'category_shop' => $category_shop,
             'success' => 'Get Category Shop successfully!',
