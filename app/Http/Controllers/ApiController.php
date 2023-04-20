@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\address;
 use App\Models\orders;
 use App\Models\order_details;
 use App\Models\product_option;
@@ -714,6 +715,21 @@ class ApiController extends Controller
         return response()->json([
             'cartItem' => $objs,
         ]);
+    }
+
+    // เพิ่มที่อยู่ใหม่
+    public function newAddress(Request $request) {
+        $newAddress = new address();
+        $newAddress->user_id = $request->user_id;
+        $newAddress->name = $request->name;
+        $newAddress->tel = $request->tel;
+        $newAddress->address = $request->address;
+        $newAddress->sub_district = $request->subDistrict;
+        $newAddress->district = $request->district;
+        $newAddress->province = $request->province;
+        $newAddress->postcode = $request->postcode;
+        $newAddress->save();
+        
     }
 
     // -------------------------------ดึงข้อมูลของ users และ role ของ users ออกมาทั้งหมด create by อั้นเอง----------------------------
