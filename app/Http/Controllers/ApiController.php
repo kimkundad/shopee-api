@@ -142,13 +142,13 @@ class ApiController extends Controller
         if (count($request->carts) > 1) {
             $products = DB::table('carts')
                 ->join('shops', 'carts.shop_id', '=', 'shops.id')
-                ->whereIn('carts.id', $request->carts)
                 ->select([
                     'shops.id',
                     'shops.name_shop AS name_shop',
                 ])
                 ->orderByRaw('MAX(carts.created_at) DESC')
-                /* ->groupBy('shops.id', 'name_shop') */
+                ->groupBy('shops.id', 'name_shop')
+                ->whereIn('carts.id', $request->carts)
                 ->get()
                 ->map(function ($item) {
                     $item->product = DB::table('carts')
