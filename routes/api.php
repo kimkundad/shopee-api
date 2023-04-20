@@ -33,7 +33,7 @@ Route::group([
     Route::get('/getSearchDateShops', [App\Http\Controllers\ApiController::class, 'get_search_date_shops']); // route ค้นหาวันที่สร้างร้านค้า create by อั้นเอง
     Route::get('/getFilterShops', [App\Http\Controllers\ApiController::class, 'get_filter_shops']); // route ในการ filter ร้า่นค้า ออกมาตาม ตัวอักษร, วันที่สร้าง, วันที่อัพเดท create by อั้นเอง
     Route::post('/addProductToCart', [App\Http\Controllers\ApiController::class, 'addProductToCart']);
-    Route::get('/getAllCartItem/{id}', [App\Http\Controllers\ApiController::class, 'getAllCartItem']);
+    Route::post('/getAllCartItem', [App\Http\Controllers\ApiController::class, 'getAllCartItem']);
     Route::get('/getAllUsers', [App\Http\Controllers\ApiController::class, 'getAllUsers']); // route ของการดึงข้อมูล users ออกมาทั้งหมด create by อั้นเอง
     Route::post('/createSubAdmin', [App\Http\Controllers\ApiController::class, 'createSubAdmin']); // route สร้างข้อมูล sub-admin ขึ้นมา create by อั้นเอง
     Route::post('/updateSubAdmin', [App\Http\Controllers\ApiController::class, 'updateSubAdmin']); // route อัพเดทข้อมูล sub-admin create by อั้นเอง

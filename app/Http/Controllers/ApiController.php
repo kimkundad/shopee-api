@@ -626,10 +626,11 @@ class ApiController extends Controller
     }
 
     // ดึงข้อมูลในรถเข็นมาแสดง
-    public function getAllCartItem($id)
+    public function getAllCartItem(Request $request)
     {
         $objs = DB::table('carts')
             ->join('shops', 'carts.shop_id', '=', 'shops.id')
+            ->where('carts.user_id','=',$request->user_id)
             ->select([
                 'shops.id',
                 'shops.name_shop AS name_shop',
