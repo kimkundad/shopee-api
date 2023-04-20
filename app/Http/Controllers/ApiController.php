@@ -139,7 +139,7 @@ class ApiController extends Controller
     // ดึงข้อมูลสินค้ามาแสดงหน้ารายละเอียดสินค้า
     public function get_product(Request $request)
     {
-        if ($request->carts!==null) {
+        if ($request->carts !== null) {
             $carts_id = $request->carts;
             $products = DB::table('carts')
                 ->join('shops', 'carts.shop_id', '=', 'shops.id')
@@ -176,7 +176,7 @@ class ApiController extends Controller
                             'product_suboptions.sub_op_name' => 'sub_op_name',
                             'product_suboptions.price AS price_type_3',
                         ])
-                        ->whereIn('carts.id',$carts_id)
+                        ->whereIn('carts.id', $carts_id)
                         ->get();
                     return $item;
                 });
@@ -246,32 +246,56 @@ class ApiController extends Controller
     // สร้าง order
     public function created_order(Request $request)
     {
+        if ($request->product_id !== null) {
+            $order = new orders();
+            $order->user_id = $request->user_id;
+            $order->shop_id = $request->shop_id;
+            $order->order_detail_id = 0;
+            $order->num = $request->num;
+            $order->price = $request->total;
+            $order->discount = $request->discount;
+            $order->status = $request->status;
+            $order->save();
 
-        $order = new orders();
-        $order->user_id = $request->user_id;
-        $order->shop_id = $request->shop_id;
-        $order->order_detail_id = 0;
-        $order->num = $request->num;
-        $order->price = $request->total;
-        $order->discount = $request->discount;
-        $order->status = $request->status;
-        $order->save();
+            $order_detail = new order_details();
+            $order_detail->product_id = $request->product_id;
+            $order_detail->user_id = $request->user_id;
+            $order_detail->order_id = $order->id;
+            $order_detail->option1 = $request->option1;
+            $order_detail->option2 = $request->option2;
+            $order_detail->num = $request->num;
+            $order_detail->save();
 
-        $order_detail = new order_details();
-        $order_detail->product_id = $request->product_id;
-        $order_detail->user_id = $request->user_id;
-        $order_detail->order_id = $order->id;
-        $order_detail->option1 = $request->option1;
-        $order_detail->option2 = $request->option2;
-        $order_detail->num = $request->num;
-        $order_detail->save();
+            return response()->json([
+                'order' => $order
+            ], 201);
+        } else {
+            $order = new orders();
+            $order->user_id = $request->user_id;
+            $order->shop_id = $request->products[0]->id;
+            $order->order_detail_id = 0;
+            $order->num = $request->num;
+            $order->price = $request->total;
+            $order->discount = $request->discount;
+            $order->status = $request->status;
+            $order->save();
 
-        $price = $request->price;
-        $num = $request->num;
-
-        return response()->json([
-            'order' => $order
-        ], 201);
+            foreach ($request->products as $index => $item) {
+                foreach ($item as $subIndex => $subItem) {
+                    $order_detail = new order_details();
+                    $order_detail->product_id = $subItem->product_id;
+                    $order_detail->user_id = $request->user_id;
+                    $order_detail->order_id = $order->id;
+                    $order_detail->option1 = $subItem->option1Id;
+                    $order_detail->option2 = $subItem->option2Id;
+                    $order_detail->num = $subItem->num;
+                    $order_detail->save();
+                }
+            }
+            return response()->json([
+                'order' => $order
+            ], 201);
+        }
     }
 
     // ดึงข้อมูล order
