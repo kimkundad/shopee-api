@@ -282,7 +282,7 @@ class ApiController extends Controller
             $order->save();
 
             foreach ($products as $index => $item) {
-                foreach ($item->product as $subIndex => $subItem) {
+                foreach ($item['product'] as $subIndex => $subItem) {
                     $order_detail = new order_details();
                     $order_detail->product_id = $subItem['product_id'];
                     $order_detail->user_id = $request->user_id;
