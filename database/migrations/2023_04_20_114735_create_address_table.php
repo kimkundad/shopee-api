@@ -20,6 +20,7 @@ return new class extends Migration
             $table->integer('tel');
             $table->text('address');
             $table->text('district');
+            $table->text('sub_district');
             $table->text('province');
             $table->integer('postcode');
             $table->timestamps();
