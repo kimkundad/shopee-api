@@ -270,6 +270,7 @@ class ApiController extends Controller
                 'order' => $order
             ], 201);
         } else {
+            $products = json_decode($request->products, true);
             $order = new orders();
             $order->user_id = $request->user_id;
             $order->shop_id = $request->shop_id;
@@ -280,7 +281,7 @@ class ApiController extends Controller
             $order->status = $request->status;
             $order->save();
 
-            foreach ($request->products as $index => $item) {
+            foreach ($products as $index => $item) {
                 foreach ($item as $subIndex => $subItem) {
                     $order_detail = new order_details();
                     $order_detail->product_id = $subItem->product_id;
