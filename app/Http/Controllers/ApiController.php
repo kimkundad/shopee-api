@@ -672,9 +672,9 @@ class ApiController extends Controller
     }
 
     // ลบสินค้าออกจากรถเข็น
-    public function deleteItemCart($id)
+    public function deleteItemCart(Request $request)
     {
-        DB::table('carts')->where('id', '=', $id)->delete();
+        DB::table('carts')->whereIn('id', $request->cart_id)->delete();
 
         $objs = DB::table('carts')
             ->join('shops', 'carts.shop_id', '=', 'shops.id')

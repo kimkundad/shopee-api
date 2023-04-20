@@ -40,7 +40,7 @@ Route::group([
     Route::post('/deleteSubAdmin', [App\Http\Controllers\ApiController::class, 'deleteSubAdmin']); // route ลบข้อมูลข้อง sub-admin ออก create by อั้นเอง
     Route::get('/getSearchDateSubAdmin', [App\Http\Controllers\ApiController::class, 'getSearchDateSubAdmin']); // route การทำ filter ค้นหาข้อมูล sub-admin จาก วันที่ที่สร้าง create by อั้นเอง
     Route::get('/getSearchName', [App\Http\Controllers\ApiController::class, 'getSearchName']); // route การทำ filter ค้นหาข้อมูล sub-admin จากชื่อ create by อั้นเอง
-    Route::post('/deleteCartItem/{id}', [App\Http\Controllers\ApiController::class, 'deleteItemCart']);
+    Route::post('/deleteCartItem', [App\Http\Controllers\ApiController::class, 'deleteItemCart']);
     Route::post('/createShop', [App\Http\Controllers\ApiController::class, 'createShop']); // route สร้างข้อมูลร้านค้า create by อั้นเอง
     Route::post('/editShop', [App\Http\Controllers\ApiController::class, 'editShop']); // route แก้ไขข้อมูลร้านค้า create by อั้นเอง
     Route::post('/DeleteShop', [App\Http\Controllers\ApiController::class, 'DeleteShop']); // route ลบข้อมูลร้านค้า create by อั้นเอง
