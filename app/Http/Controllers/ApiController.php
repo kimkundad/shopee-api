@@ -1061,4 +1061,15 @@ class ApiController extends Controller
             'success' => 'Get List Product Shop successfully!',
         ], 201);
     }
+
+    //-------------------- ดึงข้อมูล หมวดหมู่ ของร้านค้านั้นๆ -------------------------
+    public function getCategoryShop($shopid)
+    {
+        $shopID = $shopid;
+        $category_shop = DB::table('categorys_shop')->select('category_name')->where('shop_id', $shopID)->pluck('category_name')->toArray();
+        return response()->json([
+            'category_shop' => $category_shop,
+            'success' => 'Get Category Shop successfully!',
+        ], 201);
+    }
 }
