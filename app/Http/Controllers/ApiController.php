@@ -732,6 +732,14 @@ class ApiController extends Controller
 
     }
 
+    // ดึงข้อมูลที่อยู่
+    public function getAddress(Request $request){
+        $address = DB::table('addresses')->where('user_id','=',$request->user_id)->get();
+
+        return response()->json([
+            'address' => $address,
+        ],201);
+    }
     // -------------------------------ดึงข้อมูลของ users และ role ของ users ออกมาทั้งหมด create by อั้นเอง----------------------------
     public function getAllUsers()
     {
