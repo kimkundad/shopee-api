@@ -272,7 +272,7 @@ class ApiController extends Controller
         } else {
             $order = new orders();
             $order->user_id = $request->user_id;
-            $order->shop_id = $request->products[0]->id;
+            $order->shop_id = $request->products[0]['id'];
             $order->order_detail_id = 0;
             $order->num = $request->num;
             $order->price = $request->total;
