@@ -19,6 +19,9 @@ return new class extends Migration
             $table->text('name');
             $table->integer('tel');
             $table->text('address');
+            $table->text('district');
+            $table->text('province');
+            $table->integer('postcode');
             $table->timestamps();
         });
     }
