@@ -22,7 +22,7 @@ return new class extends Migration
             $table->text('district');
             $table->text('sub_district');
             $table->text('province');
-            $table->integer('postcode');
+            $table->text('postcode');
             $table->timestamps();
         });
     }
