@@ -719,17 +719,22 @@ class ApiController extends Controller
 
     // เพิ่มที่อยู่ใหม่
     public function newAddress(Request $request) {
-        $newAddress = new addresses();
-        $newAddress->user_id = $request->user_id;
-        $newAddress->name = $request->name;
-        $newAddress->tel = $request->tel;
-        $newAddress->address = $request->address;
-        $newAddress->sub_district = $request->subDistrict;
-        $newAddress->district = $request->district;
-        $newAddress->province = $request->province;
-        $newAddress->postcode = $request->postcode;
-        $newAddress->save();
-
+        if($request->default == 1){
+            DB::table('addresses')->where('user_id','=',$request->user_id)->update([
+                'default' => 0,
+            ]);
+            $newAddress = new addresses();
+            $newAddress->user_id = $request->user_id;
+            $newAddress->name = $request->name;
+            $newAddress->tel = $request->tel;
+            $newAddress->address = $request->address;
+            $newAddress->sub_district = $request->subDistrict;
+            $newAddress->district = $request->district;
+            $newAddress->province = $request->province;
+            $newAddress->postcode = $request->postcode;
+            $newAddress->save();
+        }
+        
     }
 
     // ดึงข้อมูลที่อยู่
