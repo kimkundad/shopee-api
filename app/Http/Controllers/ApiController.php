@@ -662,6 +662,7 @@ class ApiController extends Controller
                         'product_suboptions.price AS price_type_3',
                     ])
                     ->where('shop_list_products.shop_id', '=', $item->id)
+                    ->where('carts.user_id','=',$request->user_id)
                     ->get();
                 return $item;
             });
