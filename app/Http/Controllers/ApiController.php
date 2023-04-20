@@ -140,6 +140,7 @@ class ApiController extends Controller
     public function get_product(Request $request)
     {
         if (count($request->carts) > 1) {
+            $carts_id = $request->carts;
             $products = DB::table('carts')
                 ->join('shops', 'carts.shop_id', '=', 'shops.id')
                 ->select([
@@ -148,9 +149,9 @@ class ApiController extends Controller
                 ])
                 ->orderByRaw('MAX(carts.created_at) DESC')
                 ->groupBy('shops.id', 'name_shop')
-                ->whereIn('carts.id', $request->carts)
+                ->whereIn('carts.id', $carts_id)
                 ->get()
-                ->map(function ($item) {
+                ->map(function ($item) use ($carts_id) {
                     $item->product = DB::table('carts')
                         ->join('shop_list_products', 'shop_list_products.shop_id', '=', 'carts.shop_id')
                         ->join('products', 'products.id', '=', 'carts.product_id')
@@ -174,7 +175,7 @@ class ApiController extends Controller
                             'product_suboptions.price AS price_type_3',
                         ])
                         ->where('shop_list_products.shop_id', '=', $item->id)
-                        ->whereIn('carts.id', $request->carts)
+                        ->whereIn('carts.id', $carts_id)
                         ->get();
                     return $item;
                 });
