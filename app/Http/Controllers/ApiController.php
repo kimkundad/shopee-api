@@ -174,8 +174,7 @@ class ApiController extends Controller
                             'product_suboptions.sub_op_name' => 'sub_op_name',
                             'product_suboptions.price AS price_type_3',
                         ])
-                        ->where('shop_list_products.shop_id', '=', $item->id)
-                        ->where('carts.id','=', $carts_id)
+                        ->whereIn('carts.id',$carts_id)
                         ->get();
                     return $item;
                 });
