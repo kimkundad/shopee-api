@@ -139,48 +139,48 @@ class ApiController extends Controller
     // ดึงข้อมูลสินค้ามาแสดงหน้ารายละเอียดสินค้า
     public function get_product(Request $request)
     {
-        if(count($request->carts)>1){
+        if (count($request->carts) > 1) {
             $products = DB::table('carts')
-            ->join('shops', 'carts.shop_id', '=', 'shops.id')
-            ->whereIn('carts.id',$request->carts)
-            ->select([
-                'shops.id',
-                'shops.name_shop AS name_shop',
-            ])
-            ->orderByRaw('MAX(carts.created_at) DESC')
-            ->groupBy('shops.id', 'name_shop')
-            ->get()
-            ->map(function ($item) {
-                $item->product = DB::table('carts')
-                    ->join('shop_list_products', 'shop_list_products.shop_id', '=', 'carts.shop_id')
-                    ->join('products', 'products.id', '=', 'carts.product_id')
-                    ->leftjoin('product_options', 'product_options.id', '=', 'carts.product_options_id')
-                    ->leftjoin('product_suboptions', 'product_suboptions.id', '=', 'carts.product_suboptions_id')
-                    ->select([
-                        DB::raw('DISTINCT carts.id'),
-                        'carts.product_id',
-                        'products.name_product' => 'name_product',
-                        'products.detail_product' => 'detail_product',
-                        'products.price AS price_type_1',
-                        'products.type AS type_product',
-                        'products.price_sales' => 'price_sales',
-                        'products.img_product' => 'img_product',
-                        'products.option1' => 'option1',
-                        'products.option2' => 'option2',
-                        'carts.num' => 'num',
-                        'product_options.op_name' => 'op_name',
-                        'product_options.price AS price_type_2',
-                        'product_suboptions.sub_op_name' => 'sub_op_name',
-                        'product_suboptions.price AS price_type_3',
-                    ])
-                    ->where('shop_list_products.shop_id', '=', $item->id)
-                    ->get();
-                return $item;
-            });
+                ->join('shops', 'carts.shop_id', '=', 'shops.id')
+                ->whereIn('carts.id', $request->carts)
+                ->select([
+                    'shops.id',
+                    'shops.name_shop AS name_shop',
+                ])
+                ->orderByRaw('MAX(carts.created_at) DESC')
+                /* ->groupBy('shops.id', 'name_shop') */
+                ->get()
+                ->map(function ($item) {
+                    $item->product = DB::table('carts')
+                        ->join('shop_list_products', 'shop_list_products.shop_id', '=', 'carts.shop_id')
+                        ->join('products', 'products.id', '=', 'carts.product_id')
+                        ->leftjoin('product_options', 'product_options.id', '=', 'carts.product_options_id')
+                        ->leftjoin('product_suboptions', 'product_suboptions.id', '=', 'carts.product_suboptions_id')
+                        ->select([
+                            DB::raw('DISTINCT carts.id'),
+                            'carts.product_id',
+                            'products.name_product' => 'name_product',
+                            'products.detail_product' => 'detail_product',
+                            'products.price AS price_type_1',
+                            'products.type AS type_product',
+                            'products.price_sales' => 'price_sales',
+                            'products.img_product' => 'img_product',
+                            'products.option1' => 'option1',
+                            'products.option2' => 'option2',
+                            'carts.num' => 'num',
+                            'product_options.op_name' => 'op_name',
+                            'product_options.price AS price_type_2',
+                            'product_suboptions.sub_op_name' => 'sub_op_name',
+                            'product_suboptions.price AS price_type_3',
+                        ])
+                        ->where('shop_list_products.shop_id', '=', $item->id)
+                        ->get();
+                    return $item;
+                });
 
-        return response()->json([
-            'product' => $products
-        ], 201);
+            return response()->json([
+                'product' => $products
+            ], 201);
         }
 
 
