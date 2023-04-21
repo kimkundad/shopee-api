@@ -631,7 +631,7 @@ class ApiController extends Controller
     {
         $objs = DB::table('carts')
             ->join('shops', 'carts.shop_id', '=', 'shops.id')
-            ->where('carts.user_id','=',$request->user_id)
+            ->where('carts.user_id', '=', $request->user_id)
             ->select([
                 'shops.id',
                 'shops.name_shop AS name_shop',
@@ -663,7 +663,7 @@ class ApiController extends Controller
                         'product_suboptions.price AS price_type_3',
                     ])
                     ->where('shop_list_products.shop_id', '=', $item->id)
-                    ->where('carts.user_id','=',$request->user_id)
+                    ->where('carts.user_id', '=', $request->user_id)
                     ->get();
                 return $item;
             });
@@ -718,32 +718,34 @@ class ApiController extends Controller
     }
 
     // เพิ่มที่อยู่ใหม่
-    public function newAddress(Request $request) {
-        if($request->default == 1){
-            DB::table('addresses')->where('user_id','=',$request->user_id)->update([
-                'default' => 0,
+    public function newAddress(Request $request)
+    {
+        if ($request->default == 1) {
+            DB::table('addresses')->where('user_id', '=', $request->user_id)->update([
+                'default' => 0
             ]);
-            $newAddress = new addresses();
-            $newAddress->user_id = $request->user_id;
-            $newAddress->name = $request->name;
-            $newAddress->tel = $request->tel;
-            $newAddress->address = $request->address;
-            $newAddress->sub_district = $request->subDistrict;
-            $newAddress->district = $request->district;
-            $newAddress->province = $request->province;
-            $newAddress->postcode = $request->postcode;
-            $newAddress->save();
         }
-        
+        $newAddress = new addresses();
+        $newAddress->user_id = $request->user_id;
+        $newAddress->name = $request->name;
+        $newAddress->tel = $request->tel;
+        $newAddress->address = $request->address;
+        $newAddress->sub_district = $request->subDistrict;
+        $newAddress->district = $request->district;
+        $newAddress->province = $request->province;
+        $newAddress->postcode = $request->postcode;
+        $newAddress->default = $request->default;
+        $newAddress->save();
     }
 
     // ดึงข้อมูลที่อยู่
-    public function getAddress(Request $request){
-        $address = DB::table('addresses')->where('user_id','=',$request->user_id)->get();
+    public function getAddress(Request $request)
+    {
+        $address = DB::table('addresses')->where('user_id', '=', $request->user_id)->get();
 
         return response()->json([
             'address' => $address,
-        ],201);
+        ], 201);
     }
     // -------------------------------ดึงข้อมูลของ users และ role ของ users ออกมาทั้งหมด create by อั้นเอง----------------------------
     public function getAllUsers()
