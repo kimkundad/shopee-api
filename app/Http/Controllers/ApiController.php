@@ -720,22 +720,33 @@ class ApiController extends Controller
     // เพิ่มที่อยู่ใหม่
     public function newAddress(Request $request)
     {
-        if ($request->default == 1) {
-            DB::table('addresses')->where('user_id', '=', $request->user_id)->update([
-                'default' => 0
-            ]);
+        try {
+            if ($request->default == 1) {
+                DB::table('addresses')->where('user_id', '=', $request->user_id)->update([
+                    'default' => 0
+                ]);
+            }
+            $newAddress = new addresses();
+            $newAddress->user_id = $request->user_id;
+            $newAddress->name = $request->name;
+            $newAddress->tel = $request->tel;
+            $newAddress->address = $request->address;
+            $newAddress->sub_district = $request->subDistrict;
+            $newAddress->district = $request->district;
+            $newAddress->province = $request->province;
+            $newAddress->postcode = $request->postcode;
+            $newAddress->default = $request->default;
+            $newAddress->save();
+    
+            return response()->json([
+                'status' => 'success',
+            ],201);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'status' => 'error',
+            ],201);
         }
-        $newAddress = new addresses();
-        $newAddress->user_id = $request->user_id;
-        $newAddress->name = $request->name;
-        $newAddress->tel = $request->tel;
-        $newAddress->address = $request->address;
-        $newAddress->sub_district = $request->subDistrict;
-        $newAddress->district = $request->district;
-        $newAddress->province = $request->province;
-        $newAddress->postcode = $request->postcode;
-        $newAddress->default = $request->default;
-        $newAddress->save();
+        
     }
 
     public function deleteAddress(Request $request){
