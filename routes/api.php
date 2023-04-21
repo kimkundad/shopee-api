@@ -50,6 +50,7 @@ Route::group([
     Route::post('/addCategory', [App\Http\Controllers\ApiController::class, 'addCategory']); // route สร้างหมวดหมู่ หมวดหมู่ by อั้นเอง
     Route::post('/createdOrder', [App\Http\Controllers\ApiController::class, 'created_order']);
     Route::post('/getAllOrder', [App\Http\Controllers\ApiController::class, 'getAllOrder']);
+    Route::post('/getOrder', [App\Http\Controllers\ApiController::class, 'getOrder']);
     Route::post('/editUser', [App\Http\Controllers\ApiController::class, 'editUser']);
     Route::post('/getUser', [App\Http\Controllers\ApiController::class, 'getUser']);
     Route::post('/newAddress', [App\Http\Controllers\ApiController::class, 'newAddress']);
