@@ -802,7 +802,7 @@ class ApiController extends Controller
             'default' => 0
         ]);
         DB::table('addresses')->where('id', '=', $request->id)->update(['default' => 1]);
-        $address = DB::table('addresses')->where('user_id', '=', $request->user_id)->get();
+        $address = DB::table('addresses')->where('user_id', '=', $request->user_id)->orderBy('updated_at','desc')->get();
         return response()->json([
             'address' => $address,
         ], 201);
