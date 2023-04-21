@@ -1231,11 +1231,13 @@ class ApiController extends Controller
     {
 
         if ($request->category) {
-            $InputCategory = json_decode($request->category);
-            foreach ($InputCategory as $category) {
-                DB::table('categories')->where('id', $category->id)->update([
-                    'cat_name' => $category->cat_name,
-                ]);
+            $InputCategory = $request->category;
+            if (is_array($InputCategory) || is_object($InputCategory)) {
+                foreach ($InputCategory as $category) {
+                    DB::table('categories')->where('id', $category->id)->update([
+                        'cat_name' => $category->cat_name,
+                    ]);
+                }
             }
             return response()->json([
                 'success' => 'Update Category Shop successfully!',
