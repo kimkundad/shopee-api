@@ -740,8 +740,8 @@ class ApiController extends Controller
 
     // ตั้งค่าที่อยู่เริ่มต้น
     public function setDefaultAddress(Request $request) {
-        $address = DB::table('addresses')->where('id','=',$request->id)->update(['default'=>1]);
-
+        DB::table('addresses')->where('id','=',$request->id)->update(['default'=>1]);
+        $address = DB::table('addresses')->where('user_id','=',$request->user_id)->get();
         return response()->json([
             'address' => $address,
         ],201);
