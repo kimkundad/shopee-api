@@ -738,6 +738,15 @@ class ApiController extends Controller
         $newAddress->save();
     }
 
+    public function deleteAddress(Request $request){
+        DB::table('addresses')->where('id','=',$request->address_id)->delete();
+
+        $address = DB::table('addresses')->where('user_id','=',$request->user_id)->get();
+        return response()->json([
+            'address' => $address,
+        ],201)
+    }
+
     // ตั้งค่าที่อยู่เริ่มต้น
     public function setDefaultAddress(Request $request)
     {
