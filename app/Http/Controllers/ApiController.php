@@ -1127,7 +1127,7 @@ class ApiController extends Controller
                 foreach ($InputCategory as $category) {
                     DB::table('categories')->insert([
                         'cat_name' => $category,
-                        'user_id' => $request['userID'],
+                        'user_id' => $request->userID,
                         'created_at' =>  date('Y-m-d H:i:s'),
                         'updated_at' => date('Y-m-d H:i:s'),
                     ]);
