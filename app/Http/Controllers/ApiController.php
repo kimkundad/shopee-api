@@ -752,7 +752,7 @@ class ApiController extends Controller
     public function deleteAddress(Request $request){
         DB::table('addresses')->where('id','=',$request->address_id)->delete();
 
-        $address = DB::table('addresses')->where('user_id','=',$request->user_id)->get();
+        $address = DB::table('addresses')->where('user_id','=',$request->user_id)->orderBy('created_at','desc')->get();
         return response()->json([
             'address' => $address,
         ],201);
@@ -783,7 +783,7 @@ class ApiController extends Controller
     // ดึงข้อมูลที่อยู่ทั้งหมด
     public function getAllAddress(Request $request)
     {
-        $address = DB::table('addresses')->where('user_id', '=', $request->user_id)->get();
+        $address = DB::table('addresses')->where('user_id', '=', $request->user_id)->orderBy('updated_at','desc')->get();
 
         return response()->json([
             'address' => $address,
