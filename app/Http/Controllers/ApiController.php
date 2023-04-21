@@ -301,7 +301,7 @@ class ApiController extends Controller
     }
 
     // ดึงข้อมูล order
-    public function get_order(Request $request)
+    public function getAllOrder(Request $request)
     {
         $user_id = $request->user_id;
         $shop_id = $request->shop_id;
