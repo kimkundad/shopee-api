@@ -15,9 +15,9 @@ return new class extends Migration
     {
         Schema::create('categorys_shop', function (Blueprint $table) {
             $table->id();
-            $table->text('category_img');
-            $table->text('category_name');
-            $table->integer('shop_id');
+            $table->string('category_img', 199)->nullable()->comment("รูปของ category");
+            $table->string('category_name', 191)->nullable()->comment("ชื่อของ category");
+            $table->integer('shop_id')->nullable();
             $table->timestamps();
         });
     }
