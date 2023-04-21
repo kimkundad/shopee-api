@@ -739,15 +739,16 @@ class ApiController extends Controller
     }
 
     // ตั้งค่าที่อยู่เริ่มต้น
-    public function setDefaultAddress(Request $request) {
+    public function setDefaultAddress(Request $request)
+    {
         DB::table('addresses')->where('user_id', '=', $request->user_id)->update([
             'default' => 0
         ]);
-        DB::table('addresses')->where('id','=',$request->id)->update(['default'=>1]);
-        $address = DB::table('addresses')->where('user_id','=',$request->user_id)->get();
+        DB::table('addresses')->where('id', '=', $request->id)->update(['default' => 1]);
+        $address = DB::table('addresses')->where('user_id', '=', $request->user_id)->get();
         return response()->json([
             'address' => $address,
-        ],201);
+        ], 201);
     }
 
     // ดึงข้อมูลที่อยู่
@@ -1116,5 +1117,25 @@ class ApiController extends Controller
             'category_shop' => $category_shop,
             'success' => 'Get Category Shop successfully!',
         ], 201);
+    }
+
+    public function addCategory(Request $request)
+    {
+        if ($request->input('category')) {
+            $InputCategory = $request->input('category');
+            if (is_array($InputCategory)) {
+                foreach ($InputCategory as $category) {
+                    DB::table('categories')->insert([
+                        'cat_name' => $category,
+                        'user_id' => $request['userID'],
+                        'created_at' =>  date('Y-m-d H:i:s'),
+                        'updated_at' => date('Y-m-d H:i:s'),
+                    ]);
+                }
+            }
+            return response()->json([
+                'success' => 'Create Category Shop successfully!',
+            ], 201);
+        }
     }
 }
