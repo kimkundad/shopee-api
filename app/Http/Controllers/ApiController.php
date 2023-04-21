@@ -1229,7 +1229,7 @@ class ApiController extends Controller
 
     public function EditCategory(Request $request)
     {
-        dd($request->category);
+        dd($request->category[0]->id);
         try {
             if ($request->category) {
                 foreach ($request->category as $category) {
