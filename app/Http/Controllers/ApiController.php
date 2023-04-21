@@ -1128,6 +1128,7 @@ class ApiController extends Controller
                     DB::table('categories')->insert([
                         'cat_name' => $category,
                         'user_id' => $request->userID,
+                        'status' => 1,
                         'created_at' =>  date('Y-m-d H:i:s'),
                         'updated_at' => date('Y-m-d H:i:s'),
                     ]);
