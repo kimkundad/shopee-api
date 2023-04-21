@@ -751,7 +751,16 @@ class ApiController extends Controller
     }
 
     // ดึงข้อมูลที่อยู่
-    public function getAddress(Request $request)
+    public function getAddress(Request $request) {
+        $address = DB::table('addresses')->where('user_id','=',$request->user_id)->where('default','=',1)->first();
+
+        return response()->json([
+            'address' => $address,
+        ],201);
+    }
+
+    // ดึงข้อมูลที่อยู่ทั้งหมด
+    public function getAllAddress(Request $request)
     {
         $address = DB::table('addresses')->where('user_id', '=', $request->user_id)->get();
 
