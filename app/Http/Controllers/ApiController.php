@@ -784,10 +784,10 @@ class ApiController extends Controller
     public function deleteAddress(Request $request)
     {
         DB::table('addresses')->where('id', '=', $request->address_id)->delete();
-        $count = DB::table('addresses')->where('user_id','=', $request->user_id)->where('default','=',1)->count();
+        $count = DB::table('addresses')->where('user_id', '=', $request->user_id)->where('default', '=', 1)->count();
 
-        if($count==0){
-            DB::table('addresses')->where('user_id','=',$request->user_id)->orderBy('updated_at','desc')->take(1)->update(['default'=>1]);
+        if ($count == 0) {
+            DB::table('addresses')->where('user_id', '=', $request->user_id)->orderBy('updated_at', 'desc')->take(1)->update(['default' => 1]);
         }
         $address = DB::table('addresses')->where('user_id', '=', $request->user_id)->orderBy('created_at', 'desc')->get();
         return response()->json([
@@ -802,7 +802,7 @@ class ApiController extends Controller
             'default' => 0
         ]);
         DB::table('addresses')->where('id', '=', $request->id)->update(['default' => 1]);
-        $address = DB::table('addresses')->where('user_id', '=', $request->user_id)->orderBy('updated_at','desc')->get();
+        $address = DB::table('addresses')->where('user_id', '=', $request->user_id)->orderBy('updated_at', 'desc')->get();
         return response()->json([
             'address' => $address,
         ], 201);
@@ -1212,6 +1212,23 @@ class ApiController extends Controller
             }
             return response()->json([
                 'success' => 'Create Category Shop successfully!',
+            ], 201);
+        }
+    }
+
+    public function EditCategory(Request $request)
+    {
+        if ($request->input('category')) {
+            $InputCategory = $request->input('category');
+            if (is_array($InputCategory)) {
+                foreach ($InputCategory as $category) {
+                    DB::table('categories')->where('id', $category->id)->update([
+                        'cat_name' => $category->cat_name,
+                    ]);
+                }
+            }
+            return response()->json([
+                'success' => 'Update Category Shop successfully!',
             ], 201);
         }
     }

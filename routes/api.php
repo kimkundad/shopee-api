@@ -48,6 +48,7 @@ Route::group([
     Route::get('/getListProduct/{shopid}', [App\Http\Controllers\ApiController::class, 'getListProduct']); // route ดึง product ของแต่ละร้านค้า by อั้นเอง
     Route::get('/getCategoryShop/{shopid}', [App\Http\Controllers\ApiController::class, 'getCategoryShop']); // route ดึง หมวดหมู่ ร้านค้านั้นๆ by อั้นเอง
     Route::post('/addCategory', [App\Http\Controllers\ApiController::class, 'addCategory']); // route สร้างหมวดหมู่ หมวดหมู่ by อั้นเอง
+    Route::post('/EditCategory', [App\Http\Controllers\ApiController::class, 'EditCategory']); // route แก้ไขหมวดหมู่ หมวดหมู่ by อั้นเอง
     Route::post('/createdOrder', [App\Http\Controllers\ApiController::class, 'created_order']);
     Route::post('/getAllOrder', [App\Http\Controllers\ApiController::class, 'getAllOrder']);
     Route::post('/editUser', [App\Http\Controllers\ApiController::class, 'editUser']);
