@@ -301,9 +301,9 @@ class ApiController extends Controller
     }
 
     // ดึงข้อมูล order
-    public function getOrder(Request $request)
-    {
-        $order = DB::table('orders')->where('user_id', '=', $request->user_id)->where('id', '=', $request->order_id)->get();
+    public function getOrder(Request $request){
+        $order = DB::table('orders')->where('user_id','=',$request->user_id)->where('id','=',$request->order_id)->first();
+
 
         return response()->json([
             'order' => $order
