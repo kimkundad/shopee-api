@@ -784,10 +784,10 @@ class ApiController extends Controller
     public function deleteAddress(Request $request)
     {
         DB::table('addresses')->where('id', '=', $request->address_id)->delete();
-        $count = DB::table('address')->where('user_id','=', $request->user_id)->count();
+        $count = DB::table('addresses')->where('user_id','=', $request->user_id)->count();
 
         if($count==0){
-            DB::table('address')->where('user_id','=',$request->user_id)->orderBy('updated_at','desc')->take(1)->update(['default'=>1]);
+            DB::table('addresses')->where('user_id','=',$request->user_id)->orderBy('updated_at','desc')->take(1)->update(['default'=>1]);
         }
         $address = DB::table('addresses')->where('user_id', '=', $request->user_id)->orderBy('created_at', 'desc')->get();
         return response()->json([
