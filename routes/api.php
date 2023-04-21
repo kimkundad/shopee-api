@@ -57,6 +57,7 @@ Route::group([
     Route::post('/deleteAddress', [App\Http\Controllers\ApiController::class, 'deleteAddress']);
     Route::post('/getAddress', [App\Http\Controllers\ApiController::class, 'getAddress']);
     Route::post('/setDefaultAddress', [App\Http\Controllers\ApiController::class, 'setDefaultAddress']);
+    Route::post('/editAddress', [App\Http\Controllers\ApiController::class, 'editAddress']);
 
     Route::post('/createUser', [App\Http\Controllers\AuthController::class, 'createUser']);
     Route::post('/verify', [App\Http\Controllers\AuthController::class, 'verify']);

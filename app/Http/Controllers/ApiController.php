@@ -807,6 +807,7 @@ class ApiController extends Controller
     // ดึงข้อมูลที่อยู่
     public function getAddress(Request $request)
     {
+        // ดึงสำหรับแก้ไข
         if ($request->address_id !== null) {
             $address = DB::table('addresses')->where('id', '=', $request->address_id)->first();
 
@@ -814,6 +815,7 @@ class ApiController extends Controller
                 'address' => $address,
             ], 201);
         }
+        //ดึงสำหรับแสดงหน้า order
         $address = DB::table('addresses')->where('user_id', '=', $request->user_id)->where('default', '=', 1)->first();
 
         return response()->json([
