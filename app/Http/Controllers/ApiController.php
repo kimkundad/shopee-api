@@ -1233,7 +1233,7 @@ class ApiController extends Controller
         try {
             if ($request->category) {
                 foreach ($request->category as $category) {
-                    DB::table('categories')->where('id', $category->id)->update([
+                    DB::table('categories')->where("id", $category->id)->update([
                         'cat_name' => $category->cat_name,
                     ]);
                 }
