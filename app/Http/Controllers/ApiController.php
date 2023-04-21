@@ -1234,8 +1234,9 @@ class ApiController extends Controller
             $InputCategory = $request->category;
             if (is_array($InputCategory) || is_object($InputCategory)) {
                 foreach ($InputCategory as $category) {
-                    DB::table('categories')->where('id', $category->id)->update([
-                        'cat_name' => $category->cat_name,
+                    $obj = json_decode($category, true);
+                    DB::table('categories')->where('id', $obj->id)->update([
+                        'cat_name' => $obj->cat_name,
                     ]);
                 }
             }
