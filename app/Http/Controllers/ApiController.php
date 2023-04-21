@@ -1229,7 +1229,9 @@ class ApiController extends Controller
 
     public function EditCategory(Request $request)
     {
-        dd($request->input('category'));
+        return response()->json([
+            'success' => $request->category,
+        ], 201);
         // if ($request->input('category')) {
         //     $InputCategory = $request->input('category');
         //     if (is_array($InputCategory) || is_object($InputCategory)) {
