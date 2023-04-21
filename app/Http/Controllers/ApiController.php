@@ -792,7 +792,6 @@ class ApiController extends Controller
         $address = DB::table('addresses')->where('user_id', '=', $request->user_id)->orderBy('created_at', 'desc')->get();
         return response()->json([
             'address' => $address,
-            'count' => $count,
         ], 201);
     }
 
