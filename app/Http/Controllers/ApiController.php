@@ -1229,18 +1229,19 @@ class ApiController extends Controller
 
     public function EditCategory(Request $request)
     {
-        if ($request->input('category')) {
-            $InputCategory = $request->input('category');
-            if (is_array($InputCategory) || is_object($InputCategory)) {
-                foreach ($InputCategory as $category) {
-                    DB::table('categories')->where('id', $category->id)->update([
-                        'cat_name' => $category->cat_name,
-                    ]);
-                }
-            }
-            return response()->json([
-                'success' => 'Update Category Shop successfully!',
-            ], 201);
-        }
+        dd($request->input('category'));
+        // if ($request->input('category')) {
+        //     $InputCategory = $request->input('category');
+        //     if (is_array($InputCategory) || is_object($InputCategory)) {
+        //         foreach ($InputCategory as $category) {
+        //             DB::table('categories')->where('id', $category->id)->update([
+        //                 'cat_name' => $category->cat_name,
+        //             ]);
+        //         }
+        //     }
+        //     return response()->json([
+        //         'success' => 'Update Category Shop successfully!',
+        //     ], 201);
+        // }
     }
 }
