@@ -738,6 +738,15 @@ class ApiController extends Controller
         $newAddress->save();
     }
 
+    // ตั้งค่าที่อยู่เริ่มต้น
+    public function setDefaultAddress(Request $request) {
+        $address = DB::table('addresses')->where('id','=',$request->id)->update(['default'=>1]);
+
+        return response()->json([
+            'address' => $address,
+        ],201);
+    }
+
     // ดึงข้อมูลที่อยู่
     public function getAddress(Request $request)
     {

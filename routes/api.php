@@ -53,6 +53,7 @@ Route::group([
     Route::post('/getUser', [App\Http\Controllers\ApiController::class, 'getUser']);
     Route::post('/newAddress', [App\Http\Controllers\ApiController::class, 'newAddress']);
     Route::post('/getAddress', [App\Http\Controllers\ApiController::class, 'getAddress']);
+    Route::post('/setDefaultAddress', [App\Http\Controllers\ApiController::class, 'setDefaultAddress']);
 
     Route::post('/createUser', [App\Http\Controllers\AuthController::class, 'createUser']);
     Route::post('/verify', [App\Http\Controllers\AuthController::class, 'verify']);
