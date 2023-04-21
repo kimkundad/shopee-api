@@ -303,8 +303,8 @@ class ApiController extends Controller
     // ดึงข้อมูล order
     public function get_order(Request $request)
     {
-        $user_id = $request->input('user_id');
-        $shop_id = $request->input('shop_id');
+        $user_id = $request->user_id;
+        $shop_id = $request->shop_id;
 
         $orders = DB::table('orders')
             ->join('shops', 'shops.id', '=', 'orders.shop_id')
