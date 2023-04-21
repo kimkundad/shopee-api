@@ -301,12 +301,13 @@ class ApiController extends Controller
     }
 
     // ดึงข้อมูล order
-    public function getOrder(Request $request){
-        $order = DB::table('orders')->where('user_id','=',$request->user_id)->where('id','=',$request->order_id)->get();
+    public function getOrder(Request $request)
+    {
+        $order = DB::table('orders')->where('user_id', '=', $request->user_id)->where('id', '=', $request->order_id)->get();
 
         return response()->json([
             'order' => $order
-        ],201);
+        ], 201);
     }
 
     // ดึงข้อมูล order ทั้งหมด
@@ -1229,12 +1230,10 @@ class ApiController extends Controller
     {
         if ($request->input('category')) {
             $InputCategory = $request->input('category');
-            if (is_array($InputCategory)) {
-                foreach ($InputCategory as $category) {
-                    DB::table('categories')->where('id',$category->id)->update([
-                        'cat_name' => $category->cat_name,
-                    ]);
-                }
+            foreach ($InputCategory as $category) {
+                DB::table('categories')->where('id', $category->id)->update([
+                    'cat_name' => $category->cat_name,
+                ]);
             }
             return response()->json([
                 'success' => 'Update Category Shop successfully!',
