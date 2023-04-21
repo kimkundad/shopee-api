@@ -1229,8 +1229,8 @@ class ApiController extends Controller
 
     public function EditCategory(Request $request)
     {
-        if ($request->category) {
-            $InputCategory = $request->category;
+        if ($request->objs) {
+            $InputCategory = $request->objs;
             if (is_array($InputCategory) || is_object($InputCategory)) {
                 foreach ($InputCategory as $category) {
                     DB::table('categories')->where('id', $category->id)->update([
