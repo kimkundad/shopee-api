@@ -737,25 +737,58 @@ class ApiController extends Controller
             $newAddress->postcode = $request->postcode;
             $newAddress->default = $request->default;
             $newAddress->save();
-    
+
             return response()->json([
                 'status' => 'success',
-            ],201);
+            ], 201);
         } catch (\Throwable $th) {
             return response()->json([
                 'status' => 'error',
-            ],201);
+            ], 201);
         }
-        
     }
 
-    public function deleteAddress(Request $request){
-        DB::table('addresses')->where('id','=',$request->address_id)->delete();
+    // แก้ไขที่อยู่
+    public function editAddress(Request $request)
+    {
+        try {
+            if ($request->default == 1) {
+                DB::table('addresses')->where('user_id', '=', $request->user_id)->update([
+                    'default' => 0
+                ]);
+            }
+            DB::table('addresses')
+                ->where('id', '=', $request->address_id)
+                ->update([
+                    'name' => $request->name,
+                    'tel' => $request->tel,
+                    'address' => $request->address,
+                    'sub_district' => $request->subDistrict,
+                    'district' => $request->district,
+                    'province' => $request->province,
+                    'postcode' => $request->postcode,
+                    'default' => $request->default,
+                ]);
 
-        $address = DB::table('addresses')->where('user_id','=',$request->user_id)->orderBy('created_at','desc')->get();
+            return response()->json([
+                'status' => 'success',
+            ], 201);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'status' => 'error',
+            ], 201);
+        }
+    }
+
+    // ลบที่อยู่
+    public function deleteAddress(Request $request)
+    {
+        DB::table('addresses')->where('id', '=', $request->address_id)->delete();
+
+        $address = DB::table('addresses')->where('user_id', '=', $request->user_id)->orderBy('created_at', 'desc')->get();
         return response()->json([
             'address' => $address,
-        ],201);
+        ], 201);
     }
 
     // ตั้งค่าที่อยู่เริ่มต้น
@@ -772,18 +805,26 @@ class ApiController extends Controller
     }
 
     // ดึงข้อมูลที่อยู่
-    public function getAddress(Request $request) {
-        $address = DB::table('addresses')->where('user_id','=',$request->user_id)->where('default','=',1)->first();
+    public function getAddress(Request $request)
+    {
+        if ($request->address_id !== null) {
+            $address = DB::table('addresses')->where('id', '=', $request->address_id)->first();
+
+            return response()->json([
+                'address' => $address,
+            ], 201);
+        }
+        $address = DB::table('addresses')->where('user_id', '=', $request->user_id)->where('default', '=', 1)->first();
 
         return response()->json([
             'address' => $address,
-        ],201);
+        ], 201);
     }
 
     // ดึงข้อมูลที่อยู่ทั้งหมด
     public function getAllAddress(Request $request)
     {
-        $address = DB::table('addresses')->where('user_id', '=', $request->user_id)->orderBy('updated_at','desc')->get();
+        $address = DB::table('addresses')->where('user_id', '=', $request->user_id)->orderBy('updated_at', 'desc')->get();
 
         return response()->json([
             'address' => $address,
