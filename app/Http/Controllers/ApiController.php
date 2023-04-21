@@ -1229,19 +1229,7 @@ class ApiController extends Controller
 
     public function EditCategory(Request $request)
     {
-        $categories = $request->category; // แปลง JSON string เป็น object array
-
-        foreach ($categories as $category) {
-            DB::table('categories')
-                ->where('id', $category->id) // กำหนดเงื่อนไขในการอัพเดตแต่ละแถว
-                ->update([
-                    'cat_name' => $category->cat_name, // กำหนดค่าใหม่ให้กับ column ที่ต้องการอัพเดต
-                ]);
-        }
-
-        return response()->json([
-            'success' => 'Update Category Shop successfully!',
-        ], 201);
+        return response()->json($request)
         // if ($request->category) {
         //     $InputCategory = $request->category;
         //     if (is_array($InputCategory) || is_object($InputCategory)) {
