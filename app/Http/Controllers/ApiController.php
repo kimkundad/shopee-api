@@ -1228,7 +1228,7 @@ class ApiController extends Controller
                 }
             }
             return response()->json([
-                'category' => $InputCategory,
+                'category' => 'Update Category Shop successfully!',
             ], 201);
         }
     }
