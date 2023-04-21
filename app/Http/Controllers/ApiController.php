@@ -1229,7 +1229,7 @@ class ApiController extends Controller
 
     public function EditCategory(Request $request)
     {
-        $categories = json_decode($request->category); // แปลง JSON string เป็น object array
+        $categories = $request->category; // แปลง JSON string เป็น object array
 
         foreach ($categories as $category) {
             DB::table('categories')
