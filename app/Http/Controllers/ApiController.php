@@ -744,7 +744,7 @@ class ApiController extends Controller
         $address = DB::table('addresses')->where('user_id','=',$request->user_id)->get();
         return response()->json([
             'address' => $address,
-        ],201)
+        ],201);
     }
 
     // ตั้งค่าที่อยู่เริ่มต้น
