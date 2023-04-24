@@ -862,6 +862,15 @@ class ApiController extends Controller
         ], 201);
     }
 
+    // ดึงข้อมูลแชท
+    public function getMessage(Request $request){
+        $message = DB::table('chats')->where('shop_id',$request->shop_id)->where('sender_id','=',$request->user_id)->orWhere('recived_id','=',$request->user_id)->orderBy('created_at','desc')->get();
+
+        return response()->json([
+            'message' => $message,
+        ],201);
+    }
+
     // -------------------------------ฟังก์ชันสร้าง Sub-Admin create by อั้นเอง---------------------------------
     public function createSubAdmin(Request $request)
     {
