@@ -917,13 +917,13 @@ class ApiController extends Controller
     // ดึงข้อมูลธนาคาร
     public function getBankaccount(Request $request) {
         if($request->bank_id !== null){
-            $banks = DB::table('bankaccounts')->join('banks','banks.id','=','bankaccounts.bank_id')->where('id','=',$request->bank_id)->where('status','=',1)->first();
+            $banks = DB::table('bankaccounts')->join('banks','banks.id','=','bankaccounts.bank_id')->where('bankaccounts.id','=',$request->bank_id)->where('bankaccounts.is_active','=',1)->first();
 
             return response()->json([
                 'banks' => $banks,
             ],201);
         }
-        $banks = DB::table('bankaccounts')->join('banks','banks.id','=','bankaccounts.bank_id')->where('user_id','=',$request->user_id)->where('status','=',1)->get();
+        $banks = DB::table('bankaccounts')->join('banks','banks.id','=','bankaccounts.bank_id')->where('bankaccounts.user_id','=',$request->user_id)->where('bankaccounts.is_active','=',1)->get();
 
         return response()->json([
             'banks' => $banks,
