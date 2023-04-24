@@ -39,7 +39,7 @@ class ApiController extends Controller
     public function getCategory($id)
     {
 
-        $cat_id = DB::table('shop_list_products')->join('products','products.id','=','shop_list_products.product_id')->where('shop_id','=',$id)->pluck('shop_list_products.category')->toArray();
+        $cat_id = DB::table('shop_list_products')->join('products','products.id','=','shop_list_products.product_id')->where('shop_id','=',$id)->pluck('products.category')->toArray();
         $objs = category::select('cat_name', 'image', 'id')->whereIn('id',$cat_id)->where('status', 1)->get();
 
         return response()->json([
