@@ -871,6 +871,11 @@ class ApiController extends Controller
         ->where('chats.sender_id','=',$request->user_id)
         ->orWhere('chats.recived_id','=',$request->user_id)
         ->orderBy('chats.created_at','desc')
+        ->select([
+            'chats.*',
+            'user.avatar as avatar',
+            'shop.img_shop as img_shop',
+        ])
         ->get();
 
         return response()->json([
