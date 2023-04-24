@@ -36,7 +36,7 @@ class ApiController extends Controller
         ], 201);
     }
 
-    public function getCategory(id)
+    public function getCategory($id)
     {
 
         $cat_id = DB::table('shop_list_products')->join('products','products.id','=','shop_list_products.product_id')->where('shop_id','=',$id)->pluck('shop_list_products.category')->toArray();
