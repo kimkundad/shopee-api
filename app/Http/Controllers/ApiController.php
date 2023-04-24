@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\chats;
 use App\Models\orders;
 use App\Models\addresses;
 use App\Models\order_details;
@@ -885,14 +886,14 @@ class ApiController extends Controller
 
     // ส่งข้อความ
     public function sendMessage(Request $request){
-        DB::table('chats')->insert([
-            'user_id' => $request->user_id,
-            'shop_id' => $request->shop_id,
-            'sender_id' => $request->sender_id,
-            'recived_id' => $request->recived_id,
-            'message' => $request->message,
-            'img_message' => $request->img_message,
-        ]);
+        $objs = new chats();
+        $objs->user_id = $request->user_id;
+        $objs->shop_id = $request->shop_id;
+        $objs->sender_id = $request->sender_id;
+        $objs->recived = $request->recived_id;
+        $objs->message = $request->message;
+        $objs->img_message = $request->img_message;
+        $objs->save();
 
         $message = DB::table('chats')
         ->join('users','users.id','=','chats.user_id')
