@@ -864,7 +864,14 @@ class ApiController extends Controller
 
     // ดึงข้อมูลแชท
     public function getMessage(Request $request){
-        $message = DB::table('chats')->where('shop_id',$request->shop_id)->where('sender_id','=',$request->user_id)->orWhere('recived_id','=',$request->user_id)->orderBy('created_at','desc')->get();
+        $message = DB::table('chats')
+        ->join('users','users.id','=','chats.user_id')
+        ->join('shops','shops.id','=','chats.shop_id')
+        ->where('chats.shop_id',$request->shop_id)
+        ->where('chats.sender_id','=',$request->user_id)
+        ->orWhere('chats.recived_id','=',$request->user_id)
+        ->orderBy('chats.created_at','desc')
+        ->get();
 
         return response()->json([
             'message' => $message,
