@@ -36,6 +36,18 @@ class ApiController extends Controller
         ], 201);
     }
 
+    public function getCategory(id)
+    {
+
+        $cat_id = DB::table('shop_list_products')->join('products','products.id','=','shop_list_products.product_id')->where('shop_id','=',$id)->pluck('shop_list_products.category')->toArray();
+        $objs = category::select('cat_name', 'image', 'id')->whereIn('id',$cat_id)->where('status', 1)->get();
+
+        return response()->json([
+            'category' => $objs,
+            'full_paht_img' => env('APP_URL') . '/images/shopee/category/'
+        ], 201);
+    }
+
     //ดึงข้อมูลสินค้าทั้งหมดมาแสดงในหน้าร้าน
     public function get_all_product($id)
     {
