@@ -20,7 +20,7 @@ return new class extends Migration
             $table->integer('user_id');
             $table->integer('shop_id');
             $table->text('message')->nullable();
-            $table->text('img_messsage')->nullable();
+            $table->text('img_message')->nullable();
             $table->integer('status')->default(0);
             $table->timestamps();
         });
