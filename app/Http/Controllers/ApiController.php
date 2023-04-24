@@ -890,7 +890,7 @@ class ApiController extends Controller
             'shop_id' => $request->shop_id,
             'sender_id' => $request->sender_id,
             'recived_id' => $request->recived_id,
-            'massage' => $request->message,
+            'message' => $request->message,
             'img_message' => $request->img_message,
         ]);
 
