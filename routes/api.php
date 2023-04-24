@@ -62,6 +62,7 @@ Route::group([
     Route::post('/editAddress', [App\Http\Controllers\ApiController::class, 'editAddress']);
 
     Route::post('/getMessage', [App\Http\Controllers\ApiController::class, 'getMessage']);
+    Route::post('/sendMessage', [App\Http\Controllers\ApiController::class, 'sendMessage']);
 
     Route::post('/createUser', [App\Http\Controllers\AuthController::class, 'createUser']);
     Route::post('/verify', [App\Http\Controllers\AuthController::class, 'verify']);

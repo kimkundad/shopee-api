@@ -883,6 +883,35 @@ class ApiController extends Controller
         ],201);
     }
 
+    // ส่งข้อความ
+    public function sendMessage(Request $request){
+        DB::table('chats')->insert([
+            'user_id' => $request->user_id,
+            'shop_id' => $request->shop_id,
+            'sender_id' => $request->sender_id,
+            'recived_id' => $request->recived_id,
+            'massage' => $request->message,
+            'img_message' => $request->img_message,
+        ]);
+
+        $message = DB::table('chats')
+        ->join('users','users.id','=','chats.user_id')
+        ->join('shops','shops.id','=','chats.shop_id')
+        ->where('chats.shop_id',$request->shop_id)
+        ->where('chats.sender_id','=',$request->user_id)
+        ->orWhere('chats.recived_id','=',$request->user_id)
+        ->orderBy('chats.created_at','desc')
+        ->select([
+            'chats.*',
+            'users.avatar',
+            'shops.img_shop',
+        ])
+        ->get();
+
+        return response()->json([
+            'message' => $message,
+        ],201);
+    }
     // -------------------------------ฟังก์ชันสร้าง Sub-Admin create by อั้นเอง---------------------------------
     public function createSubAdmin(Request $request)
     {
