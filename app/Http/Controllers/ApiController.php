@@ -873,8 +873,8 @@ class ApiController extends Controller
         ->orderBy('chats.created_at','desc')
         ->select([
             'chats.*',
-            'user.avatar as avatar',
-            'shop.img_shop as img_shop',
+            'user.avatar',
+            'shop.img_shop',
         ])
         ->get();
 
