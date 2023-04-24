@@ -18,7 +18,7 @@ return new class extends Migration
             $table->text('icon_bank');
             $table->text('name_bank');
             $table->text('bankcode');
-            $table->int('is_active');
+            $table->integer('is_active');
             $table->timestamps();
         });
     }
