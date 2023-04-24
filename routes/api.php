@@ -63,6 +63,7 @@ Route::group([
 
     Route::post('/getMessage', [App\Http\Controllers\ApiController::class, 'getMessage']);
     Route::post('/sendMessage', [App\Http\Controllers\ApiController::class, 'sendMessage']);
+    Route::post('/getBank', [App\Http\Controllers\ApiController::class, 'getBankaccount']);
 
     Route::post('/createUser', [App\Http\Controllers\AuthController::class, 'createUser']);
     Route::post('/verify', [App\Http\Controllers\AuthController::class, 'verify']);

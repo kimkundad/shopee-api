@@ -913,6 +913,23 @@ class ApiController extends Controller
             'message' => $message,
         ],201);
     }
+
+    // ดึงข้อมูลธนาคาร
+    public function getBankaccount(Request $request) {
+        if($request->bank_id !== null){
+            $banks = DB::table('banksaccounts')->join('banks','banks.id','=','bankaccounts.bank_id')->where('id','=',$request->bank_id)->where('status','=',1)->first();
+
+            return response()->json([
+                'banks' => $banks,
+            ],201);
+        }
+        $banks = DB::table('banksaccounts')->join('banks','banks.id','=','bankaccounts.bank_id')->where('user_id','=',$request->user_id)->where('status','=',1)->get();
+
+        return response()->json([
+            'banks' => $banks,
+        ],201);
+    }
+
     // -------------------------------ฟังก์ชันสร้าง Sub-Admin create by อั้นเอง---------------------------------
     public function createSubAdmin(Request $request)
     {
