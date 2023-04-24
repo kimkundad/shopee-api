@@ -15,12 +15,13 @@ return new class extends Migration
     {
         Schema::create('chats', function (Blueprint $table) {
             $table->id();
-            $table->integer('sender_id');
-            $table->integer('recived_id');
+            $table->integer('sender_id')->nullable();
+            $table->integer('recived_id')->nullable();
+            $table->integer('user_id');
             $table->integer('shop_id');
-            $table->text('message');
-            $table->text('img_messsage');
-            $table->integer('status');
+            $table->text('message')->nullable();
+            $table->text('img_messsage')->nullable();
+            $table->integer('status')->default(0);
             $table->timestamps();
         });
     }
