@@ -1372,4 +1372,12 @@ class ApiController extends Controller
         //     ], 201);
         // }
     }
+
+    public function deleteCategory($id)
+    {
+        DB::table('categories')->where('id', $id)->delete();
+        return response()->json([
+            'success' => 'Update Category Shop successfully!',
+        ], 201);
+    }
 }
