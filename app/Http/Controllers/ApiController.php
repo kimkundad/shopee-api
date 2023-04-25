@@ -951,9 +951,9 @@ class ApiController extends Controller
         $objs = DB::table('chats')
             ->join('users', 'users.id', '=', 'chats.user_id')
             ->where('chats.shop_id', '=', $request->shop_id)
-            ->whereRaw('chats.created_at = (SELECT MAX(created_at) FROM chats WHERE user_id = chats.user_id)')
             ->orderBy('chats.created_at', 'desc')
-            ->distinct('chats.user_id')
+            ->groupBy('chats.user_id')
+            ->select('users.name', DB::raw('(SELECT message FROM chats WHERE user_id = chats.user_id ORDER BY created_at DESC LIMIT 1) AS latest_message'))
             ->get();
 
         return response()->json([
