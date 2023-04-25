@@ -953,7 +953,7 @@ class ApiController extends Controller
             ->where('chats.shop_id', '=', $request->shop_id)
             ->orderBy('chats.created_at', 'desc')
             ->groupBy('chats.user_id')
-            ->select('users.name', DB::raw('(SELECT message FROM chats WHERE user_id = chats.user_id ORDER BY created_at DESC LIMIT 1) AS latest_message'))
+ 
             ->get();
 
         return response()->json([
