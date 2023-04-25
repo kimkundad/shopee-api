@@ -39,8 +39,8 @@ class ApiController extends Controller
     public function getCategory($id)
     {
 
-        $cat_id = DB::table('shop_list_products')->join('products','products.id','=','shop_list_products.product_id')->where('shop_id','=',$id)->pluck('products.category')->toArray();
-        $objs = category::select('cat_name', 'image', 'id')->whereIn('id',$cat_id)->where('status', 1)->get();
+        $cat_id = DB::table('shop_list_products')->join('products', 'products.id', '=', 'shop_list_products.product_id')->where('shop_id', '=', $id)->pluck('products.category')->toArray();
+        $objs = category::select('cat_name', 'image', 'id')->whereIn('id', $cat_id)->where('status', 1)->get();
 
         return response()->json([
             'category' => $objs,
@@ -67,7 +67,9 @@ class ApiController extends Controller
     public function get_allproduct()
     {
 
-        $objs = DB::table('products')->select('*')->get();
+        $objs = DB::table('products')->select('*')
+            ->orderBy('id', 'DESC')
+            ->get();
 
         return response()->json([
             'product' => $objs,
@@ -585,13 +587,11 @@ class ApiController extends Controller
     // แก้ไขข้อมูลสินค้า
     public function editProduct(Request $request, $id)
     {
-        DB::table('products')
-            ->join('product_options', 'product_options.product_id', '=', 'products.id')
-            ->join('product_suboptions', 'product_suboptions.op_id', '=', 'product_option.id')
-            ->join('shop_list_products', 'products.id', '=', 'shop_list_products.product_id')
-            ->join('product_images', 'product_images.product_id', '=', 'products.id')
-            ->where('products.id', '=', $id)
-            ->delete();
+
+        dd($request,$id);
+        return response()->json([
+            'success' => 'updated product successfully',
+        ], 201);
     }
 
     // ดึงข้อมูลร้านค้า
@@ -876,28 +876,30 @@ class ApiController extends Controller
     }
 
     // ดึงข้อมูลแชท
-    public function getMessage(Request $request){
+    public function getMessage(Request $request)
+    {
         $message = DB::table('chats')
-        ->join('users','users.id','=','chats.user_id')
-        ->join('shops','shops.id','=','chats.shop_id')
-        ->where('chats.shop_id',$request->shop_id)
-        ->where('chats.sender_id','=',$request->user_id)
-        ->orWhere('chats.recived_id','=',$request->user_id)
-        ->orderBy('chats.created_at','asc')
-        ->select([
-            'chats.*',
-            'users.avatar',
-            'shops.img_shop',
-        ])
-        ->get();
+            ->join('users', 'users.id', '=', 'chats.user_id')
+            ->join('shops', 'shops.id', '=', 'chats.shop_id')
+            ->where('chats.shop_id', $request->shop_id)
+            ->where('chats.sender_id', '=', $request->user_id)
+            ->orWhere('chats.recived_id', '=', $request->user_id)
+            ->orderBy('chats.created_at', 'asc')
+            ->select([
+                'chats.*',
+                'users.avatar',
+                'shops.img_shop',
+            ])
+            ->get();
 
         return response()->json([
             'message' => $message,
-        ],201);
+        ], 201);
     }
 
     // ส่งข้อความ
-    public function sendMessage(Request $request){
+    public function sendMessage(Request $request)
+    {
         $objs = new chats();
         $objs->user_id = $request->user_id;
         $objs->shop_id = $request->shop_id;
@@ -908,38 +910,39 @@ class ApiController extends Controller
         $objs->save();
 
         $message = DB::table('chats')
-        ->join('users','users.id','=','chats.user_id')
-        ->join('shops','shops.id','=','chats.shop_id')
-        ->where('chats.shop_id',$request->shop_id)
-        ->where('chats.sender_id','=',$request->user_id)
-        ->orWhere('chats.recived_id','=',$request->user_id)
-        ->orderBy('chats.created_at','asc')
-        ->select([
-            'chats.*',
-            'users.avatar',
-            'shops.img_shop',
-        ])
-        ->get();
+            ->join('users', 'users.id', '=', 'chats.user_id')
+            ->join('shops', 'shops.id', '=', 'chats.shop_id')
+            ->where('chats.shop_id', $request->shop_id)
+            ->where('chats.sender_id', '=', $request->user_id)
+            ->orWhere('chats.recived_id', '=', $request->user_id)
+            ->orderBy('chats.created_at', 'asc')
+            ->select([
+                'chats.*',
+                'users.avatar',
+                'shops.img_shop',
+            ])
+            ->get();
 
         return response()->json([
             'message' => $message,
-        ],201);
+        ], 201);
     }
 
     // ดึงข้อมูลธนาคาร
-    public function getBankaccount(Request $request) {
-        if($request->id !== null){
-            $banks = DB::table('bankaccounts')->leftjoin('banks','banks.id','=','bankaccounts.bank_id')->where('bankaccounts.id','=',$request->id)->where('bankaccounts.is_active','=',1)->first();
+    public function getBankaccount(Request $request)
+    {
+        if ($request->id !== null) {
+            $banks = DB::table('bankaccounts')->leftjoin('banks', 'banks.id', '=', 'bankaccounts.bank_id')->where('bankaccounts.id', '=', $request->id)->where('bankaccounts.is_active', '=', 1)->first();
 
             return response()->json([
                 'banks' => $banks,
-            ],201);
+            ], 201);
         }
-        $banks = DB::table('bankaccounts')->leftjoin('banks','banks.id','=','bankaccounts.bank_id')->where('bankaccounts.user_id','=',$request->user_id)->where('bankaccounts.is_active','=',1)->get();
+        $banks = DB::table('bankaccounts')->leftjoin('banks', 'banks.id', '=', 'bankaccounts.bank_id')->where('bankaccounts.user_id', '=', $request->user_id)->where('bankaccounts.is_active', '=', 1)->get();
 
         return response()->json([
             'banks' => $banks,
-        ],201);
+        ], 201);
     }
 
     // ดึงข้อมูลแชทสำหรับแม่ค้า
