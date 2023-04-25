@@ -588,7 +588,7 @@ class ApiController extends Controller
     public function editProduct(Request $request, $id)
     {
 
-        dd($request,$id);
+        dd($request, $id);
         return response()->json([
             'success' => 'updated product successfully',
         ], 201);
@@ -946,12 +946,24 @@ class ApiController extends Controller
     }
 
     // ดึงข้อมูลแชทสำหรับแม่ค้า
-    public function getUserChats(Request $request){
-        $objs = DB::table('chats')->join('users','users.id','=','chats.user_id')->orderBy('chats.created_at','desc')->where('shop_id','=',$request->shop_id)->distinct('chats.user_id')->get();
+    public function getUserChats(Request $request)
+    {
+        $objs = DB::table('chats')
+            ->join('users', 'users.id', '=', 'chats.user_id')
+            ->where('chats.shop_id', '=', $request->shop_id)
+            ->whereNotIn('chats.user_id', function ($query) use ($request) {
+                $query->select('user_id')
+                    ->from('chats')
+                    ->where('shop_id', '=', $request->shop_id)
+                    ->groupBy('user_id')
+                    ->havingRaw('COUNT(*) > 1');
+            })
+            ->orderBy('chats.created_at', 'desc')
+            ->get();
 
         return response()->json([
             'users' => $objs
-        ],201);
+        ], 201);
     }
 
     // -------------------------------ฟังก์ชันสร้าง Sub-Admin create by อั้นเอง---------------------------------
