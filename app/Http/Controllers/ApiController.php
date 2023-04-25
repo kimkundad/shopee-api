@@ -947,7 +947,7 @@ class ApiController extends Controller
 
     // ดึงข้อมูลแชทสำหรับแม่ค้า
     public function getUserChats(Request $request){
-        $objs = DB::table('chats')->join('users','users.id','=','chats.user_id')->orderBy('created_at','desc')->where('shop_id','=',$request->shop_id)->distinct('chats.user_id')->get();
+        $objs = DB::table('chats')->join('users','users.id','=','chats.user_id')->orderBy('chats.created_at','desc')->where('shop_id','=',$request->shop_id)->distinct('chats.user_id')->get();
 
         return response()->json([
             'users' => $objs
