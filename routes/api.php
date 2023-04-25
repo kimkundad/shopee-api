@@ -68,7 +68,7 @@ Route::group([
 
     Route::get('/getCategory/{id}' , [App\Http\Controllers\ApiController::class, 'getCategory']);
 
-    Route::get('/getUserChats' , [App\Http\Controllers\ApiController::class, 'test']);
+    Route::post('/getUserChats' , [App\Http\Controllers\ApiController::class, 'test']);
 
     Route::post('/createUser', [App\Http\Controllers\AuthController::class, 'createUser']);
     Route::post('/verify', [App\Http\Controllers\AuthController::class, 'verify']);
