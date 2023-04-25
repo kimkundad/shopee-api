@@ -588,7 +588,7 @@ class ApiController extends Controller
     public function editProduct(Request $request, $id)
     {
 
-
+        dd($request,$id);
         return response()->json([
             'success' => 'updated product successfully',
         ], 201);
