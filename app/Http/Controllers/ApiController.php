@@ -951,14 +951,9 @@ class ApiController extends Controller
         $objs = DB::table('chats')
             ->join('users', 'users.id', '=', 'chats.user_id')
             ->where('chats.shop_id', '=', $request->shop_id)
-            ->whereNotIn('chats.user_id', function ($query) use ($request) {
-                $query->select('user_id')
-                    ->from('chats')
-                    ->where('shop_id', '=', $request->shop_id)
-                    ->groupBy('user_id')
-                    ->havingRaw('COUNT(*) > 1');
-            })
+            ->whereRaw('chats.created_at = (SELECT MAX(created_at) FROM chats WHERE user_id = chats.user_id)')
             ->orderBy('chats.created_at', 'desc')
+            ->distinct('chats.user_id')
             ->get();
 
         return response()->json([
