@@ -942,6 +942,15 @@ class ApiController extends Controller
         ],201);
     }
 
+    // ดึงข้อมูลแชทสำหรับแม่ค้า
+    public function getUserChats(Request $request){
+        $objs = DB::table('chats')->join('users','users.id','=','chats.user_id')->orderBy('created_at','desc')->where('shop_id','=',$request->shop_id)->distinct('chats.user_id')->get();
+
+        return response()->json([
+            'users' => $objs
+        ],201);
+    }
+
     // -------------------------------ฟังก์ชันสร้าง Sub-Admin create by อั้นเอง---------------------------------
     public function createSubAdmin(Request $request)
     {
