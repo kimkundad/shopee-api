@@ -587,13 +587,11 @@ class ApiController extends Controller
     // แก้ไขข้อมูลสินค้า
     public function editProduct(Request $request, $id)
     {
-        DB::table('products')
-            ->join('product_options', 'product_options.product_id', '=', 'products.id')
-            ->join('product_suboptions', 'product_suboptions.op_id', '=', 'product_option.id')
-            ->join('shop_list_products', 'products.id', '=', 'shop_list_products.product_id')
-            ->join('product_images', 'product_images.product_id', '=', 'products.id')
-            ->where('products.id', '=', $id)
-            ->delete();
+
+
+        return response()->json([
+            'success' => 'updated product successfully',
+        ], 201);
     }
 
     // ดึงข้อมูลร้านค้า
