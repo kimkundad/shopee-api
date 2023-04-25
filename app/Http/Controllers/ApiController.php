@@ -1375,7 +1375,11 @@ class ApiController extends Controller
 
     public function deleteCategory($id)
     {
+        DB::table('products')->where('category', $id)->update([
+            'active' => 0,
+        ]);
         DB::table('categories')->where('id', $id)->delete();
+
         return response()->json([
             'success' => 'Update Category Shop successfully!',
         ], 201);
