@@ -535,6 +535,26 @@ class ApiController extends Controller
                 $product->img_product = $filePaths;
                 $product->save();
                 $product_id = product::select('id')->orderBy('created_at', 'desc')->first();
+
+                if ($request->file('image')) {
+                    $images = $request->file('image');
+                    foreach ($images as $index => $img) {
+                        $filename = time() . '.' . $img->getClientOriginalExtension();
+                        $image = Image::make($img->getRealPath());
+                        $image->resize(300, 300, function ($constraint) {
+                            $constraint->aspectRatio();
+                        });
+                        $image->stream();
+                        Storage::disk('do_spaces')->put('shopee/products/' . $img->hashName(), $image, 'public');
+                        $filePaths = $img->hashName();
+                        DB::table('product_images')->insert([
+                            'image' => $filePaths,
+                            'product_id' => $product_id['id'],
+                            'status' => 0,
+                        ]);
+                    }
+                }
+
                 $first = false;
             } else {
                 $id_image = DB::table('product_images')->insertGetId([
