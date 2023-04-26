@@ -50,6 +50,7 @@ Route::group([
     Route::post('/addCategory', [App\Http\Controllers\ApiController::class, 'addCategory']); // route สร้างหมวดหมู่ หมวดหมู่ by อั้นเอง
     Route::post('/EditCategory', [App\Http\Controllers\ApiController::class, 'EditCategory']); // route แก้ไขหมวดหมู่ หมวดหมู่ by อั้นเอง
     Route::post('/editProduct/{id}', [App\Http\Controllers\ApiController::class, 'editProduct']); // route แก้ไขสินค้า by อั้นเอง
+    Route::post('/deleteCategory/{id}', [App\Http\Controllers\ApiController::class, 'deleteCategory']); // route ลบหมวดหมู่ by อั้นเอง
     Route::post('/createdOrder', [App\Http\Controllers\ApiController::class, 'created_order']);
     Route::post('/getAllOrder', [App\Http\Controllers\ApiController::class, 'getAllOrder']);
     Route::post('/getOrder', [App\Http\Controllers\ApiController::class, 'getOrder']);

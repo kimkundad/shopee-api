@@ -587,8 +587,40 @@ class ApiController extends Controller
     // แก้ไขข้อมูลสินค้า
     public function editProduct(Request $request, $id)
     {
+        $checkActive = DB::table('products')->select('active')->where('id', $id)->first();
+        if($checkActive->active == 0){
+            DB::table('products')->where('id', $id)->update([
+                "name_product" => $request->name_product,
+                "detail_product" => $request->detail_product,
+                "category" => $request->categoryId,
+                "sku" => $request->sku,
+                "cost" => $request->cost,
+                "price" => $request->price,
+                "price_sales" => $request->price_sales,
+                "stock" => $request->stock,
+                "weight" => $request->weight,
+                "width_product" => $request->width,
+                "height_product" => $request->height,
+                "length_product" => $request->length,
+                "active" => 1,
+            ]);
+        }else{
+            DB::table('products')->where('id', $id)->update([
+                "name_product" => $request->name_product,
+                "detail_product" => $request->detail_product,
+                "category" => $request->categoryId,
+                "sku" => $request->sku,
+                "cost" => $request->cost,
+                "price" => $request->price,
+                "price_sales" => $request->price_sales,
+                "stock" => $request->stock,
+                "weight" => $request->weight,
+                "width_product" => $request->width,
+                "height_product" => $request->height,
+                "length_product" => $request->length,
+            ]);
+        }
 
-        dd($request, $id);
         return response()->json([
             'success' => 'updated product successfully',
         ], 201);
@@ -1359,5 +1391,17 @@ class ApiController extends Controller
         //         'success' => 'Update Category Shop successfully!',
         //     ], 201);
         // }
+    }
+
+    public function deleteCategory($id)
+    {
+        DB::table('products')->where('category', $id)->update([
+            'active' => 0,
+        ]);
+        DB::table('categories')->where('id', $id)->delete();
+
+        return response()->json([
+            'success' => 'Update Category Shop successfully!',
+        ], 201);
     }
 }
