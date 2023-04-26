@@ -915,6 +915,7 @@ class ApiController extends Controller
             ->where('chats.shop_id', $request->shop_id)
             ->where('chats.sender_id', '=', $request->user_id)
             ->orWhere('chats.recived_id', '=', $request->user_id)
+            ->where('chats.id','=',$objs->id)
             ->orderBy('chats.created_at', 'asc')
             ->select([
                 'chats.*',
