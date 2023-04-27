@@ -613,7 +613,8 @@ class ApiController extends Controller
             }
         }
         return response()->json([
-            'product' => 'a',
+            'success' => 'Add product successfully!',
+            'productID' => $product_id['id'],
         ], 201);
     }
 
