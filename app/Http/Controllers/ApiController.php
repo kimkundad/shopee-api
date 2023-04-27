@@ -621,7 +621,7 @@ class ApiController extends Controller
     public function editProduct(Request $request, $id)
     {
         $checkActive = DB::table('products')->select('active')->where('id', $id)->first();
-        if($checkActive->active == 0){
+        if ($checkActive->active == 0) {
             DB::table('products')->where('id', $id)->update([
                 "name_product" => $request->name_product,
                 "detail_product" => $request->detail_product,
@@ -637,7 +637,7 @@ class ApiController extends Controller
                 "length_product" => $request->length,
                 "active" => 1,
             ]);
-        }else{
+        } else {
             DB::table('products')->where('id', $id)->update([
                 "name_product" => $request->name_product,
                 "detail_product" => $request->detail_product,
@@ -977,7 +977,7 @@ class ApiController extends Controller
         $message = DB::table('chats')
             ->join('users', 'users.id', '=', 'chats.user_id')
             ->join('shops', 'shops.id', '=', 'chats.shop_id')
-            ->where('chats.id','=',$objs->id)
+            ->where('chats.id', '=', $objs->id)
             ->select([
                 'chats.*',
                 'users.avatar',
@@ -1431,6 +1431,25 @@ class ApiController extends Controller
 
         return response()->json([
             'success' => 'Update Category Shop successfully!',
+        ], 201);
+    }
+
+    public function getSearchProduct(Request $request)
+    {
+        $search = $request->query('search');
+
+        if ($search != 'null') {
+            $products = product::when($search, function ($query, $search) {
+                return $query->where('name_product', 'like', '%' . $search . '%');
+            })->get();
+        } else {
+            $products = DB::table('products')->select('*')
+            ->orderBy('id', 'DESC')
+            ->get();
+        }
+
+        return response()->json([
+            'products' => $products,
         ], 201);
     }
 }
