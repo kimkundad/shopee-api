@@ -641,7 +641,7 @@ class ApiController extends Controller
             $img_product = DB::table('product_images')->select('image')->where('id', $item['indexImageOption'])->first();
 
             $pro_option = new product_option;
-            $pro_option->product_id = $proID->id;
+            $pro_option->product_id = $proID;
             $pro_option->img_id = $item['indexImageOption'];
             $pro_option->op_name = $item['nameOption'];
             $pro_option->img_name = $img_product->image;
