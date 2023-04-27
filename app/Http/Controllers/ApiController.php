@@ -613,7 +613,7 @@ class ApiController extends Controller
             }
         }
 
-        $subProductImg = DB::table('product_images')->where('product_id', $product_id['id'])->pluck('id', 'image')->toArray();
+        $subProductImg = DB::table('product_images')->select('id', 'image')->where('product_id', $product_id['id'])->get();
         return response()->json([
             'success' => 'Add product successfully!',
             'subProductImg' => $subProductImg,
