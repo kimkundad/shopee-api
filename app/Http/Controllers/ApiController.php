@@ -617,6 +617,54 @@ class ApiController extends Controller
         return response()->json([
             'success' => 'Add product successfully!',
             'subProductImg' => $subProductImg,
+            'productID' => $product_id['id'],
+        ], 201);
+    }
+
+    public function addOptionProduct(Request $request)
+    {
+        $proID = $request->productID;
+        $option1 = null;
+        $option2 = null;
+        $dataOption = json_decode($request->dataOption, true);
+        if ($request->option1 != 'ตัวเลือกที่ 1') {
+            $option1 = $request->option1;
+        }
+        if ($request->option2 != 'ตัวเลือกที่ 2') {
+            $option2 = $request->option2;
+        }
+        DB::table('products')->where('id', $proID)->update([
+            'option1' => $option1,
+            'option2' => $option2,
+        ]);
+        foreach ($dataOption as $item) {
+            $img_product = DB::table('product_images')->select('image')->where('id', $item['indexImageOption'])->first();
+
+            $pro_option = new product_option;
+            $pro_option->product_id = $proID->id;
+            $pro_option->img_id = $item['indexImageOption'];
+            $pro_option->op_name = $item['nameOption'];
+            $pro_option->img_name = $img_product->image;
+            $pro_option->price = $item['priceOption'];
+            $pro_option->stock = $item['stockOption'];
+            $pro_option->sku = $item['skuOption'];
+            $pro_option->status = 1;
+            $pro_option->save();
+
+            foreach ($item['subOption'] as $subItem) {
+                DB::table('product_suboptions')->insert([
+                    'op_id' => $pro_option->id,
+                    'sub_op_name' => $subItem['nameSubOption'],
+                    'price' => $subItem['priceSubOption'],
+                    'stock' => $subItem['stockSubOption'],
+                    'sku' => $subItem['skuSubOption'],
+                    'status' => 1,
+                ]);
+            }
+        }
+
+        return response()->json([
+            'success' => 'Add option product successfully!',
         ], 201);
     }
 
@@ -1447,8 +1495,8 @@ class ApiController extends Controller
             })->get();
         } else {
             $products = DB::table('products')->select('*')
-            ->orderBy('id', 'DESC')
-            ->get();
+                ->orderBy('id', 'DESC')
+                ->get();
         }
 
         return response()->json([
