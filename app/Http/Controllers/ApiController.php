@@ -446,12 +446,25 @@ class ApiController extends Controller
     public function delete_product(Request $request)
     {
         try {
-            // Validate input
+            // ลบข้อมูลใน product ตาม ID
             product::where('id', '=', $request->id)->delete();
+            // ลบข้อมูลที่ร้านค้าใช้ Product_ID นี้
+            DB::table('shop_list_products')->where('product_id', $request->id)->delete();
+            // ลบรูป Product ID นี้ออก
+            DB::table('product_images')->where('product_id', $request->id)->delete();
 
-            $products = product::all();
+            // ดึง ID ของ product option ออกมา เพื่อจะนำ เอา ID ไปลบข้อมูลกับตาราง Sub Option
+            $product_option_id = DB::table('product_options')->select('id')->where('product_id', $request->id)->get();
+            foreach ($product_option_id as $key => $pro_op_id) {
+                DB::table('product_suboptions')->where('op_id', $pro_op_id->id)->delete();
+            }
+
+            // ลบ option ของ Product ID  นี้ออก
+            DB::table('product_options')->where('product_id', $request->id)->delete();
+
+            // $products = product::all();
             return response()->json([
-                'product' => $products,
+                'success' => 'Delete Product Successfully!',
             ], 201);
         } catch (Exception $e) {
             return response()->json([
