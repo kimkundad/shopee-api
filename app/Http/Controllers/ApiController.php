@@ -1449,7 +1449,7 @@ class ApiController extends Controller
         }
 
         return response()->json([
-            'products' => $products,
+            'product' => $products,
         ], 201);
     }
 }
