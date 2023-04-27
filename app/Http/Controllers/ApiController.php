@@ -476,65 +476,26 @@ class ApiController extends Controller
     // เพิ่มสินค้า
     public function addProduct(Request $request)
     {
-        if ($request->option1 == "ตัวเลือกที่ 1" || $request->option2 == "ตัวเลือกที่ 2") {
-            $product = new product();
-            $product->name_product = $request->name_product;
-            $product->detail_product = $request->detail_product;
-            $product->price = $request->price;
-            $product->price_sales = $request->price_sales;
-            $product->cost = $request->cost;
-            $product->stock = $request->stock;
-            $product->weight = $request->weight;
-            $product->width_product = $request->width_product;
-            $product->length_product = $request->length_product;
-            $product->height_product = $request->height_product;
-            $product->sku = $request->sku;
-            $product->category = $request->category;
-            $product->type = 1;
-            $product->active = 1;
-        } else if ($request->sub_option == "ตัวเลือกที่ 2") {
-            $product = new product();
-            $product->name_product = $request->name_product;
-            $product->detail_product = $request->detail_product;
-            $product->price = $request->price;
-            $product->price_sales = $request->price_sales;
-            $product->cost = $request->cost;
-            $product->stock = $request->stock;
-            $product->weight = $request->weight;
-            $product->width_product = $request->width_product;
-            $product->length_product = $request->length_product;
-            $product->height_product = $request->height_product;
-            $product->sku = $request->sku;
-            $product->option1 = $request->option1;
-            $product->category = $request->category;
-            $product->type = 2;
-            $product->active = 1;
-        } else {
-            $product = new product();
-            $product->name_product = $request->name_product;
-            $product->detail_product = $request->detail_product;
-            $product->price = $request->price;
-            $product->price_sales = $request->price_sales;
-            $product->cost = $request->cost;
-            $product->stock = $request->stock;
-            $product->weight = $request->weight;
-            $product->width_product = $request->width_product;
-            $product->length_product = $request->length_product;
-            $product->height_product = $request->height_product;
-            $product->sku = $request->sku;
-            $product->option1 = $request->option1;
-            $product->option1 = $request->option2;
-            $product->category = $request->category;
-            $product->type = 3;
-            $product->active = 1;
-        }
 
+        $product = new product();
+        $product->name_product = $request->name_product;
+        $product->detail_product = $request->detail_product;
+        $product->price = $request->price;
+        $product->price_sales = $request->price_sales;
+        $product->cost = $request->cost;
+        $product->stock = $request->stock;
+        $product->weight = $request->weight;
+        $product->width_product = $request->width_product;
+        $product->length_product = $request->length_product;
+        $product->height_product = $request->height_product;
+        $product->sku = $request->sku;
+        $product->category = $request->category;
+        $product->type = 1;
+        $product->active = 1;
 
         $files = $request->file('file');
         $filePaths = null;
         $product_id = 0;
-        $first = true;
-        $dataOption = json_decode($request->dataOption, true);
         foreach ($files as $index => $file) {
             $filename = time() . '.' . $file->getClientOriginalExtension();
             $image = Image::make($file->getRealPath());
@@ -544,71 +505,26 @@ class ApiController extends Controller
             $image->stream();
             Storage::disk('do_spaces')->put('shopee/products/' . $file->hashName(), $image, 'public');
             $filePaths = $file->hashName();
-            if ($first) {
-                $product->img_product = $filePaths;
-                $product->save();
-                $product_id = product::select('id')->orderBy('created_at', 'desc')->first();
+            $product->img_product = $filePaths;
+            $product->save();
+            $product_id = product::select('id')->orderBy('created_at', 'desc')->first();
 
-                if ($request->file('image')) {
-                    $images = $request->file('image');
-                    foreach ($images as $index => $img) {
-                        $filename = time() . '.' . $img->getClientOriginalExtension();
-                        $image = Image::make($img->getRealPath());
-                        $image->resize(300, 300, function ($constraint) {
-                            $constraint->aspectRatio();
-                        });
-                        $image->stream();
-                        Storage::disk('do_spaces')->put('shopee/products/' . $img->hashName(), $image, 'public');
-                        $filePaths = $img->hashName();
-                        DB::table('product_images')->insert([
-                            'image' => $filePaths,
-                            'product_id' => $product_id['id'],
-                            'status' => 0,
-                        ]);
-                    }
-                }
-
-                $first = false;
-            } else {
-                $id_image = DB::table('product_images')->insertGetId([
-                    'image' => $filePaths,
-                    'product_id' => $product_id['id'],
-                    'status' => 0,
-                ]);
-
-                foreach ($dataOption as $item) {
-                    if ($item['indexImageOption'] == $index) {
-                        $pro_option = new product_option;
-                        $pro_option->product_id = $product->id;
-                        $pro_option->img_id = $id_image;
-                        $pro_option->op_name = $item['nameOption'];
-                        $pro_option->img_name = $filePaths;
-                        $pro_option->price = $item['priceOption'];
-                        $pro_option->stock = $item['stockOption'];
-                        $pro_option->sku = $item['skuOption'];
-                        $pro_option->status = 1;
-                        $pro_option->save();
-                        /* $id_pro_option = DB::table('product_options')->lastInsertId([
-                            'product_id' => $product->id,
-                            'img_id' => $id_image,
-                            'op_name' => $item['nameOption'],
-                            'img_name' => $filePaths,
-                            'price' => $item['priceOption'],
-                            'stock' => $item['stockOption'],
-                            'sku' => $item['skuOption'],
-                            'status' => 1,
-                        ]); */
-                        foreach ($item['subOption'] as $subItem) {
-                            DB::table('product_suboptions')->insert([
-                                'op_id' => $pro_option->id,
-                                'sub_op_name' => $subItem['nameSubOption'],
-                                'price' => $subItem['priceSubOption'],
-                                'stock' => $subItem['stockSubOption'],
-                                'sku' => $subItem['skuSubOption'],
-                                'status' => 1,
-                            ]);
-                        }
-                    }
+            if ($request->file('image')) {
+                $images = $request->file('image');
+                foreach ($images as $index => $img) {
+                    $filename = time() . '.' . $img->getClientOriginalExtension();
+                    $image = Image::make($img->getRealPath());
+                    $image->resize(300, 300, function ($constraint) {
+                        $constraint->aspectRatio();
+                    });
+                    $image->stream();
+                    Storage::disk('do_spaces')->put('shopee/products/' . $img->hashName(), $image, 'public');
+                    $filePaths = $img->hashName();
+                    DB::table('product_images')->insert([
+                        'image' => $filePaths,
+                        'product_id' => $product_id['id'],
+                        'status' => 0,
+                    ]);
                 }
             }
         }
