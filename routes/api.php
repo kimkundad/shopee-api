@@ -72,6 +72,7 @@ Route::group([
     Route::get('/getCategory/{id}' , [App\Http\Controllers\ApiController::class, 'getCategory']);
 
     Route::post('/getUserChats' , [App\Http\Controllers\ApiController::class, 'getUserChats']);
+    Route::post('/searchUserChats' , [App\Http\Controllers\ApiController::class, 'search_users_chats']);
 
     Route::post('/createUser', [App\Http\Controllers\AuthController::class, 'createUser']);
     Route::post('/verify', [App\Http\Controllers\AuthController::class, 'verify']);
