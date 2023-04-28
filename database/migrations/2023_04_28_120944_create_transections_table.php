@@ -16,7 +16,7 @@ return new class extends Migration
         Schema::create('transections', function (Blueprint $table) {
             $table->id();
             $table->text('slip');
-            $table->int('order_id');
+            $table->integer('order_id');
             $table->data('date');
             $table->time('time');
             $table->text('status')->default(0);
