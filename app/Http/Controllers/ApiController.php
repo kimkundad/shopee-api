@@ -7,6 +7,7 @@ use App\Models\orders;
 use App\Models\addresses;
 use App\Models\order_details;
 use App\Models\product_option;
+use App\Models\transections;
 use Illuminate\Http\Request;
 use App\Models\category;
 use App\Models\product;
@@ -1005,6 +1006,34 @@ class ApiController extends Controller
         return response()->json([
             'users' => $objs
         ], 201);
+    }
+
+    public function confirm_payment(Request $request){
+        
+        $files = $request->file('file');
+        $filePaths = null;
+        foreach ($files as $index => $file) {
+            $filename = time() . '.' . $file->getClientOriginalExtension();
+            $image = Image::make($file->getRealPath());
+            $image->resize(300, 300, function ($constraint) {
+                $constraint->aspectRatio();
+            });
+            $image->stream();
+            Storage::disk('do_spaces')->put('shopee/slip/' . $file->hashName(), $image, 'public');
+            $filePaths = $file->hashName();
+            
+            $transections = new transections();
+            $transections->slip = $filePaths;
+            $transections->date = $request->data;
+            $transections->time = $request->time;
+            $transections->order_id = $request->order_id;
+            $transections->status = $request->status;
+            $transections->save();
+
+            return response()->json([
+                'status' => 'success',
+            ],201);
+        }
     }
 
     // -------------------------------ฟังก์ชันสร้าง Sub-Admin create by อั้นเอง---------------------------------
