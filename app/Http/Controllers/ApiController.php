@@ -554,8 +554,11 @@ class ApiController extends Controller
             'option2' => $option2,
         ]);
         foreach ($dataOption as $item) {
+            $status_option = 1;
             $img_product = DB::table('product_images')->select('image')->where('id', $item['indexImageOption'])->first();
-
+            if ($item['statusOption'] != true || $item['statusOption'] != 'true') {
+                $status_option = 0;
+            }
             $pro_option = new product_option;
             $pro_option->product_id = $proID;
             $pro_option->img_id = $item['indexImageOption'];
@@ -564,17 +567,21 @@ class ApiController extends Controller
             $pro_option->price = $item['priceOption'];
             $pro_option->stock = $item['stockOption'];
             $pro_option->sku = $item['skuOption'];
-            $pro_option->status = 1;
+            $pro_option->status = $status_option;
             $pro_option->save();
 
             foreach ($item['subOption'] as $subItem) {
+                $status_suboption = 1;
+                if ($subItem['statusSubOption'] != true || $subItem['statusSubOption'] != 'true') {
+                    $status_suboption = 0;
+                }
                 DB::table('product_suboptions')->insert([
                     'op_id' => $pro_option->id,
                     'sub_op_name' => $subItem['nameSubOption'],
                     'price' => $subItem['priceSubOption'],
                     'stock' => $subItem['stockSubOption'],
                     'sku' => $subItem['skuSubOption'],
-                    'status' => 1,
+                    'status' => $status_suboption,
                 ]);
             }
         }
@@ -991,11 +998,12 @@ class ApiController extends Controller
         ], 201);
     }
 
-    public function search_users_chats(Request $request) {
+    public function search_users_chats(Request $request)
+    {
         $objs = DB::table('chats as c1')
             ->join('users', 'users.id', '=', 'c1.user_id')
             ->where('c1.shop_id', '=', $request->shop_id)
-            ->where('name','LIKE','%'.$request->name.'%')
+            ->where('name', 'LIKE', '%' . $request->name . '%')
             ->where(function ($query) {
                 $query->whereRaw('c1.created_at = (SELECT MAX(created_at) FROM chats as c2 WHERE c2.user_id = c1.user_id)');
             })
