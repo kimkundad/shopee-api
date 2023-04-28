@@ -19,7 +19,7 @@ return new class extends Migration
             $table->integer('order_id');
             $table->date('date');
             $table->time('time');
-            $table->text('status')->default(0);
+            $table->text('status');
             $table->timestamps();
         });
     }
