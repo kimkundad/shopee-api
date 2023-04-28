@@ -30,6 +30,7 @@ Route::group([
     Route::get('/getAllProduct', [App\Http\Controllers\ApiController::class, 'get_allproduct']);
     Route::get('/getAllShops', [App\Http\Controllers\ApiController::class, 'get_all_shops']); // route ดึงข้อมูลร้านค้าออกมาทั้งหมด create by อั้นเอง
     Route::get('/getSearchShops', [App\Http\Controllers\ApiController::class, 'get_search_shops']); // route ค้นหาชื่อร้านค้า create by อั้นเอง
+    Route::get('/getSearchProduct', [App\Http\Controllers\ApiController::class, 'getSearchProduct']); // route ค้นหาชื่อร้านค้า create by อั้นเอง
     Route::get('/getSearchDateShops', [App\Http\Controllers\ApiController::class, 'get_search_date_shops']); // route ค้นหาวันที่สร้างร้านค้า create by อั้นเอง
     Route::get('/getFilterShops', [App\Http\Controllers\ApiController::class, 'get_filter_shops']); // route ในการ filter ร้า่นค้า ออกมาตาม ตัวอักษร, วันที่สร้าง, วันที่อัพเดท create by อั้นเอง
     Route::post('/addProductToCart', [App\Http\Controllers\ApiController::class, 'addProductToCart']);
@@ -62,6 +63,7 @@ Route::group([
     Route::post('/getAddress', [App\Http\Controllers\ApiController::class, 'getAddress']);
     Route::post('/setDefaultAddress', [App\Http\Controllers\ApiController::class, 'setDefaultAddress']);
     Route::post('/editAddress', [App\Http\Controllers\ApiController::class, 'editAddress']);
+    Route::post('/addOptionProduct', [App\Http\Controllers\ApiController::class, 'addOptionProduct']);
 
     Route::post('/getMessage', [App\Http\Controllers\ApiController::class, 'getMessage']);
     Route::post('/sendMessage', [App\Http\Controllers\ApiController::class, 'sendMessage']);

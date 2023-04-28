@@ -446,12 +446,25 @@ class ApiController extends Controller
     public function delete_product(Request $request)
     {
         try {
-            // Validate input
+            // ลบข้อมูลใน product ตาม ID
             product::where('id', '=', $request->id)->delete();
+            // ลบข้อมูลที่ร้านค้าใช้ Product_ID นี้
+            DB::table('shop_list_products')->where('product_id', $request->id)->delete();
+            // ลบรูป Product ID นี้ออก
+            DB::table('product_images')->where('product_id', $request->id)->delete();
 
-            $products = product::all();
+            // ดึง ID ของ product option ออกมา เพื่อจะนำ เอา ID ไปลบข้อมูลกับตาราง Sub Option
+            $product_option_id = DB::table('product_options')->select('id')->where('product_id', $request->id)->get();
+            foreach ($product_option_id as $key => $pro_op_id) {
+                DB::table('product_suboptions')->where('op_id', $pro_op_id->id)->delete();
+            }
+
+            // ลบ option ของ Product ID  นี้ออก
+            DB::table('product_options')->where('product_id', $request->id)->delete();
+
+            // $products = product::all();
             return response()->json([
-                'product' => $products,
+                'success' => 'Delete Product Successfully!',
             ], 201);
         } catch (Exception $e) {
             return response()->json([
@@ -463,65 +476,26 @@ class ApiController extends Controller
     // เพิ่มสินค้า
     public function addProduct(Request $request)
     {
-        if ($request->option1 == "ตัวเลือกที่ 1" || $request->option2 == "ตัวเลือกที่ 2") {
-            $product = new product();
-            $product->name_product = $request->name_product;
-            $product->detail_product = $request->detail_product;
-            $product->price = $request->price;
-            $product->price_sales = $request->price_sales;
-            $product->cost = $request->cost;
-            $product->stock = $request->stock;
-            $product->weight = $request->weight;
-            $product->width_product = $request->width_product;
-            $product->length_product = $request->length_product;
-            $product->height_product = $request->height_product;
-            $product->sku = $request->sku;
-            $product->category = $request->category;
-            $product->type = 1;
-            $product->active = 1;
-        } else if ($request->sub_option == "ตัวเลือกที่ 2") {
-            $product = new product();
-            $product->name_product = $request->name_product;
-            $product->detail_product = $request->detail_product;
-            $product->price = $request->price;
-            $product->price_sales = $request->price_sales;
-            $product->cost = $request->cost;
-            $product->stock = $request->stock;
-            $product->weight = $request->weight;
-            $product->width_product = $request->width_product;
-            $product->length_product = $request->length_product;
-            $product->height_product = $request->height_product;
-            $product->sku = $request->sku;
-            $product->option1 = $request->option1;
-            $product->category = $request->category;
-            $product->type = 2;
-            $product->active = 1;
-        } else {
-            $product = new product();
-            $product->name_product = $request->name_product;
-            $product->detail_product = $request->detail_product;
-            $product->price = $request->price;
-            $product->price_sales = $request->price_sales;
-            $product->cost = $request->cost;
-            $product->stock = $request->stock;
-            $product->weight = $request->weight;
-            $product->width_product = $request->width_product;
-            $product->length_product = $request->length_product;
-            $product->height_product = $request->height_product;
-            $product->sku = $request->sku;
-            $product->option1 = $request->option1;
-            $product->option1 = $request->option2;
-            $product->category = $request->category;
-            $product->type = 3;
-            $product->active = 1;
-        }
 
+        $product = new product();
+        $product->name_product = $request->name_product;
+        $product->detail_product = $request->detail_product;
+        $product->price = $request->price;
+        $product->price_sales = $request->price_sales;
+        $product->cost = $request->cost;
+        $product->stock = $request->stock;
+        $product->weight = $request->weight;
+        $product->width_product = $request->width_product;
+        $product->length_product = $request->length_product;
+        $product->height_product = $request->height_product;
+        $product->sku = $request->sku;
+        $product->category = $request->category;
+        $product->type = 1;
+        $product->active = 1;
 
         $files = $request->file('file');
         $filePaths = null;
         $product_id = 0;
-        $first = true;
-        $dataOption = json_decode($request->dataOption, true);
         foreach ($files as $index => $file) {
             $filename = time() . '.' . $file->getClientOriginalExtension();
             $image = Image::make($file->getRealPath());
@@ -531,56 +505,82 @@ class ApiController extends Controller
             $image->stream();
             Storage::disk('do_spaces')->put('shopee/products/' . $file->hashName(), $image, 'public');
             $filePaths = $file->hashName();
-            if ($first) {
-                $product->img_product = $filePaths;
-                $product->save();
-                $product_id = product::select('id')->orderBy('created_at', 'desc')->first();
-                $first = false;
-            } else {
-                $id_image = DB::table('product_images')->insertGetId([
-                    'image' => $filePaths,
-                    'product_id' => $product_id['id'],
-                    'status' => 0,
-                ]);
+            $product->img_product = $filePaths;
+            $product->save();
+            $product_id = product::select('id')->orderBy('created_at', 'desc')->first();
 
-                foreach ($dataOption as $item) {
-                    if ($item['indexImageOption'] == $index) {
-                        $pro_option = new product_option;
-                        $pro_option->product_id = $product->id;
-                        $pro_option->img_id = $id_image;
-                        $pro_option->op_name = $item['nameOption'];
-                        $pro_option->img_name = $filePaths;
-                        $pro_option->price = $item['priceOption'];
-                        $pro_option->stock = $item['stockOption'];
-                        $pro_option->sku = $item['skuOption'];
-                        $pro_option->status = 1;
-                        $pro_option->save();
-                        /* $id_pro_option = DB::table('product_options')->lastInsertId([
-                            'product_id' => $product->id,
-                            'img_id' => $id_image,
-                            'op_name' => $item['nameOption'],
-                            'img_name' => $filePaths,
-                            'price' => $item['priceOption'],
-                            'stock' => $item['stockOption'],
-                            'sku' => $item['skuOption'],
-                            'status' => 1,
-                        ]); */
-                        foreach ($item['subOption'] as $subItem) {
-                            DB::table('product_suboptions')->insert([
-                                'op_id' => $pro_option->id,
-                                'sub_op_name' => $subItem['nameSubOption'],
-                                'price' => $subItem['priceSubOption'],
-                                'stock' => $subItem['stockSubOption'],
-                                'sku' => $subItem['skuSubOption'],
-                                'status' => 1,
-                            ]);
-                        }
-                    }
+            if ($request->file('image')) {
+                $images = $request->file('image');
+                foreach ($images as $index => $img) {
+                    $filename = time() . '.' . $img->getClientOriginalExtension();
+                    $image = Image::make($img->getRealPath());
+                    $image->resize(300, 300, function ($constraint) {
+                        $constraint->aspectRatio();
+                    });
+                    $image->stream();
+                    Storage::disk('do_spaces')->put('shopee/products/' . $img->hashName(), $image, 'public');
+                    $filePaths = $img->hashName();
+                    DB::table('product_images')->insert([
+                        'image' => $filePaths,
+                        'product_id' => $product_id['id'],
+                        'status' => 0,
+                    ]);
                 }
             }
         }
+
+        $subProductImg = DB::table('product_images')->select('id', 'image')->where('product_id', $product_id['id'])->get();
         return response()->json([
-            'product' => 'a',
+            'success' => 'Add product successfully!',
+            'subProductImg' => $subProductImg,
+            'productID' => $product_id['id'],
+        ], 201);
+    }
+
+    public function addOptionProduct(Request $request)
+    {
+        $proID = $request->productID;
+        $option1 = null;
+        $option2 = null;
+        $dataOption = json_decode($request->dataOption, true);
+        if ($request->option1 != 'ตัวเลือกที่ 1') {
+            $option1 = $request->option1;
+        }
+        if ($request->option2 != 'ตัวเลือกที่ 2') {
+            $option2 = $request->option2;
+        }
+        DB::table('products')->where('id', $proID)->update([
+            'option1' => $option1,
+            'option2' => $option2,
+        ]);
+        foreach ($dataOption as $item) {
+            $img_product = DB::table('product_images')->select('image')->where('id', $item['indexImageOption'])->first();
+
+            $pro_option = new product_option;
+            $pro_option->product_id = $proID;
+            $pro_option->img_id = $item['indexImageOption'];
+            $pro_option->op_name = $item['nameOption'];
+            $pro_option->img_name = $img_product->image;
+            $pro_option->price = $item['priceOption'];
+            $pro_option->stock = $item['stockOption'];
+            $pro_option->sku = $item['skuOption'];
+            $pro_option->status = 1;
+            $pro_option->save();
+
+            foreach ($item['subOption'] as $subItem) {
+                DB::table('product_suboptions')->insert([
+                    'op_id' => $pro_option->id,
+                    'sub_op_name' => $subItem['nameSubOption'],
+                    'price' => $subItem['priceSubOption'],
+                    'stock' => $subItem['stockSubOption'],
+                    'sku' => $subItem['skuSubOption'],
+                    'status' => 1,
+                ]);
+            }
+        }
+
+        return response()->json([
+            'success' => 'Add option product successfully!',
         ], 201);
     }
 
@@ -588,7 +588,7 @@ class ApiController extends Controller
     public function editProduct(Request $request, $id)
     {
         $checkActive = DB::table('products')->select('active')->where('id', $id)->first();
-        if($checkActive->active == 0){
+        if ($checkActive->active == 0) {
             DB::table('products')->where('id', $id)->update([
                 "name_product" => $request->name_product,
                 "detail_product" => $request->detail_product,
@@ -604,7 +604,7 @@ class ApiController extends Controller
                 "length_product" => $request->length,
                 "active" => 1,
             ]);
-        }else{
+        } else {
             DB::table('products')->where('id', $id)->update([
                 "name_product" => $request->name_product,
                 "detail_product" => $request->detail_product,
@@ -944,7 +944,7 @@ class ApiController extends Controller
         $message = DB::table('chats')
             ->join('users', 'users.id', '=', 'chats.user_id')
             ->join('shops', 'shops.id', '=', 'chats.shop_id')
-            ->where('chats.id','=',$objs->id)
+            ->where('chats.id', '=', $objs->id)
             ->select([
                 'chats.*',
                 'users.avatar',
@@ -1414,6 +1414,25 @@ class ApiController extends Controller
 
         return response()->json([
             'success' => 'Update Category Shop successfully!',
+        ], 201);
+    }
+
+    public function getSearchProduct(Request $request)
+    {
+        $search = $request->query('search');
+
+        if ($search != 'null') {
+            $products = product::when($search, function ($query, $search) {
+                return $query->where('name_product', 'like', '%' . $search . '%');
+            })->get();
+        } else {
+            $products = DB::table('products')->select('*')
+                ->orderBy('id', 'DESC')
+                ->get();
+        }
+
+        return response()->json([
+            'product' => $products,
         ], 201);
     }
 }
