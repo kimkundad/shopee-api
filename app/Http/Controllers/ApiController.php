@@ -1032,7 +1032,7 @@ class ApiController extends Controller
             
             $transections = new transections();
             $transections->slip = $filePaths;
-            $transections->date = $request->data;
+            $transections->date = $request->date;
             $transections->time = $request->time;
             $transections->order_id = $request->order_id;
             $transections->status = $request->status;
