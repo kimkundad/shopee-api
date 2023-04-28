@@ -17,7 +17,7 @@ return new class extends Migration
             $table->id();
             $table->text('slip');
             $table->integer('order_id');
-            $table->data('date');
+            $table->date('date');
             $table->time('time');
             $table->text('status')->default(0);
             $table->timestamps();
