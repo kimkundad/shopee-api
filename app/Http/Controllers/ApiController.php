@@ -1018,7 +1018,14 @@ class ApiController extends Controller
 
     public function confirm_payment(Request $request){
         
-        $files = $request->file('file');
+        $transections = new transections();
+            /* $transections->slip = $filePaths; */
+            $transections->date = $request->data;
+            $transections->time = $request->time;
+            $transections->order_id = $request->order_id;
+            $transections->status = $request->status;
+            $transections->save();
+        /* $files = $request->file('file');
         $filePaths = null;
         foreach ($files as $index => $file) {
             $filename = time() . '.' . $file->getClientOriginalExtension();
@@ -1041,7 +1048,10 @@ class ApiController extends Controller
             return response()->json([
                 'status' => 'success',
             ],201);
-        }
+        } */
+        return response()->json([
+            'status' => 'success',
+        ],201);
     }
 
     // -------------------------------ฟังก์ชันสร้าง Sub-Admin create by อั้นเอง---------------------------------
