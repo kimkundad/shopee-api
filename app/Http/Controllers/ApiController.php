@@ -991,6 +991,22 @@ class ApiController extends Controller
         ], 201);
     }
 
+    public function search_users_chats(Request $request) {
+        $objs = DB::table('chats as c1')
+            ->join('users', 'users.id', '=', 'c1.user_id')
+            ->where('c1.shop_id', '=', $request->shop_id)
+            ->where('name','LIKE','%'.$request->name.'%')
+            ->where(function ($query) {
+                $query->whereRaw('c1.created_at = (SELECT MAX(created_at) FROM chats as c2 WHERE c2.user_id = c1.user_id)');
+            })
+            ->orderBy('c1.created_at', 'desc')
+            ->get();
+
+        return response()->json([
+            'users' => $objs
+        ], 201);
+    }
+
     // -------------------------------ฟังก์ชันสร้าง Sub-Admin create by อั้นเอง---------------------------------
     public function createSubAdmin(Request $request)
     {
