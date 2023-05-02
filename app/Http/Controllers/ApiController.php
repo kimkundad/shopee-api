@@ -629,6 +629,42 @@ class ApiController extends Controller
                 "height_product" => $request->height,
                 "length_product" => $request->length,
             ]);
+
+            if ($request->file('file')) {
+                $images = $request->file('file');
+                foreach ($images as $index => $img) {
+                    $filename = time() . '.' . $img->getClientOriginalExtension();
+                    $image = Image::make($img->getRealPath());
+                    $image->resize(300, 300, function ($constraint) {
+                        $constraint->aspectRatio();
+                    });
+                    $image->stream();
+                    Storage::disk('do_spaces')->put('shopee/products/' . $img->hashName(), $image, 'public');
+                    $filePaths = $img->hashName();
+                    DB::table('products')->where('id', $id)->update([
+                        'img_product' => $filePaths,
+                    ]);
+                }
+            }
+
+            if ($request->file('image')) {
+                $images = $request->file('image');
+                foreach ($images as $index => $img) {
+                    $filename = time() . '.' . $img->getClientOriginalExtension();
+                    $image = Image::make($img->getRealPath());
+                    $image->resize(300, 300, function ($constraint) {
+                        $constraint->aspectRatio();
+                    });
+                    $image->stream();
+                    Storage::disk('do_spaces')->put('shopee/products/' . $img->hashName(), $image, 'public');
+                    $filePaths = $img->hashName();
+                    DB::table('product_images')->insert([
+                        'image' => $filePaths,
+                        'product_id' => $id,
+                        'status' => 0,
+                    ]);
+                }
+            }
         }
 
         return response()->json([
@@ -636,8 +672,9 @@ class ApiController extends Controller
         ], 201);
     }
 
-    public function deleteImgProduct(Request $request,$id){
-        if($request->img_name){
+    public function deleteImgProduct(Request $request, $id)
+    {
+        if ($request->img_name) {
             Storage::disk('do_spaces')->delete('shopee/products/' . $request->img_name);
             DB::table('products')->where('id', $id)->update([
                 'img_product' => null,
@@ -648,8 +685,9 @@ class ApiController extends Controller
         }
     }
 
-    public function deleteImgSubProduct(Request $request,$id){
-        if($request->img_name && $id){
+    public function deleteImgSubProduct(Request $request, $id)
+    {
+        if ($request->img_name && $id) {
             Storage::disk('do_spaces')->delete('shopee/products/' . $request->img_name);
             DB::table('product_images')->where('id', $id)->delete();
             return response()->json([
