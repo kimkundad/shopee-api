@@ -266,6 +266,7 @@ class ApiController extends Controller
         if ($request->product_id !== null) {
             $order = new orders();
             $order->user_id = $request->user_id;
+            $order->address_id = $request->address_id;
             $order->shop_id = $request->shop_id;
             $order->order_detail_id = 0;
             $order->num = $request->num;
@@ -290,6 +291,7 @@ class ApiController extends Controller
             $products = json_decode($request->products, true);
             $order = new orders();
             $order->user_id = $request->user_id;
+            $order->address_id = $request->address_id;
             $order->shop_id = $request->shop_id;
             $order->order_detail_id = 0;
             $order->num = $request->num;
