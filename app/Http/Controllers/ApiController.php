@@ -926,9 +926,10 @@ class ApiController extends Controller
                 'users.avatar',
                 'shops.img_shop',
             ])
-            ->where('chats.shop_id', '=', $request->shop_id)
-            ->orwhere('chats.sender_id', '=', $request->user_id)
+            
+            ->where('chats.sender_id', '=', $request->user_id)
             ->orWhere('chats.recived_id', '=', $request->user_id)
+            ->where('chats.shop_id', '=', $request->shop_id)
             ->orderBy('chats.created_at', 'asc')
             ->get();
 
