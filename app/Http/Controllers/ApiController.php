@@ -636,6 +636,18 @@ class ApiController extends Controller
         ], 201);
     }
 
+    public function deleteImgProduct(Request $request,$id){
+        if($request->img_name){
+            Storage::disk('do_spaces')->delete('shopee/products/' . $request->img_name);
+            DB::table('products')->where('id', $id)->update([
+                'img_product' => null,
+            ]);
+            return response()->json([
+                'success' => 'delete image product successfully',
+            ], 201);
+        }
+    }
+
     // ดึงข้อมูลร้านค้า
     public function get_shop_name($id)
     {
@@ -991,7 +1003,7 @@ class ApiController extends Controller
             ->where(function ($query) {
                 $query->whereRaw('c1.created_at = (SELECT MAX(created_at) FROM chats as c2 WHERE c2.user_id = c1.user_id and c2.shop_id = c1.shop_id)');
             })
-            
+
             ->orderBy('c1.created_at', 'desc')
             ->get();
 
