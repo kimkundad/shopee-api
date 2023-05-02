@@ -985,10 +985,10 @@ class ApiController extends Controller
     {
         $objs = DB::table('chats as c1')
             ->join('users', 'users.id', '=', 'c1.user_id')
-            ->where('c1.shop_id', '=', $request->shop_id)
             ->where(function ($query) {
                 $query->whereRaw('c1.created_at = (SELECT MAX(created_at) FROM chats as c2 WHERE c2.user_id = c1.user_id)');
             })
+            ->where('c1.shop_id', '=', $request->shop_id)
             ->orderBy('c1.created_at', 'desc')
             ->get();
 
