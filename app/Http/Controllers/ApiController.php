@@ -649,7 +649,7 @@ class ApiController extends Controller
     }
 
     public function deleteImgSubProduct(Request $request,$id){
-        if($request->img_name){
+        if($request->img_name && $id){
             Storage::disk('do_spaces')->delete('shopee/products/' . $request->img_name);
             DB::table('product_images')->where('id', $id)->delete();
             return response()->json([
