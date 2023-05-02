@@ -922,7 +922,7 @@ class ApiController extends Controller
             ->join('users', 'users.id', '=', 'chats.user_id')
             ->join('shops', 'shops.id', '=', 'chats.shop_id')
             ->where('chats.sender_id', '=', $request->user_id)
-            ->Where('chats.recived_id', '=', $request->user_id)
+            ->orWhere('chats.recived_id', '=', $request->user_id)
             ->where('chats.shop_id', '=', $request->shop_id)
             ->orderBy('chats.created_at', 'asc')
             ->select([
