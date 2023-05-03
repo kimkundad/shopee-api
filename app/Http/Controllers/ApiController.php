@@ -421,7 +421,7 @@ class ApiController extends Controller
 
     public function dowloadImage(Request $request)
     {
-        $data = DB::table('bankaccounts')->where('id', $request->id)->value('data');
+        $data = DB::table('bankaccounts')->where('id', $request->id)->value('QR_code');
         $response = response($data)->header('Content-Type', 'image/png');
         return $response;
     }
