@@ -408,9 +408,10 @@ class ApiController extends Controller
         $image->stream();
         Storage::disk('do_spaces')->put('shopee/avatar/' . $file->hashName(), $image, 'public');
         $filePaths = $file->hashName();
-        $user = DB::table('users')->where('id','=',$request->user_id)->update([
+        DB::table('users')->where('id','=',$request->user_id)->update([
             'avatar' => $filePaths,
         ]);
+        $user = DB::table('users')->where('id','=',$request->user_id)->get();
 
         return response()->json([
             'user' => $user,
