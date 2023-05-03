@@ -1576,4 +1576,18 @@ class ApiController extends Controller
             'product' => $products,
         ], 201);
     }
+
+    public function deleteOptionProduct($id){
+        DB::table('product_options')->where('id', $id)->delete();
+        return response()->json([
+            'success' => "Delete option product successfully.",
+        ], 201);
+    }
+
+    public function deleteSubOptionProduct($id){
+        DB::table('product_suboptions')->where('id', $id)->delete();
+        return response()->json([
+            'success' => "Delete sub option product successfully.",
+        ], 201);
+    }
 }
