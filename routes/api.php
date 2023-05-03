@@ -54,6 +54,8 @@ Route::group([
     Route::post('/deleteImgProduct/{id}', [App\Http\Controllers\ApiController::class, 'deleteImgProduct']); // route ลบรูปสินค้า by อั้นเอง
     Route::post('/deleteImgSubProduct/{id}', [App\Http\Controllers\ApiController::class, 'deleteImgSubProduct']); // route ลบรูปรองสินค้า by อั้นเอง
     Route::post('/deleteCategory/{id}', [App\Http\Controllers\ApiController::class, 'deleteCategory']); // route ลบหมวดหมู่ by อั้นเอง
+    Route::post('/deleteOptionProduct/{id}', [App\Http\Controllers\ApiController::class, 'deleteOptionProduct']); // route ลบหมวดหมู่ by อั้นเอง
+    Route::post('/deleteSubOptionProduct/{id}', [App\Http\Controllers\ApiController::class, 'deleteSubOptionProduct']); // route ลบหมวดหมู่ by อั้นเอง
     Route::post('/createdOrder', [App\Http\Controllers\ApiController::class, 'created_order']);
     Route::post('/getAllOrder', [App\Http\Controllers\ApiController::class, 'getAllOrder']);
     Route::post('/getOrder', [App\Http\Controllers\ApiController::class, 'getOrder']);
