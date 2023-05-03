@@ -397,7 +397,8 @@ class ApiController extends Controller
     }
 
     // แก้ไขรูปผู้ใช้
-    public function editAvatar(Request $request){
+    public function editAvatar(Request $request)
+    {
 
         $file = $request->file('avatar');
         $filename = time() . '.' . $file->getClientOriginalExtension();
@@ -408,14 +409,14 @@ class ApiController extends Controller
         $image->stream();
         Storage::disk('do_spaces')->put('shopee/avatar/' . $file->hashName(), $image, 'public');
         $filePaths = $file->hashName();
-        DB::table('users')->where('id','=',$request->user_id)->update([
+        DB::table('users')->where('id', '=', $request->user_id)->update([
             'avatar' => $filePaths,
         ]);
-        $user = DB::table('users')->where('id','=',$request->user_id)->first();
+        $user = DB::table('users')->where('id', '=', $request->user_id)->first();
 
         return response()->json([
             'user' => $user,
-        ],201);
+        ], 201);
     }
 
     // ตั้งค่าเปิดปิดใช้งานสินค้า
@@ -1595,5 +1596,86 @@ class ApiController extends Controller
                 'success' => "Delete sub option product successfully.",
             ], 201);
         }
+    }
+
+    public function editOptionProduct(Request $request)
+    {
+        $proID = $request->productID;
+        $option = null;
+        $sub_option = null;
+        $dataOption = json_decode($request->dataOption, true);
+        if ($request->option1 !== 'ตัวเลือกที่ 1') {
+            $option = $request->option1;
+        }
+        if ($request->option2 !== 'ตัวเลือกที่ 2') {
+            $sub_option = $request->option2;
+        }
+        DB::table('products')->where('id', $proID)->update([
+            'option1' => $option,
+            'option2' => $sub_option,
+        ]);
+
+        foreach ($dataOption as $item) {
+            if ($item['id']) {
+                DB::table('product_options')->where('id', $item['id'])->update([
+                    'product_id' => $proID,
+                    'img_id' => $item['img_id'],
+                    'img_name' => $item['img_name'],
+                    'op_name' => $item['op_name'],
+                    'price' => $item['price'],
+                    'sku' => $item['sku'],
+                    'status' => $item['status'],
+                    'stock' => $item['stock'],
+                ]);
+
+                foreach ($item['allOption2'] as $subItem) {
+                    if ($subItem['id']) {
+                        DB::table('product_suboptions')->where('id', $subItem['id'])->update([
+                            'op_id' => $item['id'],
+                            'sub_op_name' => $subItem['sub_op_name'],
+                            'price' => $subItem['price'],
+                            'stock' => $subItem['stock'],
+                            'sku' => $subItem['sku'],
+                            'status' => $subItem['status'],
+                        ]);
+                    } else {
+                        DB::table('product_suboptions')->insert([
+                            'op_id' => $item['id'],
+                            'sub_op_name' => $subItem['sub_op_name'],
+                            'price' => $subItem['price'],
+                            'stock' => $subItem['stock'],
+                            'sku' => $subItem['sku'],
+                            'status' => $subItem['status'],
+                        ]);
+                    }
+                }
+            } else {
+                $img_product = DB::table('product_images')->select('image')->where('id', $item['indexImageOption'])->first();
+                $id_proOp = DB::table('product_options')->insertGetId([
+                    'product_id' => $proID,
+                    'img_id' => $item['indexImageOption'],
+                    'img_name' => $img_product->image,
+                    'op_name' => $item['op_name'],
+                    'price' => $item['price'],
+                    'sku' => $item['sku'],
+                    'status' => $item['status'],
+                    'stock' => $item['stock'],
+                ]);
+
+                foreach ($item['allOption2'] as $subItem) {
+                    DB::table('product_suboptions')->insert([
+                        'op_id' => $id_proOp,
+                        'sub_op_name' => $subItem['sub_op_name'],
+                        'price' => $subItem['price'],
+                        'stock' => $subItem['stock'],
+                        'sku' => $subItem['sku'],
+                        'status' => $subItem['status'],
+                    ]);
+                }
+            }
+        }
+        return response()->json([
+            'success' => "Updated option product successfully.",
+        ], 201);
     }
 }
