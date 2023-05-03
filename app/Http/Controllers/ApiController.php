@@ -567,15 +567,21 @@ class ApiController extends Controller
         $option1 = null;
         $option2 = null;
         $dataOption = json_decode($request->dataOption, true);
-        if ($request->option1 != 'ตัวเลือกที่ 1') {
+        $type_product = DB::table('products')->where('id', $proID)->first('type');
+        $type = $type_product->type;
+        if ($request->option1 != 'ตัวเลือกที่ 1' && $request->option2 == 'ตัวเลือกที่ 2') {
             $option1 = $request->option1;
+            $type = 2;
         }
-        if ($request->option2 != 'ตัวเลือกที่ 2') {
+        if ($request->option1 != 'ตัวเลือกที่ 1' && $request->option2 != 'ตัวเลือกที่ 2') {
+            $option1 = $request->option1;
             $option2 = $request->option2;
+            $type = 3;
         }
         DB::table('products')->where('id', $proID)->update([
             'option1' => $option1,
             'option2' => $option2,
+            'type' => $type,
         ]);
         foreach ($dataOption as $item) {
             $status_option = 1;
@@ -650,11 +656,71 @@ class ApiController extends Controller
                 "height_product" => $request->height,
                 "length_product" => $request->length,
             ]);
+
+            if ($request->file('file')) {
+                $images = $request->file('file');
+                foreach ($images as $index => $img) {
+                    $filename = time() . '.' . $img->getClientOriginalExtension();
+                    $image = Image::make($img->getRealPath());
+                    $image->resize(300, 300, function ($constraint) {
+                        $constraint->aspectRatio();
+                    });
+                    $image->stream();
+                    Storage::disk('do_spaces')->put('shopee/products/' . $img->hashName(), $image, 'public');
+                    $filePaths = $img->hashName();
+                    DB::table('products')->where('id', $id)->update([
+                        'img_product' => $filePaths,
+                    ]);
+                }
+            }
+
+            if ($request->file('image')) {
+                $images = $request->file('image');
+                foreach ($images as $index => $img) {
+                    $filename = time() . '.' . $img->getClientOriginalExtension();
+                    $image = Image::make($img->getRealPath());
+                    $image->resize(300, 300, function ($constraint) {
+                        $constraint->aspectRatio();
+                    });
+                    $image->stream();
+                    Storage::disk('do_spaces')->put('shopee/products/' . $img->hashName(), $image, 'public');
+                    $filePaths = $img->hashName();
+                    DB::table('product_images')->insert([
+                        'image' => $filePaths,
+                        'product_id' => $id,
+                        'status' => 0,
+                    ]);
+                }
+            }
         }
 
         return response()->json([
             'success' => 'updated product successfully',
         ], 201);
+    }
+
+    public function deleteImgProduct(Request $request, $id)
+    {
+        if ($request->img_name) {
+            Storage::disk('do_spaces')->delete('shopee/products/' . $request->img_name);
+            DB::table('products')->where('id', $id)->update([
+                'img_product' => null,
+            ]);
+            return response()->json([
+                'success' => 'delete image product successfully',
+            ], 201);
+        }
+    }
+
+    public function deleteImgSubProduct(Request $request, $id)
+    {
+        if ($request->img_name && $id) {
+            Storage::disk('do_spaces')->delete('shopee/products/' . $request->img_name);
+            DB::table('product_images')->where('id', $id)->delete();
+            return response()->json([
+                'success' => 'delete image sub product successfully',
+            ], 201);
+        }
     }
 
     // ดึงข้อมูลร้านค้า
@@ -1012,7 +1078,7 @@ class ApiController extends Controller
             ->where(function ($query) {
                 $query->whereRaw('c1.created_at = (SELECT MAX(created_at) FROM chats as c2 WHERE c2.user_id = c1.user_id and c2.shop_id = c1.shop_id)');
             })
-            
+
             ->orderBy('c1.created_at', 'desc')
             ->get();
 
