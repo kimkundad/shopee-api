@@ -1615,7 +1615,7 @@ class ApiController extends Controller
             'option2' => $sub_option,
         ]);
 
-        foreach ($dataOption as $index => $item) {
+        foreach ($dataOption as $item) {
             if ($item['id']) {
                 DB::table('product_options')->where('id', $item['id'])->update([
                     'product_id' => $proID,
