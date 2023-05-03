@@ -419,6 +419,12 @@ class ApiController extends Controller
         ], 201);
     }
 
+    public function dowloadImage(Request $request)
+    {
+        $data = DB::table('bankaccounts')->where('id', $request->id)->value('data');
+        $response = response($data)->header('Content-Type', 'image/png');
+        return $response;
+    }
     // ตั้งค่าเปิดปิดใช้งานสินค้า
     public function set_active_product(Request $request)
     {

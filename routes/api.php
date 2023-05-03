@@ -75,6 +75,8 @@ Route::group([
     Route::post('/sendMessage', [App\Http\Controllers\ApiController::class, 'sendMessage']);
     Route::post('/getBank', [App\Http\Controllers\ApiController::class, 'getBankaccount']);
 
+    Route::post('/dowloadImage', [App\Http\Controllers\ApiController::class, 'dowloadImage']);
+
     Route::get('/getCategory/{id}' , [App\Http\Controllers\ApiController::class, 'getCategory']);
 
     Route::post('/getUserChats' , [App\Http\Controllers\ApiController::class, 'getUserChats']);
