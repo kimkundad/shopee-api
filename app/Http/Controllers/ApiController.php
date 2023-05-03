@@ -1616,60 +1616,60 @@ class ApiController extends Controller
         ]);
 
         foreach ($dataOption as $item) {
-            if ($item->id) {
-                DB::table('product_options')->where('id', $item->id)->update([
+            if ($item['id']) {
+                DB::table('product_options')->where('id', $item['id'])->update([
                     'product_id' => $proID,
-                    'img_id' => $item->img_id,
-                    'img_name' => $item->img_name,
-                    'op_name' => $item->op_name,
-                    'price' => $item->price,
-                    'sku' => $item->sku,
-                    'status' => $item->status,
-                    'stock' => $item->stock,
+                    'img_id' => $item['img_id'],
+                    'img_name' => $item['img_name'],
+                    'op_name' => $item['op_name'],
+                    'price' => $item['price'],
+                    'sku' => $item['sku'],
+                    'status' => $item['status'],
+                    'stock' => $item['stock'],
                 ]);
 
-                foreach ($item->allOption2 as $subItem) {
-                    if ($subItem->id) {
-                        DB::table('product_suboptions')->where('id', $subItem->id)->update([
-                            'op_id' => $item->id,
-                            'sub_op_name' => $subItem->sub_op_name,
-                            'price' => $subItem->price,
-                            'stock' => $subItem->stock,
-                            'sku' => $subItem->sku,
-                            'status' => $subItem->status,
+                foreach ($item['allOption2'] as $subItem) {
+                    if ($subItem['id']) {
+                        DB::table('product_suboptions')->where('id', $subItem['id'])->update([
+                            'op_id' => $item['id'],
+                            'sub_op_name' => $subItem['sub_op_name'],
+                            'price' => $subItem['price'],
+                            'stock' => $subItem['stock'],
+                            'sku' => $subItem['sku'],
+                            'status' => $subItem['status'],
                         ]);
                     } else {
                         DB::table('product_suboptions')->insert([
-                            'op_id' => $item->id,
-                            'sub_op_name' => $subItem->sub_op_name,
-                            'price' => $subItem->price,
-                            'stock' => $subItem->stock,
-                            'sku' => $subItem->sku,
-                            'status' => $subItem->status,
+                            'op_id' => $item['id'],
+                            'sub_op_name' => $subItem['sub_op_name'],
+                            'price' => $subItem['price'],
+                            'stock' => $subItem['stock'],
+                            'sku' => $subItem['sku'],
+                            'status' => $subItem['status'],
                         ]);
                     }
                 }
             } else {
-                $img_product = DB::table('product_images')->select('image')->where('id', $item->indexImageOption)->first();
+                $img_product = DB::table('product_images')->select('image')->where('id', $item['indexImageOption'])->first();
                 $id_proOp = DB::table('product_options')->insertGetId([
                     'product_id' => $proID,
-                    'img_id' => $item->indexImageOption,
+                    'img_id' => $item['indexImageOption'],
                     'img_name' => $img_product->image,
-                    'op_name' => $item->op_name,
-                    'price' => $item->price,
-                    'sku' => $item->sku,
-                    'status' => $item->status,
-                    'stock' => $item->stock,
+                    'op_name' => $item['op_name'],
+                    'price' => $item['price'],
+                    'sku' => $item['sku'],
+                    'status' => $item['status'],
+                    'stock' => $item['stock'],
                 ]);
 
-                foreach ($item->allOption2 as $subItem) {
+                foreach ($item['allOption2'] as $subItem) {
                     DB::table('product_suboptions')->insert([
                         'op_id' => $id_proOp,
-                        'sub_op_name' => $subItem->sub_op_name,
-                        'price' => $subItem->price,
-                        'stock' => $subItem->stock,
-                        'sku' => $subItem->sku,
-                        'status' => $subItem->status,
+                        'sub_op_name' => $subItem['sub_op_name'],
+                        'price' => $subItem['price'],
+                        'stock' => $subItem['stock'],
+                        'sku' => $subItem['sku'],
+                        'status' => $subItem['status'],
                     ]);
                 }
             }
