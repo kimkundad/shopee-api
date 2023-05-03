@@ -411,7 +411,7 @@ class ApiController extends Controller
         DB::table('users')->where('id','=',$request->user_id)->update([
             'avatar' => $filePaths,
         ]);
-        $user = DB::table('users')->where('id','=',$request->user_id)->get();
+        $user = DB::table('users')->where('id','=',$request->user_id)->first();
 
         return response()->json([
             'user' => $user,
