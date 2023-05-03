@@ -1616,7 +1616,7 @@ class ApiController extends Controller
         ]);
 
         foreach ($dataOption as $index => $item) {
-            if ($item[$index]->id) {
+            if ($item['id']) {
                 DB::table('product_options')->where('id', $item['id'])->update([
                     'product_id' => $proID,
                     'img_id' => $item['img_id'],
