@@ -396,6 +396,27 @@ class ApiController extends Controller
         ]);
     }
 
+    // แก้ไขรูปผู้ใช้
+    public function editAvatar(Request $request){
+
+        $file = $request->file('avatar');
+        $filename = time() . '.' . $file->getClientOriginalExtension();
+        $image = Image::make($file->getRealPath());
+        $image->resize(300, 300, function ($constraint) {
+            $constraint->aspectRatio();
+        });
+        $image->stream();
+        Storage::disk('do_spaces')->put('shopee/products/' . $file->hashName(), $image, 'public');
+        $filePaths = $file->hashName();
+        $user = DB::table('users')->where('id','=',$request->user_id)->update([
+            'avatar' => $filePaths,
+        ]);
+
+        return response()->json([
+            'user' => $user,
+        ],201);
+    }
+
     // ตั้งค่าเปิดปิดใช้งานสินค้า
     public function set_active_product(Request $request)
     {

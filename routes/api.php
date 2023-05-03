@@ -56,6 +56,7 @@ Route::group([
     Route::post('/getAllOrder', [App\Http\Controllers\ApiController::class, 'getAllOrder']);
     Route::post('/getOrder', [App\Http\Controllers\ApiController::class, 'getOrder']);
     Route::post('/editUser', [App\Http\Controllers\ApiController::class, 'editUser']);
+    Route::post('/editAvatar', [App\Http\Controllers\ApiController::class, 'editAvatar']);
     Route::post('/getUser', [App\Http\Controllers\ApiController::class, 'getUser']);
     Route::post('/newAddress', [App\Http\Controllers\ApiController::class, 'newAddress']);
     Route::post('/getAllAddress', [App\Http\Controllers\ApiController::class, 'getAllAddress']);
