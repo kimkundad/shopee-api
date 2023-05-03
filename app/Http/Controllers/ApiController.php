@@ -1603,7 +1603,7 @@ class ApiController extends Controller
         $proID = $request->productID;
         $option = null;
         $sub_option = null;
-        $dataOption = json_decode($request->dataOption, true);
+        $dataOption = $request->dataOption;
         if ($request->option1 !== 'ตัวเลือกที่ 1') {
             $option = $request->option1;
         }
