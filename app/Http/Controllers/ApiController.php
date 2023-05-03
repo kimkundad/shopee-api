@@ -1604,6 +1604,7 @@ class ApiController extends Controller
         $option = null;
         $sub_option = null;
         $dataOption = json_decode($request->dataOption, true);
+        return $dataOption;
         if ($request->option1 !== 'ตัวเลือกที่ 1') {
             $option = $request->option1;
         }
