@@ -1011,11 +1011,11 @@ class ApiController extends Controller
     {
         if($request->type == 'customer'){
             DB::table('chats')->where('recived_id','=',$request->user_id)->where('shop_id','=',$request->shop_id)->update([
-                'status' => 0,
+                'status' => 1,
             ]);
         }else if($request->type == 'shop'){
             DB::table('chats')->where('sender_id','=',$request->user_id)->where('shop_id','=',$request->shop_id)->update([
-                'status' => 0,
+                'status' => 1,
             ]);
         }else{
             return response()->json([
