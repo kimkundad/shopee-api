@@ -1105,6 +1105,39 @@ class ApiController extends Controller
         ], 201);
     }
 
+    // ดึงข้อมูลรายงาย
+    public function getReports(Request $request)
+    {
+        $reports = DB::table('order_details')
+        ->join('orders', 'orders.id', '=', 'order_details.oreder_id')
+        ->leftjoin('shops', 'shops.id', '=', 'orders.shop_id')
+        ->leftjoin('users', 'users.id', '=', 'order_detail.user_id')
+        ->leftjoin('addresses', 'addresses.id', '=', 'orders.address_id')
+        ->leftjoin('products','products.id','=','order_details.product_id')
+        ->leftjoin('product_options','product_options.id','=','order_details.option1')
+        ->leftjoin('product_suboptions','product_suboptions.id','=','order_details.option2')
+        ->select([
+            'order_details.*',
+            'shops.name_shop',
+            'shops.url_shop',
+            'users.id AS uid',
+            'addresses.province',
+            'addresses.tel',
+            'addresses.name',
+            'products.name_product',
+            'products.sku',
+            'products.type',
+            'products.price AS price_type_1',
+            'product_options.price AS price_type_2',
+            'product_suboptions.price AS price_type_3',
+        ])
+        ->get();
+
+        return response()->json([
+            'reports' => $reports,
+        ],201)
+    }
+
     public function search_users_chats(Request $request)
     {
         $objs = DB::table('chats as c1')

@@ -82,6 +82,8 @@ Route::group([
     Route::post('/getUserChats' , [App\Http\Controllers\ApiController::class, 'getUserChats']);
     Route::post('/searchUserChats' , [App\Http\Controllers\ApiController::class, 'search_users_chats']);
 
+    Route::post('/getReports' , [App\Http\Controllers\ApiController::class, 'getReports']);
+
     Route::post('/confirmPayment' , [App\Http\Controllers\ApiController::class, 'confirm_payment']);
 
     Route::post('/createUser', [App\Http\Controllers\AuthController::class, 'createUser']);
