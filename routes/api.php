@@ -57,6 +57,7 @@ Route::group([
     Route::post('/deleteOptionProduct/{id}', [App\Http\Controllers\ApiController::class, 'deleteOptionProduct']); // route ลบหมวดหมู่ by อั้นเอง
     Route::post('/deleteSubOptionProduct/{id}', [App\Http\Controllers\ApiController::class, 'deleteSubOptionProduct']); // route ลบหมวดหมู่ by อั้นเอง
     Route::post('/deleteTitleSubOptionProduct/{productId}', [App\Http\Controllers\ApiController::class, 'deleteTitleSubOptionProduct']); // route ลบหมวดหมู่ by อั้นเอง
+    Route::post('/deleteTitleOptionProduct/{productId}', [App\Http\Controllers\ApiController::class, 'deleteTitleOptionProduct']); // route ลบหมวดหมู่ by อั้นเอง
     Route::post('/editOptionProduct', [App\Http\Controllers\ApiController::class, 'editOptionProduct']); // route ลบหมวดหมู่ by อั้นเอง
     Route::post('/createdOrder', [App\Http\Controllers\ApiController::class, 'created_order']);
     Route::post('/getAllOrder', [App\Http\Controllers\ApiController::class, 'getAllOrder']);

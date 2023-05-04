@@ -1705,4 +1705,17 @@ class ApiController extends Controller
             'success' => "Delete sub option product successfully.",
         ], 201);
     }
+
+    public function deleteTitleOptionProduct($productId)
+    {
+        DB::table('products')->where('id', $productId)->update([ 'option1' => null,'option2' => null ]);
+        $id_subOption = DB::table('product_options')->select('id')->where('product_id', $productId)->get();
+        DB::table('product_options')->where('product_id', $productId)->delete();
+        foreach ($id_subOption as $Idsuboption) {
+            DB::table('product_suboptions')->where('op_id', $Idsuboption->id)->delete();
+        }
+        return response()->json([
+            'success' => "Delete sub option product successfully.",
+        ], 201);
+    }
 }
