@@ -1009,6 +1009,20 @@ class ApiController extends Controller
     // ดึงข้อมูลแชท
     public function getMessage(Request $request)
     {
+        if($request->type == 'customer'){
+            DB::table('chats')->where('recived_id','=',$request->user_id)->where('shop_id','=',$request->shop_id)->update([
+                'status' => 0,
+            ]);
+        }else if($request->type == 'shop'){
+            DB::table('chats')->where('sender_id','=',$request->user_id)->where('shop_id','=',$request->shop_id)->update([
+                'status' => 0,
+            ]);
+        }else{
+            return response()->json([
+                'status' => 'error',
+            ], 201);
+        }
+        
         $message = DB::table('chats')
             ->join('users', 'users.id', '=', 'chats.user_id')
             ->join('shops', 'shops.id', '=', 'chats.shop_id')
