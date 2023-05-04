@@ -1697,6 +1697,7 @@ class ApiController extends Controller
     public function deleteTitleSubOptionProduct($productId)
     {
         $id_subOption = DB::table('product_options')->select('id')->where('product_id', $productId)->get();
+        DB::table('products')->where('id', $productId)->update([ 'option2' => null ]);
         foreach ($id_subOption as $Idsuboption) {
             DB::table('product_suboptions')->where('op_id', $Idsuboption->id)->delete();
         }
