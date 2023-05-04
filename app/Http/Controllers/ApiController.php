@@ -435,7 +435,9 @@ class ApiController extends Controller
                 product::where('id', '=', $id)->update(['active' => 0]);
             }
 
-            $products = product::select('id', 'img_product', 'name_product', 'cost', 'price', 'maker', 'created_at', 'stock', 'active')->get();
+            $products = product::select('id', 'img_product', 'name_product', 'cost', 'price', 'maker', 'created_at', 'stock', 'active')
+                ->orderBy('id', 'desc')
+                ->get();
             return response()->json([
                 'product' => $products,
             ], 201);
@@ -1697,7 +1699,7 @@ class ApiController extends Controller
     public function deleteTitleSubOptionProduct($productId)
     {
         $id_subOption = DB::table('product_options')->select('id')->where('product_id', $productId)->get();
-        DB::table('products')->where('id', $productId)->update([ 'option2' => null ]);
+        DB::table('products')->where('id', $productId)->update(['option2' => null]);
         foreach ($id_subOption as $Idsuboption) {
             DB::table('product_suboptions')->where('op_id', $Idsuboption->id)->delete();
         }
@@ -1708,7 +1710,7 @@ class ApiController extends Controller
 
     public function deleteTitleOptionProduct($productId)
     {
-        DB::table('products')->where('id', $productId)->update([ 'option1' => null,'option2' => null ]);
+        DB::table('products')->where('id', $productId)->update(['option1' => null, 'option2' => null]);
         $id_subOption = DB::table('product_options')->select('id')->where('product_id', $productId)->get();
         DB::table('product_options')->where('product_id', $productId)->delete();
         foreach ($id_subOption as $Idsuboption) {
