@@ -1617,7 +1617,7 @@ class ApiController extends Controller
         $proID = $request->productID;
         $option = null;
         $sub_option = null;
-        $dataOption = json_decode($request->dataOption, true);
+        // $dataOption = json_decode($request->dataOption, true);
         if ($request->option1 !== 'ตัวเลือกที่ 1') {
             $option = $request->option1;
         }
@@ -1629,8 +1629,8 @@ class ApiController extends Controller
             'option2' => $sub_option,
         ]);
 
-        foreach ($dataOption as $item) {
-            if ($item['id']) {
+        foreach ($request->dataOption as $item) {
+            if (array_key_exists('id', $item) && $item['id']) {
                 DB::table('product_options')->where('id', $item['id'])->update([
                     'product_id' => $proID,
                     'img_id' => $item['img_id'],
@@ -1643,7 +1643,7 @@ class ApiController extends Controller
                 ]);
 
                 foreach ($item['allOption2'] as $subItem) {
-                    if ($subItem['id']) {
+                    if (array_key_exists('id', $subItem) && $subItem['id']) {
                         DB::table('product_suboptions')->where('id', $subItem['id'])->update([
                             'op_id' => $item['id'],
                             'sub_op_name' => $subItem['sub_op_name'],
