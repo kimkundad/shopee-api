@@ -1111,7 +1111,7 @@ class ApiController extends Controller
         $reports = DB::table('order_details')
         ->join('orders', 'orders.id', '=', 'order_details.oreder_id')
         ->leftjoin('shops', 'shops.id', '=', 'orders.shop_id')
-        ->leftjoin('users', 'users.id', '=', 'order_detail.user_id')
+        ->leftjoin('users', 'users.id', '=', 'order_details.user_id')
         ->leftjoin('addresses', 'addresses.id', '=', 'orders.address_id')
         ->leftjoin('products','products.id','=','order_details.product_id')
         ->leftjoin('product_options','product_options.id','=','order_details.option1')
