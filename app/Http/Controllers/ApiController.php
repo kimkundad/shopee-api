@@ -1109,7 +1109,7 @@ class ApiController extends Controller
     public function getReports(Request $request)
     {
         $reports = DB::table('order_details')
-        ->join('orders', 'orders.id', '=', 'order_details.oreder_id')
+        ->join('orders', 'orders.id', '=', 'order_details.order_id')
         ->leftjoin('shops', 'shops.id', '=', 'orders.shop_id')
         ->leftjoin('users', 'users.id', '=', 'order_details.user_id')
         ->leftjoin('addresses', 'addresses.id', '=', 'orders.address_id')
