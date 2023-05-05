@@ -1383,6 +1383,7 @@ class ApiController extends Controller
                 'detail_shop' => $request['detailShop'],
                 'img_shop' => $filePaths,
                 'cover_img_shop' => $filePaths2,
+                'code_shop' => $ran_num,
                 'url_shop' => $randomString.''.$ran_num,
                 'theme' => $request->themeShop,
                 'status' => 1,
