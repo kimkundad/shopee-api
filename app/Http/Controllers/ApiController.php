@@ -1139,6 +1139,33 @@ class ApiController extends Controller
         ],201);
     }
 
+    // ดึงจำนวน invoice
+    public function count_orders(Request $request){
+        $count = DB::table('orders')->where('created_at','>=',$request->startDate)->where('created_at','<=',$request->endDate)->count();
+
+        return response()->json([
+            'count' => $count
+        ],201);
+    }
+
+    // ดึงข้อมูลรายละเอียดลูกค้า
+    public function detail_cutomer(Request $request){
+        $customer = DB::table('users')
+        ->leftjoin('addresses','addresses.user_id','=','users.id')
+        ->where('users.id','=',$request->uid)
+        ->get();
+
+        $orders = DB::table('order_details')
+        ->leftJoin('products','products.id','=','order_details.product_id')
+        ->where('order_details.user_id','=',$request->uid)
+        ->get();
+
+        return response()->json([
+            'customer' => $customer,
+            'orders' => $orders,
+        ],201)
+    }
+
     public function search_users_chats(Request $request)
     {
         $objs = DB::table('chats as c1')
