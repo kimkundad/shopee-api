@@ -273,6 +273,7 @@ class ApiController extends Controller
             $order->price = $request->total;
             $order->discount = $request->discount;
             $order->status = $request->status;
+            $order->invoice_id = $request->invoice_id;
             $order->save();
 
             $order_detail = new order_details();
@@ -298,6 +299,7 @@ class ApiController extends Controller
             $order->price = $request->total;
             $order->discount = $request->discount;
             $order->status = $request->status;
+            $order->invoice_id = $request->invoice_id;
             $order->save();
 
             foreach ($products as $index => $item) {
