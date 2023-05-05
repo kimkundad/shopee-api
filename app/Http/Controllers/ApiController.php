@@ -1182,7 +1182,7 @@ class ApiController extends Controller
             ->leftjoin('product_options', 'product_options.id', '=', 'order_details.option1')
             ->leftjoin('product_suboptions', 'product_suboptions.id', '=', 'order_details.option2')
             ->where('order_details.user_id', '=', $request->uid)
-            ->orderBy('order_details.created_at','desc')
+            ->orderBy('order_details.created_at', 'desc')
             ->select([
                 'order_details.created_at',
                 'order_details.num',
@@ -1832,6 +1832,23 @@ class ApiController extends Controller
         }
         return response()->json([
             'success' => "Delete sub option product successfully.",
+        ], 201);
+    }
+
+    public function getOrders()
+    {
+        $orders2 = DB::table('orders')
+            ->select('orders.invoice_id as orderId', 'products.img_product as imageThumbnail', 'addresses.name as receiverName', 'addresses.province as address', 'addresses.tel as phoneNumber', 'orders.num as quantity', 'orders.price as amount', 'banks.icon_bank as bankThumbnail', 'orders.created_at as createAt', 'orders.status as status')
+            ->join('order_details', 'orders.id', '=', 'order_details.order_id')
+            ->join('products', 'products.id', '=', 'order_details.product_id')
+            ->join('addresses', 'addresses.id', '=', 'orders.address_id')
+            ->join('transections', 'transections.order_id', '=', 'orders.id')
+            ->join('bankaccounts', 'bankaccounts.id', '=', 'transections.bankaccount_id')
+            ->join('banks', 'banks.id', '=', 'bankaccounts.bank_id')
+            ->orderBy('orders.id', 'DESC')
+            ->get();
+        return response()->json([
+            'orders' => $orders2,
         ], 201);
     }
 }
