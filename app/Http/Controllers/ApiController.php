@@ -1182,6 +1182,7 @@ class ApiController extends Controller
             ->leftjoin('product_options', 'product_options.id', '=', 'order_details.option1')
             ->leftjoin('product_suboptions', 'product_suboptions.id', '=', 'order_details.option2')
             ->where('order_details.user_id', '=', $request->uid)
+            ->orderBy('order_details.created_at','desc')
             ->select([
                 'order_details.created_at',
                 'order_details.num',
