@@ -1143,7 +1143,7 @@ class ApiController extends Controller
 
     // ดึงจำนวน invoice
     public function count_orders(Request $request){
-        $count = DB::table('orders')->where('created_at','>=',$request->startDate)->where('created_at','<=',$request->endDate)->count();
+        $count = DB::table('orders')->where('created_at','>=',$request->startDate)->count();
 
         return response()->json([
             'count' => $count
