@@ -1121,6 +1121,7 @@ class ApiController extends Controller
             ->orderBy('order_details.created_at', 'desc')
             ->select([
                 'order_details.*',
+                'orders.invoice_id',
                 'shops.name_shop',
                 'shops.url_shop',
                 'users.id AS uid',
