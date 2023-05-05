@@ -1193,7 +1193,6 @@ class ApiController extends Controller
                 'product_options.price AS price_type_2',
                 'product_options.img_name AS img_pro_option',
                 'product_suboptions.price AS price_type_3',
-                ''
             ])
             ->get();
 
