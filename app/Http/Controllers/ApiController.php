@@ -1163,7 +1163,7 @@ class ApiController extends Controller
         return response()->json([
             'customer' => $customer,
             'orders' => $orders,
-        ],201)
+        ],201);
     }
 
     public function search_users_chats(Request $request)
