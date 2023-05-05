@@ -1125,6 +1125,7 @@ class ApiController extends Controller
                 'shops.name_shop',
                 'shops.url_shop',
                 'users.id AS uid',
+                'users.name AS customer_name',
                 'addresses.province',
                 'addresses.tel',
                 'addresses.name',
@@ -1209,6 +1210,7 @@ class ApiController extends Controller
             $transections->time = $request->time;
             $transections->order_id = $request->order_id;
             $transections->status = $request->status;
+            $transections->bankaccount_id = $request->bankaccount_id;
             $transections->save();
 
             return response()->json([
