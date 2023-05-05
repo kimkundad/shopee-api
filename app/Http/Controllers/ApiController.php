@@ -1145,7 +1145,7 @@ class ApiController extends Controller
     public function count_orders(Request $request){
         $startTimestamp = strtotime($request->startDate);
         $endTimestamp = strtotime($request->endDate);
-        $count = DB::table('orders')->where('created_at','>=',date('Y-m-d H:i:s', $startTimestamp / 1000))->where('created_at','<=',date('Y-m-d H:i:s', $endTimestamp / 1000))->count();
+        $count = DB::table('orders')->where('created_at','>=',date('Y-m-d H:i:s', $startTimestamp / 1000))->count();
 
         return response()->json([
             'count' => $count,
