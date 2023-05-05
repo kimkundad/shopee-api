@@ -1163,6 +1163,7 @@ class ApiController extends Controller
             ->select([
                 'users.id AS uid',
                 'users.name AS user_name',
+                'users.email',
                 'users.created_at',
                 'users.updated_at',
                 'users.avatar',
