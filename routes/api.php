@@ -83,7 +83,7 @@ Route::group([
     Route::post('/searchUserChats' , [App\Http\Controllers\ApiController::class, 'search_users_chats']);
 
     Route::post('/getReports' , [App\Http\Controllers\ApiController::class, 'getReports']);
-    Route::post('/getDetailCutomer' , [App\Http\Controllers\ApiController::class, 'detail_cutomer']);
+    Route::post('/getDetailCutomer' , [App\Http\Controllers\ApiController::class, 'detail_customer']);
 
     Route::post('/countOrder' , [App\Http\Controllers\ApiController::class, 'count_orders']);
 

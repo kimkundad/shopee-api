@@ -1154,7 +1154,7 @@ class ApiController extends Controller
     }
 
     // ดึงข้อมูลรายละเอียดลูกค้า
-    public function detail_cutomer(Request $request)
+    public function detail_customer(Request $request)
     {
         $customer = DB::table('users')
             ->leftjoin('addresses', 'addresses.user_id', '=', 'users.id')
