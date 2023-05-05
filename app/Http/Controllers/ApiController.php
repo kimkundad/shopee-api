@@ -1368,13 +1368,25 @@ class ApiController extends Controller
                 Storage::disk('do_spaces')->put('shopee/cover_img_shop/' . $file2->hashName(), $image2, 'public');
                 $filePaths2 = $file2->hashName();
             }
+            $length = 4;
+
+            $characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+            $charactersLength = strlen($characters);
+            $randomString = '';
+            for ($i = 0; $i < $length; $i++) {
+                $randomString .= $characters[random_int(0, $charactersLength - 1)];
+            }
+
+            $ran_num = rand(100000000,999999999);
 
             DB::table('shops')->insert([
                 'name_shop' => $request['nameShop'],
                 'detail_shop' => $request['detailShop'],
                 'img_shop' => $filePaths,
                 'cover_img_shop' => $filePaths2,
+                'url_shop' => $randomString.''.$ran_num,
                 'theme' => $request->themeShop,
+                'status' => 1,
                 'created_at' =>  date('Y-m-d H:i:s'),
                 'updated_at' => date('Y-m-d H:i:s'),
             ]);
