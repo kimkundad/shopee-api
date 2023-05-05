@@ -1111,63 +1111,63 @@ class ApiController extends Controller
     public function getReports(Request $request)
     {
         $reports = DB::table('order_details')
-        ->join('orders', 'orders.id', '=', 'order_details.order_id')
-        ->leftjoin('shops', 'shops.id', '=', 'orders.shop_id')
-        ->leftjoin('users', 'users.id', '=', 'order_details.user_id')
-        ->leftjoin('addresses', 'addresses.id', '=', 'orders.address_id')
-        ->leftjoin('products','products.id','=','order_details.product_id')
-        ->leftjoin('product_options','product_options.id','=','order_details.option1')
-        ->leftjoin('product_suboptions','product_suboptions.id','=','order_details.option2')
-        ->orderBy('order_details.created_at','desc')
-        ->select([
-            'order_details.*',
-            'shops.name_shop',
-            'shops.url_shop',
-            'users.id AS uid',
-            'addresses.province',
-            'addresses.tel',
-            'addresses.name',
-            'products.name_product',
-            'products.sku',
-            'products.type',
-            'products.price AS price_type_1',
-            'product_options.price AS price_type_2',
-            'product_suboptions.price AS price_type_3',
-        ])
-        ->get();
+            ->join('orders', 'orders.id', '=', 'order_details.order_id')
+            ->leftjoin('shops', 'shops.id', '=', 'orders.shop_id')
+            ->leftjoin('users', 'users.id', '=', 'order_details.user_id')
+            ->leftjoin('addresses', 'addresses.id', '=', 'orders.address_id')
+            ->leftjoin('products', 'products.id', '=', 'order_details.product_id')
+            ->leftjoin('product_options', 'product_options.id', '=', 'order_details.option1')
+            ->leftjoin('product_suboptions', 'product_suboptions.id', '=', 'order_details.option2')
+            ->orderBy('order_details.created_at', 'desc')
+            ->select([
+                'order_details.*',
+                'shops.name_shop',
+                'shops.url_shop',
+                'users.id AS uid',
+                'addresses.province',
+                'addresses.tel',
+                'addresses.name',
+                'products.name_product',
+                'products.sku',
+                'products.type',
+                'products.price AS price_type_1',
+                'product_options.price AS price_type_2',
+                'product_suboptions.price AS price_type_3',
+            ])
+            ->get();
 
         return response()->json([
             'reports' => $reports,
-        ],201);
+        ], 201);
     }
 
     // ดึงจำนวน invoice
-    public function count_orders(Request $request){
-        $startTimestamp = strtotime($request->startDate);
-        $endTimestamp = strtotime($request->endDate);
-        $count = DB::table('orders')->where('created_at','>=',date('Y-m-d H:i:s', $startTimestamp / 1000))->count();
+    public function count_orders(Request $request)
+    {
+        $count = DB::table('orders')->where('created_at', '>=', date('Y-m-d H:i:s', $request->startDate / 1000))->where('created_at', '<=', date('Y-m-d H:i:s', $request->endDate / 1000))->count();
 
         return response()->json([
             'count' => $count,
-        ],201);
+        ], 201);
     }
 
     // ดึงข้อมูลรายละเอียดลูกค้า
-    public function detail_cutomer(Request $request){
+    public function detail_cutomer(Request $request)
+    {
         $customer = DB::table('users')
-        ->leftjoin('addresses','addresses.user_id','=','users.id')
-        ->where('users.id','=',$request->uid)
-        ->get();
+            ->leftjoin('addresses', 'addresses.user_id', '=', 'users.id')
+            ->where('users.id', '=', $request->uid)
+            ->get();
 
         $orders = DB::table('order_details')
-        ->leftJoin('products','products.id','=','order_details.product_id')
-        ->where('order_details.user_id','=',$request->uid)
-        ->get();
+            ->leftJoin('products', 'products.id', '=', 'order_details.product_id')
+            ->where('order_details.user_id', '=', $request->uid)
+            ->get();
 
         return response()->json([
             'customer' => $customer,
             'orders' => $orders,
-        ],201);
+        ], 201);
     }
 
     public function search_users_chats(Request $request)
@@ -1408,7 +1408,7 @@ class ApiController extends Controller
                 $randomString .= $characters[random_int(0, $charactersLength - 1)];
             }
 
-            $ran_num = rand(100000000,999999999);
+            $ran_num = rand(100000000, 999999999);
 
             DB::table('shops')->insert([
                 'name_shop' => $request['nameShop'],
@@ -1416,7 +1416,7 @@ class ApiController extends Controller
                 'img_shop' => $filePaths,
                 'cover_img_shop' => $filePaths2,
                 'code_shop' => $ran_num,
-                'url_shop' => $randomString.''.$ran_num,
+                'url_shop' => $randomString . '' . $ran_num,
                 'theme' => $request->themeShop,
                 'status' => 1,
                 'created_at' =>  date('Y-m-d H:i:s'),
