@@ -1146,7 +1146,8 @@ class ApiController extends Controller
         $count = DB::table('orders')->where('created_at','>=',$request->startDate)->count();
 
         return response()->json([
-            'count' => $count
+            'count' => $count,
+            'date' => $request->startDate
         ],201);
     }
 
