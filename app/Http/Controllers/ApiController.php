@@ -1159,11 +1159,42 @@ class ApiController extends Controller
         $customer = DB::table('users')
             ->leftjoin('addresses', 'addresses.user_id', '=', 'users.id')
             ->where('users.id', '=', $request->uid)
+            ->where('addresses.default', '=', 1)
+            ->select([
+                'users.id AS uid',
+                'users.name AS user_name',
+                'users.updated_at',
+                'users.avatar',
+                'addresses.address',
+                'addresses.district',
+                'addresses.subdistrict',
+                'addresses.province',
+                'addresses.tel',
+                'addresses.postcode',
+            ])
             ->get();
 
         $orders = DB::table('order_details')
+            ->join('orders', 'orders.id', '=', 'order_details.order_id')
             ->leftJoin('products', 'products.id', '=', 'order_details.product_id')
+            ->leftjoin('product_options', 'product_options.id', '=', 'order_details.option1')
+            ->leftjoin('product_suboptions', 'product_suboptions.id', '=', 'order_details.option2')
             ->where('order_details.user_id', '=', $request->uid)
+            ->select([
+                'order_details.created_at',
+                'order_details.num',
+                'orders.invoice_id',
+                'orders.status',
+                'products.name_product',
+                'products.sku',
+                'products.type',
+                'products.img_product',
+                'products.price AS price_type_1',
+                'product_options.price AS price_type_2',
+                'product_options.img_name AS img_pro_option',
+                'product_suboptions.price AS price_type_3',
+                ''
+            ])
             ->get();
 
         return response()->json([
