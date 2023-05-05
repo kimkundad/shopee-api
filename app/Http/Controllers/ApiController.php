@@ -1149,6 +1149,7 @@ class ApiController extends Controller
 
         return response()->json([
             'count' => $count,
+            'date' => $startTimestamp
         ],201);
     }
 
