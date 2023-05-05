@@ -1167,7 +1167,7 @@ class ApiController extends Controller
                 'users.avatar',
                 'addresses.address',
                 'addresses.district',
-                'addresses.subdistrict',
+                'addresses.sub_district',
                 'addresses.province',
                 'addresses.tel',
                 'addresses.postcode',
