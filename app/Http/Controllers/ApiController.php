@@ -1924,4 +1924,14 @@ class ApiController extends Controller
             'orders' => $orders2,
         ], 201);
     }
+
+    public function setStatusOrders($id, $status)
+    {
+        DB::table('orders')->where('id', $id)->update([
+            'status' => $status,
+        ]);
+        return response()->json([
+            'success' => 'Set status successfully',
+        ], 201);
+    }
 }
