@@ -265,7 +265,7 @@ class ApiController extends Controller
     public function created_order(Request $request)
     {
         $owner_id = DB::table('shops')->select('user_id')->where('id', '=', $request->shop_id)->first();
-        $total_report = DB::table('total_orders')->where('user_id', '=', $owner_id->user_id)->first();
+        $total_order = DB::table('total_orders')->where('user_id', '=', $owner_id->user_id)->first();
         if ($request->product_id !== null) {
             $order = new orders();
             $order->user_id = $request->user_id;
@@ -279,10 +279,10 @@ class ApiController extends Controller
             $order->invoice_id = $request->invoice_id;
             $order->save();
 
-            if ($total_report) {
+            if ($total_order) {
                 $total = total_orders::find($owner_id->user_id); // Assuming $id is the ID of the record you want to update
-                $total->total_num = intval($total_report->total_num) + intval($request->num);
-                $total->total_price = intval($total_report->total_price) + intval($request->total);
+                $total->total_num = intval($total_order->total_num) + intval($request->num);
+                $total->total_price = intval($total_order->total_price) + intval($request->total);
                 $total->save();
             } else {
                 $total = new total_orders();
@@ -331,10 +331,10 @@ class ApiController extends Controller
                 }
             }
 
-            if ($total_report) {
+            if ($total_order) {
                 $total = total_orders::find($owner_id->user_id); // Assuming $id is the ID of the record you want to update
-                $total->total_num = intval($total_report->total_num) + intval($request->num);
-                $total->total_price = intval($total_report->total_price) + intval($request->total);
+                $total->total_num = intval($total_order->total_num) + intval($request->num);
+                $total->total_price = intval($total_order->total_price) + intval($request->total);
                 $total->save();
             } else {
                 $total = new total_orders();
