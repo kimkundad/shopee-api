@@ -1930,6 +1930,7 @@ class ApiController extends Controller
                 'orders.price as amount',
                 'banks.icon_bank as bankThumbnail',
                 'orders.created_at as createAt',
+                'orders.updated_at as updateAt',
                 'orders.status as status'
             )
             ->get();
