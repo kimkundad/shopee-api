@@ -1175,6 +1175,7 @@ class ApiController extends Controller
                       ->orWhere('orders.invoice_id', 'like', '%'.$search.'%')
                       ->orWhere('addresses.tel', 'like', '%'.$search.'%');
             })
+            ->where('order_details.created_at', '>=', date('Y-m-d H:i:s', $request->startDate / 1000))->where('order_details.created_at', '<=', date('Y-m-d H:i:s', $request->endDate / 1000))
             ->paginate($request->itemsPerPage);
 
         /* $total_num = DB::table('') */
