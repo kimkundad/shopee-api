@@ -1174,7 +1174,7 @@ class ApiController extends Controller
 
     public function total_orders(Request $request)
     {
-        $sub_admin = DB::table('sub_admins')->where('id', '=', $request->uid)->first();
+        $sub_admin = DB::table('sub_admins')->where('sub_admin', '=', $request->uid)->first();
         if ($sub_admin) {
             $permission = json_decode($sub_admin->permission);
 
