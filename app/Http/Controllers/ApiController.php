@@ -1943,6 +1943,7 @@ class ApiController extends Controller
     {
         DB::table('orders')->where('id', $request->id)->update([
             'status' => $request->status,
+            'updated_at' => date('Y-m-d H:i:s'),
         ]);
         return response()->json([
             'success' => 'Set status successfully',
