@@ -1139,6 +1139,7 @@ class ApiController extends Controller
     // ดึงข้อมูลรายงาย
     public function getReports(Request $request)
     {
+        $search = $request->search;
         $reports = DB::table('order_details')
             ->join('orders', 'orders.id', '=', 'order_details.order_id')
             ->leftjoin('shops', 'shops.id', '=', 'orders.shop_id')
@@ -1165,7 +1166,15 @@ class ApiController extends Controller
                 'product_options.price AS price_type_2',
                 'product_suboptions.price AS price_type_3',
             ])
-            ->whereRaw("CONCAT(shops.name_shop, products.name_product,users.name,addresses.province) LIKE ?", ['%' . $request->search . '%'])
+            ->where(function($query) use ($search) {
+                $query->where('shops.name_shop', 'like', '%'.$search.'%')
+                      ->orWhere('products.name_product', 'like', '%'.$search.'%')
+                      ->orWhere('users.name', 'like', '%'.$search.'%')
+                      ->orWhere('addresses.province', 'like', '%'.$search.'%')
+                      ->orWhere('products.sku', 'like', '%'.$search.'%')
+                      ->orWhere('orders.invoice_id', 'like', '%'.$search.'%')
+                      ->orWhere('addresses.tel', 'like', '%'.$search.'%');
+            })
             ->paginate($request->itemsPerPage);
 
         /* $total_num = DB::table('') */
