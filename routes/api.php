@@ -86,8 +86,6 @@ Route::group([
     Route::post('/getReports' , [App\Http\Controllers\ApiController::class, 'getReports']);
     Route::post('/getDetailCutomer' , [App\Http\Controllers\ApiController::class, 'detail_customer']);
 
-    Route::post('/test' , [App\Http\Controllers\ApiController::class, 'test']);
-
     Route::post('/countOrder' , [App\Http\Controllers\ApiController::class, 'count_orders']);
 
     Route::post('/confirmPayment' , [App\Http\Controllers\ApiController::class, 'confirm_payment']);
