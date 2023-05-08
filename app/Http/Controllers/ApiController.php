@@ -1876,9 +1876,9 @@ class ApiController extends Controller
             ->leftjoin('transections', 'transections.order_id', '=', 'orders.id')
             ->leftjoin('bankaccounts', 'bankaccounts.id', '=', 'transections.bankaccount_id')
             ->leftjoin('banks', 'banks.id', '=', 'bankaccounts.bank_id')
+            ->groupBy('orders.invoice_id')
             ->orderBy('orders.id', 'DESC')
             ->select([
-                DB::raw('DISTINCT orders.invoice_id, orders.id'),
                 'orders.invoice_id as orderId',
                 'products.img_product as imageThumbnail',
                 'addresses.name as receiverName',
