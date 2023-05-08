@@ -265,7 +265,7 @@ class ApiController extends Controller
     public function created_order(Request $request)
     {
         $owner_id = DB::table('shops')->select('user_id')->where('id', '=', $request->shop_id)->first();
-        $total_report = DB::table('total_reports')->where('user_id', '=', $owner_id)->first();
+        $total_report = DB::table('total_reports')->where('user_id', '=', $owner_id->user_id)->first();
         $sum_num = intval($total_report->total_num) + intval($request->num);
         $sum_price = intval($total_report->total_price) + intval($request->total);
         if ($request->product_id !== null) {
@@ -281,7 +281,7 @@ class ApiController extends Controller
             $order->invoice_id = $request->invoice_id;
             $order->save();
 
-            /* if ($total_report) {
+            if ($total_report) {
                 DB::table('total_reports')->where('user_id', '=', $owner_id)->update([
                     'total_num' => $sum_num,
                     'total_price' => $sum_price,
@@ -292,7 +292,7 @@ class ApiController extends Controller
                     'total_num' => (int)$request->num,
                     'total_price' => (int)$request->total
                 ]);
-            } */
+            }
 
             $order_detail = new order_details();
             $order_detail->product_id = $request->product_id;
@@ -333,7 +333,7 @@ class ApiController extends Controller
                 }
             }
 
-            /* if ($total_report) {
+            if ($total_report) {
                 DB::table('total_reports')->where('user_id', '=', $owner_id)->update([
                     'total_num' => $sum_num,
                     'total_price' => $sum_price,
@@ -344,7 +344,7 @@ class ApiController extends Controller
                     'total_num' => (int)$request->num,
                     'total_price' => (int)$request->total
                 ]);
-            } */
+            }
             return response()->json([
                 'order' => $order
             ], 201);
