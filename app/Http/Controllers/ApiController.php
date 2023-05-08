@@ -266,6 +266,8 @@ class ApiController extends Controller
     {
         $owner_id = DB::table('shops')->select('user_id')->where('id','=',$request->shop_id)->first();
         $total_report = DB::table('total_reports')->where('user_id','=',$owner_id)->first();
+        $sum_num = (int)$total_report->total_num+ (int)$request->num;
+        $sum_price = (int)$total_report->total_price+ (int)$request->total;
         if ($request->product_id !== null) {
             $order = new orders();
             $order->user_id = $request->user_id;
@@ -281,8 +283,8 @@ class ApiController extends Controller
 
             if($total_report){
                 DB::table('total_reports')->where('user_id','=',$owner_id)->update([
-                    'total_num' => (int)$total_report->total_num+ (int)$request->num,
-                    'total_price' => (int)$total_report->total_price+ (int)$request->total,
+                    'total_num' => $sum_num,
+                    'total_price' => $sum_price,
                 ]);
             }else{
                 DB::table('total_reports')->insert([
@@ -333,8 +335,8 @@ class ApiController extends Controller
 
             if($total_report){
                 DB::table('total_reports')->where('user_id','=',$owner_id)->update([
-                    'total_num' => (int)$total_report->total_num+ (int)$request->num,
-                    'total_price' => (int)$total_report->total_price+ (int)$request->total,
+                    'total_num' => $sum_num,
+                    'total_price' => $sum_price,
                 ]);
             }else{
                 DB::table('total_reports')->insert([
