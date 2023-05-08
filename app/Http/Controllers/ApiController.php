@@ -280,7 +280,7 @@ class ApiController extends Controller
             $order->save();
 
             if ($total_report) {
-                $total = total_reports::find($owner_id); // Assuming $id is the ID of the record you want to update
+                $total = total_reports::find($owner_id->user_id); // Assuming $id is the ID of the record you want to update
                 $total->total_num = intval($total_report->total_num) + intval($request->num);
                 $total->total_price = intval($total_report->total_price) + intval($request->total);
                 $total->save();
@@ -332,7 +332,7 @@ class ApiController extends Controller
             }
 
             if ($total_report) {
-                $total = total_reports::find($owner_id); // Assuming $id is the ID of the record you want to update
+                $total = total_reports::find($owner_id->user_id); // Assuming $id is the ID of the record you want to update
                 $total->total_num = intval($total_report->total_num) + intval($request->num);
                 $total->total_price = intval($total_report->total_price) + intval($request->total);
                 $total->save();
