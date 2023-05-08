@@ -1927,8 +1927,8 @@ class ApiController extends Controller
 
     public function setStatusOrders(Request $request)
     {
-        DB::table('orders')->where('id', $request->id)->update([
-            'status' => $request->status,
+        DB::table('orders')->where('id', $request['id'])->update([
+            'status' => $request['status'],
         ]);
         return response()->json([
             'success' => 'Set status successfully',
