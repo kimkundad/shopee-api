@@ -280,16 +280,14 @@ class ApiController extends Controller
             $order->save();
 
             if ($total_report) {
-                DB::table('total_reports')->where('user_id', '=', $owner_id)->update([
-                    'total_num' => intval($total_report->total_num) + intval($request->num),
-                    'total_price' => intval($total_report->total_price) + intval($request->total),
-                ]);
+                $total = new total_reports();
+                $total->total_num = intval($total_report->total_num) + intval($request->num);
+                $total->total_price = intval($total_report->total_price) + intval($request->total);
             } else {
-                DB::table('total_reports')->insert([
-                    'user_id' => (int)$owner_id->user_id,
-                    'total_num' => (int)$request->num,
-                    'total_price' => (int)$request->total
-                ]);
+                $total = new total_reports();
+                $total->user_id = (int)$owner_id->user_id;
+                $total->total_num = (int)$request->num;
+                $total->total_price = (int)$request->total;
             }
 
             $order_detail = new order_details();
@@ -332,16 +330,14 @@ class ApiController extends Controller
             }
 
             if ($total_report) {
-                DB::table('total_reports')->where('user_id', '=', $owner_id)->update([
-                    'total_num' => intval($total_report->total_num) + intval($request->num),
-                    'total_price' => intval($total_report->total_price) + intval($request->total),
-                ]);
+                $total = new total_reports();
+                $total->total_num = intval($total_report->total_num) + intval($request->num);
+                $total->total_price = intval($total_report->total_price) + intval($request->total);
             } else {
-                DB::table('total_reports')->insert([
-                    'user_id' => (int)$owner_id->user_id,
-                    'total_num' => (int)$request->num,
-                    'total_price' => (int)$request->total
-                ]);
+                $total = new total_reports();
+                $total->user_id = (int)$owner_id->user_id;
+                $total->total_num = (int)$request->num;
+                $total->total_price = (int)$request->total;
             }
             return response()->json([
                 'order' => $order
