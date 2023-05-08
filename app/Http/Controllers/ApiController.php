@@ -1165,7 +1165,7 @@ class ApiController extends Controller
                 'product_options.price AS price_type_2',
                 'product_suboptions.price AS price_type_3',
             ])
-            ->whereRaw("CONCAT(shops.name_shop, products.name_product, products.sku, orders.invoice_id,users.name,addresses.province,addresses.tel) LIKE ?", ['%'.$request->search.'%'])
+            ->whereRaw("CONCAT(shops.name_shop, products.name_product,users.name,addresses.province) LIKE ?", ['%' . $request->search . '%'])
             ->paginate($request->itemsPerPage);
 
         /* $total_num = DB::table('') */
