@@ -13,7 +13,7 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('total_reports', function (Blueprint $table) {
+        Schema::create('total_orders', function (Blueprint $table) {
             $table->id();
             $table->integer('user_id')->nullable();
             $table->integer('total_num')->nullable();
@@ -29,6 +29,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('total_reports');
+        Schema::dropIfExists('total_orders');
     }
 };

@@ -13,7 +13,7 @@ use App\Models\category;
 use App\Models\product;
 use App\Models\shop;
 use App\Models\carts;
-use App\Models\total_reports;
+use App\Models\total_orders;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Intervention\Image\ImageManagerStatic as Image;
@@ -265,7 +265,7 @@ class ApiController extends Controller
     public function created_order(Request $request)
     {
         $owner_id = DB::table('shops')->select('user_id')->where('id', '=', $request->shop_id)->first();
-        $total_report = DB::table('total_reports')->where('user_id', '=', $owner_id->user_id)->first();
+        $total_report = DB::table('total_orders')->where('user_id', '=', $owner_id->user_id)->first();
         if ($request->product_id !== null) {
             $order = new orders();
             $order->user_id = $request->user_id;
@@ -280,12 +280,12 @@ class ApiController extends Controller
             $order->save();
 
             if ($total_report) {
-                $total = total_reports::find($owner_id->user_id); // Assuming $id is the ID of the record you want to update
+                $total = total_orders::find($owner_id->user_id); // Assuming $id is the ID of the record you want to update
                 $total->total_num = intval($total_report->total_num) + intval($request->num);
                 $total->total_price = intval($total_report->total_price) + intval($request->total);
                 $total->save();
             } else {
-                $total = new total_reports();
+                $total = new total_orders();
                 $total->user_id = (int)$owner_id->user_id;
                 $total->total_num = (int)$request->num;
                 $total->total_price = (int)$request->total;
@@ -332,12 +332,12 @@ class ApiController extends Controller
             }
 
             if ($total_report) {
-                $total = total_reports::find($owner_id->user_id); // Assuming $id is the ID of the record you want to update
+                $total = total_orders::find($owner_id->user_id); // Assuming $id is the ID of the record you want to update
                 $total->total_num = intval($total_report->total_num) + intval($request->num);
                 $total->total_price = intval($total_report->total_price) + intval($request->total);
                 $total->save();
             } else {
-                $total = new total_reports();
+                $total = new total_orders();
                 $total->user_id = (int)$owner_id->user_id;
                 $total->total_num = (int)$request->num;
                 $total->total_price = (int)$request->total;
@@ -1172,7 +1172,7 @@ class ApiController extends Controller
         ], 201);
     }
 
-    public function total_reports(Request $request)
+    public function total_orders(Request $request)
     {
         $sub_admin = DB::table('sub_admins')->where('id', '=', $request->uid)->first();
         if ($sub_admin) {
@@ -1180,10 +1180,10 @@ class ApiController extends Controller
 
             if ($permission->set_permission_report) {
                 $total = DB::table('sub_admins')
-                    ->leftJoin('total_reports', 'total_reports.user_id', '=', 'sub_admins.owner_admin')
+                    ->leftJoin('total_orders', 'total_orders.user_id', '=', 'sub_admins.owner_admin')
                     ->where('sub_admins.sub_admin', '=', $request->uid)
                     ->select([
-                        'total_reports.*',
+                        'total_orders.*',
                     ])
                     ->first();
 
@@ -1196,7 +1196,7 @@ class ApiController extends Controller
                 ]);
             }
         } else {
-            $total = DB::table('total_reports')
+            $total = DB::table('total_orders')
                 ->where('user_id', '=', $request->uid)
                 ->first();
             return response()->json([
