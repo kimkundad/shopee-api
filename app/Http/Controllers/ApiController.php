@@ -1906,7 +1906,6 @@ class ApiController extends Controller
             ->leftjoin('bankaccounts', 'bankaccounts.id', '=', 'transections.bankaccount_id')
             ->leftjoin('banks', 'banks.id', '=', 'bankaccounts.bank_id')
             ->orderBy('orders.id', 'DESC')
-            ->groupBy('orders.id')
             ->select(
                 'orders.id as ID',
                 'orders.invoice_id as orderId',
