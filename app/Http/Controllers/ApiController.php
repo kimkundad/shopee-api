@@ -281,8 +281,8 @@ class ApiController extends Controller
 
             if($total_report){
                 DB::table('total_reports')->where('user_id','=',$owner_id)->update([
-                    'total_num' => (int)$total_report->total_num+$request->num,
-                    'total_price' => (int)$total_report->total_price+$request->total,
+                    'total_num' => (int)$total_report->total_num+ (int)$request->num,
+                    'total_price' => (int)$total_report->total_price+ (int)$request->total,
                 ]);
             }else{
                 DB::table('total_reports')->insert([
@@ -333,8 +333,8 @@ class ApiController extends Controller
 
             if($total_report){
                 DB::table('total_reports')->where('user_id','=',$owner_id)->update([
-                    'total_num' => (int)$total_report->total_num+$request->num,
-                    'total_price' => (int)$total_report->total_price+$request->total,
+                    'total_num' => (int)$total_report->total_num+ (int)$request->num,
+                    'total_price' => (int)$total_report->total_price+ (int)$request->total,
                 ]);
             }else{
                 DB::table('total_reports')->insert([
