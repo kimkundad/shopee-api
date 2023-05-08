@@ -281,14 +281,14 @@ class ApiController extends Controller
 
             if($total_report){
                 DB::table('total_reports')->where('user_id','=',$owner_id)->update([
-                    'total_num' => $total_report->total_num+$request->num,
-                    'total_price' => $total_report->total_price+$request->total,
+                    'total_num' => (int)$total_report->total_num+$request->num,
+                    'total_price' => (int)$total_report->total_price+$request->total,
                 ]);
             }else{
                 DB::table('total_reports')->insert([
-                    'user_id' => $owner_id,
-                    'total_num' => $request->num,
-                    'total_price' => $request->total
+                    'user_id' => (int)$owner_id,
+                    'total_num' => (int)$request->num,
+                    'total_price' => (int)$request->total
                 ]);
             }
 
@@ -333,14 +333,14 @@ class ApiController extends Controller
 
             if($total_report){
                 DB::table('total_reports')->where('user_id','=',$owner_id)->update([
-                    'total_num' => $total_report->total_num+$request->num,
-                    'total_price' => $total_report->total_price+$request->total,
+                    'total_num' => (int)$total_report->total_num+$request->num,
+                    'total_price' => (int)$total_report->total_price+$request->total,
                 ]);
             }else{
                 DB::table('total_reports')->insert([
-                    'user_id' => $owner_id,
-                    'total_num' => $request->num,
-                    'total_price' => $request->total
+                    'user_id' => (int)$owner_id,
+                    'total_num' => (int)$request->num,
+                    'total_price' => (int)$request->total
                 ]);
             }
             return response()->json([
