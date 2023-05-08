@@ -1878,7 +1878,7 @@ class ApiController extends Controller
             ->leftjoin('banks', 'banks.id', '=', 'bankaccounts.bank_id')
             ->orderBy('orders.id', 'DESC')
             ->select('orders.invoice_id as orderId', 'products.img_product as imageThumbnail', 'addresses.name as receiverName', 'addresses.province as address', 'addresses.tel as phoneNumber', 'orders.num as quantity', 'orders.price as amount', 'banks.icon_bank as bankThumbnail', 'orders.created_at as createAt', 'orders.status as status')
-            ->distinct()
+            // ->distinct()
             ->get();
         return response()->json([
             'orders' => $orders2,
