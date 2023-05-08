@@ -288,7 +288,7 @@ class ApiController extends Controller
                 ]);
             } else {
                 DB::table('total_reports')->insert([
-                    'user_id' => (int)$owner_id,
+                    'user_id' => (int)$owner_id->user_id,
                     'total_num' => (int)$request->num,
                     'total_price' => (int)$request->total
                 ]);
@@ -340,7 +340,7 @@ class ApiController extends Controller
                 ]);
             } else {
                 DB::table('total_reports')->insert([
-                    'user_id' => (int)$owner_id,
+                    'user_id' => (int)$owner_id->user_id,
                     'total_num' => (int)$request->num,
                     'total_price' => (int)$request->total
                 ]);
