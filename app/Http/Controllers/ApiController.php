@@ -1143,6 +1143,39 @@ class ApiController extends Controller
         ], 201);
     }
 
+    public function total_reports(Request $request)
+    {
+        $sub_admin = DB::table('sub_admins')->where('id', '=', $request->uid)->first();
+        if ($sub_admin) {
+            $permission = json_decode($sub_admin->permission);
+
+            if ($permission->set_permission_report) {
+                $total = DB::table('sub_admins')
+                    ->leftJoin('total_reports', 'total_reports.user_id', '=', 'sub_admins.owner_admin')
+                    ->where('sub_admins.sub_admin', '=', $request->uid)
+                    ->select([
+                        'total_reports.*',
+                    ])
+                    ->first();
+
+                return response()->json([
+                    'total' => $total,
+                ], 201);
+            } else {
+                return response()->json([
+                    'status' => 'not permission',
+                ]);
+            }
+        } else {
+            $total = DB::table('total_reports')
+                ->where('user_id', '=', $request->uid)
+                ->first();
+            return response()->json([
+                'total' => $total,
+            ], 201);
+        }
+    }
+
     // ดึงจำนวน invoice
     public function count_orders(Request $request)
     {
