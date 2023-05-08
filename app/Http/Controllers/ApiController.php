@@ -1878,6 +1878,7 @@ class ApiController extends Controller
             ->leftjoin('banks', 'banks.id', '=', 'bankaccounts.bank_id')
             ->orderBy('orders.id', 'DESC')
             ->select(
+                'orders.id as ID',
                 'orders.invoice_id as orderId',
                 'products.img_product as imageThumbnail',
                 'addresses.name as receiverName',
