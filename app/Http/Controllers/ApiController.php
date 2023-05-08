@@ -280,14 +280,16 @@ class ApiController extends Controller
             $order->save();
 
             if ($total_report) {
-                $total = new total_reports();
+                $total = total_reports::find($owner_id); // Assuming $id is the ID of the record you want to update
                 $total->total_num = intval($total_report->total_num) + intval($request->num);
                 $total->total_price = intval($total_report->total_price) + intval($request->total);
+                $total->save();
             } else {
                 $total = new total_reports();
                 $total->user_id = (int)$owner_id->user_id;
                 $total->total_num = (int)$request->num;
                 $total->total_price = (int)$request->total;
+                $total->save();
             }
 
             $order_detail = new order_details();
@@ -330,14 +332,16 @@ class ApiController extends Controller
             }
 
             if ($total_report) {
-                $total = new total_reports();
+                $total = total_reports::find($owner_id); // Assuming $id is the ID of the record you want to update
                 $total->total_num = intval($total_report->total_num) + intval($request->num);
                 $total->total_price = intval($total_report->total_price) + intval($request->total);
+                $total->save();
             } else {
                 $total = new total_reports();
                 $total->user_id = (int)$owner_id->user_id;
                 $total->total_num = (int)$request->num;
                 $total->total_price = (int)$request->total;
+                $total->save();
             }
             return response()->json([
                 'order' => $order
