@@ -13,6 +13,7 @@ use App\Models\category;
 use App\Models\product;
 use App\Models\shop;
 use App\Models\carts;
+use App\Models\total_reports;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Intervention\Image\ImageManagerStatic as Image;
@@ -263,6 +264,8 @@ class ApiController extends Controller
     // สร้าง order
     public function created_order(Request $request)
     {
+        $owner_id = DB::table('shops')->select('user_id')->where('id','=',$request->shop_id)->first();
+        $total_report = DB::table('total_reports')->where('user_id','=',$owner_id)->first();
         if ($request->product_id !== null) {
             $order = new orders();
             $order->user_id = $request->user_id;
@@ -275,6 +278,19 @@ class ApiController extends Controller
             $order->status = $request->status;
             $order->invoice_id = $request->invoice_id;
             $order->save();
+
+            if($total_report){
+                DB::table('total_reports')->where('user_id','=',$owner_id)->update([
+                    'total_num' => $total_report->total_num+$request->num,
+                    'total_price' => $total_report->total_price+$request->total,
+                ]);
+            }else{
+                DB::table('total_reports')->insert([
+                    'user_id' => $owner_id,
+                    'total_num' => $request->num,
+                    'total_price' => $request->total
+                ]);
+            }
 
             $order_detail = new order_details();
             $order_detail->product_id = $request->product_id;
@@ -313,6 +329,19 @@ class ApiController extends Controller
                     $order_detail->num = $subItem['num'];
                     $order_detail->save();
                 }
+            }
+
+            if($total_report){
+                DB::table('total_reports')->where('user_id','=',$owner_id)->update([
+                    'total_num' => $total_report->total_num+$request->num,
+                    'total_price' => $total_report->total_price+$request->total,
+                ]);
+            }else{
+                DB::table('total_reports')->insert([
+                    'user_id' => $owner_id,
+                    'total_num' => $request->num,
+                    'total_price' => $request->total
+                ]);
             }
             return response()->json([
                 'order' => $order
