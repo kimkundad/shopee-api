@@ -1936,6 +1936,12 @@ class ApiController extends Controller
             ->paginate(5);
         return response()->json([
             'orders' => $orders2->items(),
+            'pagination' => [
+                'current_page' => $orders2->currentPage(),
+                'per_page' => $orders2->perPage(),
+                'last_page' => $orders2->lastPage(),
+                'total' => $orders2->total(),
+            ],
         ], 201);
     }
 
