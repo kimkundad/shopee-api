@@ -1269,6 +1269,15 @@ class ApiController extends Controller
             ->where('shops.user_id', '=', $request->uid)
             ->get();
 
+        $months = array();
+        $now = new DateTime();
+        for ($i = 0; $i < 12; $i++) {
+            $month = $now->format('Y-M');
+            $months[] = array('month' => $month, 'data' => array());
+            $now->sub(new DateInterval('P1M'));
+        }
+
+        // Query the database
         $data_chart_bar = DB::table('order_details')
             ->join('orders', 'orders.id', '=', 'order_details.order_id')
             ->leftjoin('shops', 'shops.id', '=', 'orders.shop_id')
@@ -1280,24 +1289,35 @@ class ApiController extends Controller
             ->where('shops.user_id', '=', $request->uid)
             ->get();
 
-        // Group the results by month and then by shop name
-        $data_chart_bar_grouped = $data_chart_bar->groupBy('month')->map(function ($monthData) {
-            return [
-                'month' => $monthData->first()->month,
-                'data' => $monthData->groupBy('name_shop')->map(function ($shopData) {
-                    return [
-                        'name_shop' => $shopData->first()->name_shop,
-                        'total_num' => $shopData->sum('total_num'),
-                    ];
-                })->values()->toArray(),
-            ];
-        })->values()->toArray();
+        // Fill in the data for each month
+        foreach ($data_chart_bar as $item) {
+            $month = $item->month;
+            $name_shop = $item->name_shop;
+            $total_num = $item->total_num;
+            foreach ($months as &$m) {
+                if ($m['month'] == $month) {
+                    $m['data'][] = array('name_shop' => $name_shop, 'total_num' => $total_num);
+                    break;
+                }
+            }
+        }
+
+        // Remove empty months
+        $months = array_filter($months, function ($m) {
+            return count($m['data']) > 0;
+        });
+
+        // Reverse the order of months
+        $months = array_reverse($months);
+
+        // Return the result
+        $result = array(array('month' => '12 Months', 'data' => $months));
         return response()->json([
             'data_table' => $data_table,
             'data_chart_pie_products' => $data_chart_pie_products,
             'data_chart_pie_shops' => $data_chart_pie_shops,
             'data_chart_line' => $data_chart_line,
-            'data_chart_bar' => $data_chart_bar_grouped,
+            'data_chart_bar' => $result,
         ], 201);
     }
 
