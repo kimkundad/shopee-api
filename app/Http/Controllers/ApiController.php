@@ -1166,14 +1166,14 @@ class ApiController extends Controller
                 'product_options.price AS price_type_2',
                 'product_suboptions.price AS price_type_3',
             ])
-            ->where(function($query) use ($search) {
-                $query->where('shops.name_shop', 'like', '%'.$search.'%')
-                      ->orWhere('products.name_product', 'like', '%'.$search.'%')
-                      ->orWhere('users.name', 'like', '%'.$search.'%')
-                      ->orWhere('addresses.province', 'like', '%'.$search.'%')
-                      ->orWhere('products.sku', 'like', '%'.$search.'%')
-                      ->orWhere('orders.invoice_id', 'like', '%'.$search.'%')
-                      ->orWhere('addresses.tel', 'like', '%'.$search.'%');
+            ->where(function ($query) use ($search) {
+                $query->where('shops.name_shop', 'like', '%' . $search . '%')
+                    ->orWhere('products.name_product', 'like', '%' . $search . '%')
+                    ->orWhere('users.name', 'like', '%' . $search . '%')
+                    ->orWhere('addresses.province', 'like', '%' . $search . '%')
+                    ->orWhere('products.sku', 'like', '%' . $search . '%')
+                    ->orWhere('orders.invoice_id', 'like', '%' . $search . '%')
+                    ->orWhere('addresses.tel', 'like', '%' . $search . '%');
             })
             ->where('order_details.created_at', '>=', date('Y-m-d H:i:s', $request->startDate / 1000))->where('order_details.created_at', '<=', date('Y-m-d H:i:s', $request->endDate / 1000))
             ->paginate($request->itemsPerPage);
@@ -1212,10 +1212,74 @@ class ApiController extends Controller
             $total = DB::table('total_orders')
                 ->where('user_id', '=', $request->uid)
                 ->first();
+            if ($total) {
+                return response()->json([
+                    'total' => $total,
+                ], 201);
+            } else {
+                return response()->json([
+                    'status' => 'not permission',
+                ]);
+            }
+        }
+    }
+
+    public function dashboard(Request $request)
+    {
+        /* $sub_admin = DB::table('sub_admins')->where('sub_admin', '=', $request->uid)->first();
+        if ($sub_admin) {
+            $permission = json_decode($sub_admin->permission);
+
+            if ($permission->set_permission_report) {
+                $total = DB::table('sub_admins')
+                    ->leftJoin('total_orders', 'total_orders.user_id', '=', 'sub_admins.owner_admin')
+                    ->where('sub_admins.sub_admin', '=', $request->uid)
+                    ->select([
+                        'total_orders.*',
+                    ])
+                    ->first();
+
+                return response()->json([
+                    'total' => $total,
+                ], 201);
+            } else {
+                return response()->json([
+                    'status' => 'not permission',
+                ]);
+            }
+        } else {
+            $total = DB::table('total_orders')
+                ->where('user_id', '=', $request->uid)
+                ->first();
             return response()->json([
                 'total' => $total,
             ], 201);
-        }
+        } */
+
+        $sum = DB::table('order_details')
+            ->join('orders', 'orders.id', '=', 'order_details.order_id')
+            ->leftjoin('shops', 'shops.id', '=', 'orders.shop_id')
+            ->leftjoin('users', 'users.id', '=', 'order_details.user_id')
+            ->leftjoin('addresses', 'addresses.id', '=', 'orders.address_id')
+            ->leftjoin('products', 'products.id', '=', 'order_details.product_id')
+            ->leftjoin('product_options', 'product_options.id', '=', 'order_details.option1')
+            ->leftjoin('product_suboptions', 'product_suboptions.id', '=', 'order_details.option2')
+            ->orderBy('order_details.created_at', 'desc')
+            ->groupBy('products.name_product')
+            ->selectRaw('products.name_product, sum(products.price) as total_price')
+            ->get();
+
+        /* ->select([
+                'shops.name_shop',
+                'products.name_product',
+                'products.type',
+                'products.price AS price_type_1',
+                'product_options.price AS price_type_2',
+                'product_suboptions.price AS price_type_3',
+            ]) */
+        return response()->json([
+            'sum' => $sum,
+        ], 201);
     }
 
     // ดึงจำนวน invoice

@@ -90,6 +90,8 @@ Route::group([
 
     Route::post('/countOrder' , [App\Http\Controllers\ApiController::class, 'count_orders']);
 
+    Route::post('/dashboard' , [App\Http\Controllers\ApiController::class, 'dashboard']);
+
     Route::post('/confirmPayment' , [App\Http\Controllers\ApiController::class, 'confirm_payment']);
 
     Route::post('/createUser', [App\Http\Controllers\AuthController::class, 'createUser']);
