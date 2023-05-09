@@ -1309,13 +1309,20 @@ class ApiController extends Controller
             ->selectRaw('SUM(products.stock) AS allStock, SUM(orders.num) AS numOrders, SUM(CASE WHEN order_details.type_payment = "โอนเงิน" THEN order_details.num ELSE 0 END) AS sum_payment, SUM(CASE WHEN order_details.type_payment = "เก็บเงินปลายทาง" THEN order_details.num ELSE 0 END) AS sum_cash_on_delivery')
             ->where('shops.user_id', '=', $request->uid)
             ->get();
+
+        $all_stock = DB::table('products')
+        ->leftjoin('shop_list_products', 'shop_list_products.product_id', '=', 'products.id')
+        ->leftJoin('shops','shops.id','=','shop_list_products.shop_id')
+        ->selectRaw('SUM(products.stock) AS allStock')
+        ->where('shops.user_id', '=', $request->uid)
+            ->get();
         return response()->json([
             'data_table' => $data_table,
             'data_chart_pie_products' => $data_chart_pie_products,
             'data_chart_pie_shops' => $data_chart_pie_shops,
             'data_chart_line' => $data_chart_line,
             'data_chart_bar' => $data_chart_bar_grouped,
-            'data_chart_donut' => $data_chart_donut,
+            'all_stock' => $all_stock,
         ], 201);
     }
 
