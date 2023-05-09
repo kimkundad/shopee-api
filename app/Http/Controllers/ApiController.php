@@ -1935,7 +1935,7 @@ class ApiController extends Controller
             )
             ->paginate(5);
         return response()->json([
-            'orders' => $orders2,
+            'orders' => $orders2->items(),
         ], 201);
     }
 
