@@ -1311,10 +1311,10 @@ class ApiController extends Controller
             ->get();
 
         $all_stock = DB::table('products')
-        ->leftjoin('shop_list_products', 'shop_list_products.product_id', '=', 'products.id')
-        ->leftJoin('shops','shops.id','=','shop_list_products.shop_id')
-        ->selectRaw('SUM(products.stock) AS allStock')
-        ->where('shops.user_id', '=', $request->uid)
+            ->leftjoin('shop_list_products', 'shop_list_products.product_id', '=', 'products.id')
+            ->leftJoin('shops', 'shops.id', '=', 'shop_list_products.shop_id')
+            ->selectRaw('SUM(products.stock) AS allStock')
+            ->where('shops.user_id', '=', $request->uid)
             ->get();
         return response()->json([
             'data_table' => $data_table,
@@ -2061,8 +2061,32 @@ class ApiController extends Controller
                 'orders.created_at as createAt',
                 'orders.updated_at as updateAt',
                 'orders.status as status',
+                'orders.type_payment as typePaymentOrder'
             ])
             ->get();
+
+        foreach ($orders2 as $value) {
+            $data = DB::table('order_details')
+                ->leftJoin('products', 'products.id', '=', 'order_details.product_id')
+                ->leftJoin('product_options', 'product_options.product_id', '=', 'order_details.product_id')
+                ->leftJoin('product_suboptions', 'product_suboptions.op_id', '=', 'product_options.id')
+                ->orderBy('order_details.id', 'desc')
+                ->select([
+                    'order_details.id as orderDetailID',
+                    'products.img_product as imgProduct',
+                    'product_options.img_name as imgProductOption',
+                    'order_details.option1 as option1',
+                    'order_details.option2 as option2',
+                    'products.name_product as nameProduct',
+                    'order_details.num as num',
+                    'products.price as priceProduct',
+                    'product_options.price as priceProductOption1',
+                    'product_suboptions.price as priceProductOption2',
+                ])
+                ->where('order_id', $value->ID)
+                ->get();
+            $value->orderDetails = $data;
+        }
         return response()->json([
             'orders' => $orders2,
         ], 201);
