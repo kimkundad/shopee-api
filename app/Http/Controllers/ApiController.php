@@ -2083,7 +2083,7 @@ class ApiController extends Controller
                     'product_options.price as priceProductOption1',
                     'product_suboptions.price as priceProductOption2',
                 ])
-                ->where('order_id', $value->ID)
+                ->where('order_details.order_id', $value->ID)
                 ->get();
             $value->orderDetails = $data;
         }
