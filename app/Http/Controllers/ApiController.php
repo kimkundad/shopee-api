@@ -1933,7 +1933,7 @@ class ApiController extends Controller
                 'orders.updated_at as updateAt',
                 'orders.status as status'
             )
-            ->get();
+            ->paginate(5);
         return response()->json([
             'orders' => $orders2,
         ], 201);
