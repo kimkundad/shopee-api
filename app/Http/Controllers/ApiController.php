@@ -2027,8 +2027,8 @@ class ApiController extends Controller
                 'addresses.name as receiverName',
                 'addresses.province as address',
                 'addresses.tel as phoneNumber',
-                DB::raw('SUM(orders.num) as quantity'),
-                DB::raw('SUM(orders.price) as amount'),
+                DB::raw('GROUP_CONCAT(orders.num) as quantity'),
+                DB::raw('GROUP_CONCAT(orders.price) as amount'),
                 'banks.icon_bank as bankThumbnail',
                 'orders.created_at as createAt',
                 'orders.status as status')
