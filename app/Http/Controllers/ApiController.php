@@ -330,7 +330,7 @@ class ApiController extends Controller
                     $order_detail->option1 = $subItem['option1Id'];
                     $order_detail->option2 = $subItem['option2Id'];
                     $order_detail->num = $subItem['num'];
-                    $order_detail->type_payment = $subItem['type_payment'];
+                    $order_detail->type_payment = $request->type_payment;
                     $order_detail->save();
                 }
             }
