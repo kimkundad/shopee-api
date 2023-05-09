@@ -2019,7 +2019,8 @@ class ApiController extends Controller
                 'banks.icon_bank as bankThumbnail',
                 'orders.created_at as createAt',
                 'orders.updated_at as updateAt',
-                'orders.status as status'
+                'orders.status as status',
+                'bankaccounts.bankaccount_number as bankAccountNumber',
             )
             ->get();
         return response()->json([
