@@ -1164,11 +1164,13 @@ class ApiController extends Controller
                 'addresses.tel',
                 'addresses.name',
                 'products.name_product',
-                'products.sku',
                 'products.type',
                 'products.price AS price_type_1',
                 'product_options.price AS price_type_2',
                 'product_suboptions.price AS price_type_3',
+                'products.sku AS sku_type_1',
+                'product_options.sku AS sku_type_2',
+                'product_suboptions.sku AS sku_type_3',
             ])
             ->where(function ($query) use ($search) {
                 $query->where('shops.name_shop', 'like', '%' . $search . '%')
@@ -1297,6 +1299,17 @@ class ApiController extends Controller
                 })->values()->toArray(),
             ];
         })->values()->toArray();
+
+        $data_chart_donut = DB::table('order_details')
+            ->join('orders', 'orders.id', '=', 'order_details.order_id')
+            ->leftjoin('shops', 'shops.id', '=', 'orders.shop_id')
+            ->leftjoin('products', 'products.id', '=', 'order_details.product_id')
+            ->leftjoin('product_options', 'product_options.id', '=', 'order_details.option1')
+            ->leftjoin('product_suboptions', 'product_suboptions.id', '=', 'order_details.option2')
+            ->groupBy(DB::raw('DATE_FORMAT(order_details.created_at, "%Y-%M")'), 'shops.name_shop')
+            ->selectRaw('DATE_FORMAT(order_details.created_at, "%Y-%M") AS month,shops.name_shop, SUM(order_details.num) AS total_num')
+            ->where('shops.user_id', '=', $request->uid)
+            ->get();
         return response()->json([
             'data_table' => $data_table,
             'data_chart_pie_products' => $data_chart_pie_products,
