@@ -1306,7 +1306,6 @@ class ApiController extends Controller
             ->leftjoin('products', 'products.id', '=', 'order_details.product_id')
             ->leftjoin('product_options', 'product_options.id', '=', 'order_details.option1')
             ->leftjoin('product_suboptions', 'product_suboptions.id', '=', 'order_details.option2')
-            ->groupBy(DB::raw('DATE_FORMAT(order_details.created_at, "%Y-%M")'), 'shops.name_shop')
             ->selectRaw('DATE_FORMAT(order_details.created_at, "%Y-%M") AS month,shops.name_shop, SUM(products.stock) AS allStock, COUNT(orders.num) AS numOrders , SUM(WHEN order_details.type_payment = โอนเงิน THEN order_details.num ELSE 0 END) AS sum_payment, SUM(WHEN order_details.type_payment = เก็บเงินปลายทาง THEN order_details.num ELSE 0 END) AS sum_cash_on_delivery')
             ->where('shops.user_id', '=', $request->uid)
             ->get();
