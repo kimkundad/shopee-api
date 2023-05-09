@@ -2010,18 +2010,16 @@ class ApiController extends Controller
             ->select(
                 'orders.id as ID',
                 'orders.invoice_id as orderId',
-                'products.img_product as imageThumbnail',
+                DB::raw('GROUP_CONCAT(products.img_product) as imageThumbnail'),
                 'addresses.name as receiverName',
                 'addresses.province as address',
                 'addresses.tel as phoneNumber',
-                'orders.num as quantity',
-                'orders.price as amount',
+                DB::raw('SUM(orders.num) as quantity'),
+                DB::raw('SUM(orders.price) as amount'),
                 'banks.icon_bank as bankThumbnail',
                 'orders.created_at as createAt',
-                'orders.updated_at as updateAt',
-                'orders.status as status',
-                'bankaccounts.bankaccount_number as bankAccountNumber',
-            )
+                'orders.status as status')
+            ->groupBy('orders.id', 'orders.invoice_id', 'addresses.name', 'addresses.province', 'addresses.tel', 'banks.icon_bank', 'orders.created_at', 'orders.status')
             ->get();
         return response()->json([
             'orders' => $orders2,
