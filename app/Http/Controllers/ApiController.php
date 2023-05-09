@@ -1994,6 +1994,7 @@ class ApiController extends Controller
                 'orders.price as amount',
                 'banks.icon_bank as bankThumbnail',
                 'orders.created_at as createAt',
+                'orders.updated_at as updateAt',
                 'orders.status as status'
             )
             ->get();
@@ -2006,6 +2007,7 @@ class ApiController extends Controller
     {
         DB::table('orders')->where('id', $request->id)->update([
             'status' => $request->status,
+            'updated_at' => date('Y-m-d H:i:s'),
         ]);
         return response()->json([
             'success' => 'Set status successfully',
