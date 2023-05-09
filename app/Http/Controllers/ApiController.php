@@ -277,6 +277,7 @@ class ApiController extends Controller
             $order->discount = $request->discount;
             $order->status = $request->status;
             $order->invoice_id = $request->invoice_id;
+            $order->type_payment = $request->type_payment;
             $order->save();
 
             if ($total_order) {
@@ -299,6 +300,7 @@ class ApiController extends Controller
             $order_detail->option1 = $request->option1;
             $order_detail->option2 = $request->option2;
             $order_detail->num = $request->num;
+            $order->type_payment = $request->type_payment;
             $order_detail->save();
 
             return response()->json([
@@ -316,6 +318,7 @@ class ApiController extends Controller
             $order->discount = $request->discount;
             $order->status = $request->status;
             $order->invoice_id = $request->invoice_id;
+            $order->type_payment = $request->type_payment;
             $order->save();
 
             foreach ($products as $index => $item) {
@@ -327,6 +330,7 @@ class ApiController extends Controller
                     $order_detail->option1 = $subItem['option1Id'];
                     $order_detail->option2 = $subItem['option2Id'];
                     $order_detail->num = $subItem['num'];
+                    $order->type_payment = $subItem['type_payment'];
                     $order_detail->save();
                 }
             }
