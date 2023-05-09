@@ -1236,7 +1236,7 @@ class ApiController extends Controller
             ->selectRaw('products.name_product,shops.name_shop, SUM(CASE WHEN products.type = 1 THEN products.price WHEN products.type = 2 THEN product_options.price WHEN products.type = 3 THEN product_suboptions.price ELSE 0 END) AS total_price')
             ->get();
 
-        $data_chart_pie = DB::table('order_details')
+        $data_chart_pie_products = DB::table('order_details')
             ->join('orders', 'orders.id', '=', 'order_details.order_id')
             ->leftjoin('shops', 'shops.id', '=', 'orders.shop_id')
             ->leftjoin('products', 'products.id', '=', 'order_details.product_id')
@@ -1244,11 +1244,23 @@ class ApiController extends Controller
             ->leftjoin('product_suboptions', 'product_suboptions.id', '=', 'order_details.option2')
             ->groupBy('products.name_product', 'shops.name_shop')
             ->selectRaw('products.name_product, SUM(order_details.num) AS total_num')
-            ->where('shops.user_id','=',$request->uid)
+            ->where('shops.user_id', '=', $request->uid)
+            ->get();
+
+        $data_chart_pie_shops = DB::table('order_details')
+            ->join('orders', 'orders.id', '=', 'order_details.order_id')
+            ->leftjoin('shops', 'shops.id', '=', 'orders.shop_id')
+            ->leftjoin('products', 'products.id', '=', 'order_details.product_id')
+            ->leftjoin('product_options', 'product_options.id', '=', 'order_details.option1')
+            ->leftjoin('product_suboptions', 'product_suboptions.id', '=', 'order_details.option2')
+            ->groupBy('shops.name_shop')
+            ->selectRaw('shops.name_shop, SUM(order_details.num) AS total_num')
+            ->where('shops.user_id', '=', $request->uid)
             ->get();
         return response()->json([
             'data_table' => $data_table,
-            'data_chart_pie' => $data_chart_pie,
+            'data_chart_pie_products' => $data_chart_pie_products,
+            'data_chart_pie_shops' => $data_chart_pie_shops,
         ], 201);
     }
 
