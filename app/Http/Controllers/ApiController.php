@@ -1226,58 +1226,29 @@ class ApiController extends Controller
 
     public function dashboard(Request $request)
     {
-        /* $sub_admin = DB::table('sub_admins')->where('sub_admin', '=', $request->uid)->first();
-        if ($sub_admin) {
-            $permission = json_decode($sub_admin->permission);
-
-            if ($permission->set_permission_report) {
-                $total = DB::table('sub_admins')
-                    ->leftJoin('total_orders', 'total_orders.user_id', '=', 'sub_admins.owner_admin')
-                    ->where('sub_admins.sub_admin', '=', $request->uid)
-                    ->select([
-                        'total_orders.*',
-                    ])
-                    ->first();
-
-                return response()->json([
-                    'total' => $total,
-                ], 201);
-            } else {
-                return response()->json([
-                    'status' => 'not permission',
-                ]);
-            }
-        } else {
-            $total = DB::table('total_orders')
-                ->where('user_id', '=', $request->uid)
-                ->first();
-            return response()->json([
-                'total' => $total,
-            ], 201);
-        } */
-
-        $sum = DB::table('order_details')
+        $data_table = DB::table('order_details')
             ->join('orders', 'orders.id', '=', 'order_details.order_id')
             ->leftjoin('shops', 'shops.id', '=', 'orders.shop_id')
-            ->leftjoin('users', 'users.id', '=', 'order_details.user_id')
-            ->leftjoin('addresses', 'addresses.id', '=', 'orders.address_id')
             ->leftjoin('products', 'products.id', '=', 'order_details.product_id')
             ->leftjoin('product_options', 'product_options.id', '=', 'order_details.option1')
             ->leftjoin('product_suboptions', 'product_suboptions.id', '=', 'order_details.option2')
-            ->groupBy('products.name_product','shops.name_shop')
+            ->groupBy('products.name_product', 'shops.name_shop')
             ->selectRaw('products.name_product,shops.name_shop, SUM(CASE WHEN products.type = 1 THEN products.price WHEN products.type = 2 THEN product_options.price WHEN products.type = 3 THEN product_suboptions.price ELSE 0 END) AS total_price')
             ->get();
 
-        /* ->select([
-                'shops.name_shop',
-                'products.name_product',
-                'products.type',
-                'products.price AS price_type_1',
-                'product_options.price AS price_type_2',
-                'product_suboptions.price AS price_type_3',
-            ]) */
+        $data_chart_pie = DB::table('order_details')
+            ->join('orders', 'orders.id', '=', 'order_details.order_id')
+            ->leftjoin('shops', 'shops.id', '=', 'orders.shop_id')
+            ->leftjoin('products', 'products.id', '=', 'order_details.product_id')
+            ->leftjoin('product_options', 'product_options.id', '=', 'order_details.option1')
+            ->leftjoin('product_suboptions', 'product_suboptions.id', '=', 'order_details.option2')
+            ->groupBy('products.name_product', 'shops.name_shop')
+            ->selectRaw('products.name_product, SUM(order_details.num) AS total_num')
+            ->where('shops.user_id','=',$request->uid)
+            ->get();
         return response()->json([
-            'sum' => $sum,
+            'data_table' => $data_table,
+            'data_chart_pie' => $data_chart_pie,
         ], 201);
     }
 
