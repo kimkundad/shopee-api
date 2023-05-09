@@ -1306,7 +1306,7 @@ class ApiController extends Controller
             ->leftjoin('products', 'products.id', '=', 'order_details.product_id')
             ->leftjoin('product_options', 'product_options.id', '=', 'order_details.option1')
             ->leftjoin('product_suboptions', 'product_suboptions.id', '=', 'order_details.option2')
-            ->selectRaw('SUM(products.stock) AS allStock, SUM(orders.num) AS numOrders, SUM(CASE WHEN order_details.type_payment = "โอนเงิน" THEN order_details.num ELSE 0 END) AS sum_payment, SUM(CASE WHEN order_details.type_payment = "เก็บเงินปลายทาง" THEN order_details.num ELSE 0 END) AS sum_cash_on_delivery')
+            ->selectRaw('SUM(products.stock) AS allStock, COUNT(orders.num) AS numOrders, SUM(CASE WHEN order_details.type_payment = "โอนเงิน" THEN order_details.num ELSE 0 END) AS sum_payment, SUM(CASE WHEN order_details.type_payment = "เก็บเงินปลายทาง" THEN order_details.num ELSE 0 END) AS sum_cash_on_delivery')
             ->where('shops.user_id', '=', $request->uid)
             ->get();
         return response()->json([
@@ -2012,49 +2012,28 @@ class ApiController extends Controller
 
     public function getOrders()
     {
-        // $orders2 = DB::table('orders')
-        //     ->leftjoin('order_details', 'orders.id', '=', 'order_details.order_id')
-        //     ->leftjoin('products', 'products.id', '=', 'order_details.product_id')
-        //     ->leftjoin('addresses', 'addresses.id', '=', 'orders.address_id')
-        //     ->leftjoin('transections', 'transections.order_id', '=', 'orders.id')
-        //     ->leftjoin('bankaccounts', 'bankaccounts.id', '=', 'transections.bankaccount_id')
-        //     ->leftjoin('banks', 'banks.id', '=', 'bankaccounts.bank_id')
-        //     ->orderBy('orders.id', 'DESC')
-        //     ->select(
-        //         'orders.id as ID',
-        //         'orders.invoice_id as orderId',
-        //         DB::raw('GROUP_CONCAT(products.img_product) as imageThumbnail'),
-        //         'addresses.name as receiverName',
-        //         'addresses.province as address',
-        //         'addresses.tel as phoneNumber',
-        //         DB::raw('GROUP_CONCAT(orders.num) as quantity'),
-        //         DB::raw('GROUP_CONCAT(orders.price) as amount'),
-        //         'banks.icon_bank as bankThumbnail',
-        //         'orders.created_at as createAt',
-        //         'orders.status as status'
-        //     )
-        //     ->groupBy('orders.id', 'orders.invoice_id', 'addresses.name', 'addresses.province', 'addresses.tel', 'banks.icon_bank', 'orders.created_at', 'orders.status')
-        //     ->get();
-
         $orders2 = DB::table('orders')
-            ->leftJoin('addresses', 'addresses.id', '=', 'orders.address_id')
-            ->leftJoin('transections', 'transections.order_id', '=', 'orders.id')
-            ->leftJoin('bankaccounts', 'bankaccounts.id', '=', 'transections.bankaccount_id')
+            ->leftjoin('order_details', 'orders.id', '=', 'order_details.order_id')
+            ->leftjoin('products', 'products.id', '=', 'order_details.product_id')
+            ->leftjoin('addresses', 'addresses.id', '=', 'orders.address_id')
+            ->leftjoin('transections', 'transections.order_id', '=', 'orders.id')
+            ->leftjoin('bankaccounts', 'bankaccounts.id', '=', 'transections.bankaccount_id')
             ->leftjoin('banks', 'banks.id', '=', 'bankaccounts.bank_id')
             ->orderBy('orders.id', 'DESC')
-            ->select([
+            ->select(
                 'orders.id as ID',
                 'orders.invoice_id as orderId',
+                DB::raw('GROUP_CONCAT(products.img_product) as imageThumbnail'),
                 'addresses.name as receiverName',
                 'addresses.province as address',
                 'addresses.tel as phoneNumber',
-                'orders.num as quantity',
-                'orders.price as amount',
+                DB::raw('GROUP_CONCAT(orders.num) as quantity'),
+                DB::raw('GROUP_CONCAT(orders.price) as amount'),
                 'banks.icon_bank as bankThumbnail',
                 'orders.created_at as createAt',
-                'orders.updated_at as updateAt',
-                'orders.status as status',
-            ])
+                'orders.status as status'
+            )
+            ->groupBy('orders.id', 'orders.invoice_id', 'addresses.name', 'addresses.province', 'addresses.tel', 'banks.icon_bank', 'orders.created_at', 'orders.status')
             ->get();
         return response()->json([
             'orders' => $orders2,
