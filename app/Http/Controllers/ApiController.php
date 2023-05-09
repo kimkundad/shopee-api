@@ -1275,16 +1275,29 @@ class ApiController extends Controller
             ->leftjoin('products', 'products.id', '=', 'order_details.product_id')
             ->leftjoin('product_options', 'product_options.id', '=', 'order_details.option1')
             ->leftjoin('product_suboptions', 'product_suboptions.id', '=', 'order_details.option2')
-            ->groupBy(DB::raw('DATE_FORMAT(order_details.created_at, "%Y-%M")'),'shops.name_shop')
+            ->groupBy(DB::raw('DATE_FORMAT(order_details.created_at, "%Y-%M")'), 'shops.name_shop')
             ->selectRaw('DATE_FORMAT(order_details.created_at, "%Y-%M") AS month,shops.name_shop, SUM(order_details.num) AS total_num')
             ->where('shops.user_id', '=', $request->uid)
             ->get();
+
+        // Group the results by month and then by shop name
+        $data_chart_bar_grouped = $data_chart_bar->groupBy('month')->map(function ($monthData) {
+            return [
+                'month' => $monthData->first()->month,
+                'data' => $monthData->groupBy('name_shop')->map(function ($shopData) {
+                    return [
+                        'name_shop' => $shopData->first()->name_shop,
+                        'total_num' => $shopData->sum('total_num'),
+                    ];
+                })->values()->toArray(),
+            ];
+        })->values()->toArray();
         return response()->json([
             'data_table' => $data_table,
             'data_chart_pie_products' => $data_chart_pie_products,
             'data_chart_pie_shops' => $data_chart_pie_shops,
             'data_chart_line' => $data_chart_line,
-            'data_chart_bar' => $data_chart_bar,
+            'data_chart_bar' => $data_chart_bar_grouped,
         ], 201);
     }
 
