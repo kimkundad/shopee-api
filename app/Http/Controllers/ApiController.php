@@ -1264,7 +1264,7 @@ class ApiController extends Controller
             ->leftjoin('products', 'products.id', '=', 'order_details.product_id')
             ->leftjoin('product_options', 'product_options.id', '=', 'order_details.option1')
             ->leftjoin('product_suboptions', 'product_suboptions.id', '=', 'order_details.option2')
-            ->groupBy('products.name_product')
+            ->groupBy('products.name_product','shops.name_shop')
             ->selectRaw('products.name_product,shops.name_shop, SUM(CASE WHEN products.type = 1 THEN products.price WHEN products.type = 2 THEN product_options.price WHEN products.type = 3 THEN product_suboptions.price ELSE 0 END) AS total_price')
             ->get();
 
