@@ -1257,10 +1257,22 @@ class ApiController extends Controller
             ->selectRaw('shops.name_shop, SUM(order_details.num) AS total_num')
             ->where('shops.user_id', '=', $request->uid)
             ->get();
+
+        $data_chart_line = DB::table('order_details')
+            ->join('orders', 'orders.id', '=', 'order_details.order_id')
+            ->leftjoin('shops', 'shops.id', '=', 'orders.shop_id')
+            ->leftjoin('products', 'products.id', '=', 'order_details.product_id')
+            ->leftjoin('product_options', 'product_options.id', '=', 'order_details.option1')
+            ->leftjoin('product_suboptions', 'product_suboptions.id', '=', 'order_details.option2')
+            ->groupBy(DB::raw('DATE_FORMAT(order_details.created_at, "%Y-%m")'))
+            ->selectRaw('DATE_FORMAT(order_details.created_at, "%Y-%m") AS month, SUM(order_details.num) AS total_num')
+            ->where('shops.user_id', '=', $request->uid)
+            ->get();
         return response()->json([
             'data_table' => $data_table,
             'data_chart_pie_products' => $data_chart_pie_products,
             'data_chart_pie_shops' => $data_chart_pie_shops,
+            'data_chart_line' => $data_chart_line,
         ], 201);
     }
 
