@@ -2068,8 +2068,8 @@ class ApiController extends Controller
         foreach ($orders2 as $value) {
             $data = DB::table('order_details')
                 ->leftJoin('products', 'products.id', '=', 'order_details.product_id')
-                ->leftJoin('product_options', 'product_options.product_id', '=', 'order_details.product_id')
-                ->leftJoin('product_suboptions', 'product_suboptions.op_id', '=', 'product_options.id')
+                ->leftJoin('product_options', 'product_options.id', '=', 'order_details.option1')
+                ->leftJoin('product_suboptions', 'product_suboptions.id', '=', 'order_details.option2')
                 ->orderBy('order_details.id', 'desc')
                 ->select([
                     'order_details.id as orderDetailID',
