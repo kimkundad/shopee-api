@@ -1166,14 +1166,14 @@ class ApiController extends Controller
                 'product_options.price AS price_type_2',
                 'product_suboptions.price AS price_type_3',
             ])
-            ->where(function ($query) use ($search) {
-                $query->where('shops.name_shop', 'like', '%' . $search . '%')
-                    ->orWhere('products.name_product', 'like', '%' . $search . '%')
-                    ->orWhere('users.name', 'like', '%' . $search . '%')
-                    ->orWhere('addresses.province', 'like', '%' . $search . '%')
-                    ->orWhere('products.sku', 'like', '%' . $search . '%')
-                    ->orWhere('orders.invoice_id', 'like', '%' . $search . '%')
-                    ->orWhere('addresses.tel', 'like', '%' . $search . '%');
+            ->where(function($query) use ($search) {
+                $query->where('shops.name_shop', 'like', '%'.$search.'%')
+                      ->orWhere('products.name_product', 'like', '%'.$search.'%')
+                      ->orWhere('users.name', 'like', '%'.$search.'%')
+                      ->orWhere('addresses.province', 'like', '%'.$search.'%')
+                      ->orWhere('products.sku', 'like', '%'.$search.'%')
+                      ->orWhere('orders.invoice_id', 'like', '%'.$search.'%')
+                      ->orWhere('addresses.tel', 'like', '%'.$search.'%');
             })
             ->where('order_details.created_at', '>=', date('Y-m-d H:i:s', $request->startDate / 1000))->where('order_details.created_at', '<=', date('Y-m-d H:i:s', $request->endDate / 1000))
             ->paginate($request->itemsPerPage);
@@ -1933,15 +1933,9 @@ class ApiController extends Controller
                 'orders.updated_at as updateAt',
                 'orders.status as status'
             )
-            ->paginate(5);
+            ->get();
         return response()->json([
-            'orders' => $orders2->items(),
-            'pagination' => [
-                'current_page' => $orders2->currentPage(),
-                'per_page' => $orders2->perPage(),
-                'last_page' => $orders2->lastPage(),
-                'total' => $orders2->total(),
-            ],
+            'orders' => $orders2,
         ], 201);
     }
 
