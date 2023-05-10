@@ -56,6 +56,7 @@ class ApiController extends Controller
 
         $objs = DB::table('shop_list_products')
             ->join('products', 'shop_list_products.product_id', '=', 'products.id')
+            ->leftJoin('order_details','order_details.product_id','=','products.id')
             ->where('shop_list_products.shop_id', '=', $id)
             ->where('products.active', '=', 1)
             ->get();
@@ -1292,8 +1293,8 @@ class ApiController extends Controller
             ->leftjoin('products', 'products.id', '=', 'order_details.product_id')
             ->leftjoin('product_options', 'product_options.id', '=', 'order_details.option1')
             ->leftjoin('product_suboptions', 'product_suboptions.id', '=', 'order_details.option2')
-            ->groupBy(DB::raw('DATE_FORMAT(order_details.created_at, "%Y-%M")'), 'shops.name_shop')
-            ->selectRaw('DATE_FORMAT(order_details.created_at, "%Y-%M") AS month,shops.name_shop, SUM(order_details.num) AS total_num')
+            ->groupBy(DB::raw('DATE_FORMAT(order_details.created_at, "%Y-%M-%D")'), 'shops.name_shop')
+            ->selectRaw('DATE_FORMAT(order_details.created_at, "%Y-%M-%D") AS month,shops.name_shop, SUM(order_details.num) AS total_num')
             ->where('shops.user_id', '=', $request->uid)
             ->get();
 
