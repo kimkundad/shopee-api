@@ -1316,6 +1316,13 @@ class ApiController extends Controller
             ->selectRaw('SUM(products.stock) AS allStock')
             ->where('shops.user_id', '=', $request->uid)
             ->get();
+
+        $num_order = DB::table('order_details')
+            ->join('orders', 'orders.id', '=', 'order_details.order_id')
+            ->leftjoin('shops', 'shops.id', '=', 'orders.shop_id')
+            ->selectRaw('SUM(order_details.num) AS numOrder')
+            ->where('shops.user_id', '=', $request->uid)
+            ->get();
         return response()->json([
             'data_table' => $data_table,
             'data_chart_pie_products' => $data_chart_pie_products,
@@ -1323,6 +1330,7 @@ class ApiController extends Controller
             'data_chart_line' => $data_chart_line,
             'data_chart_bar' => $data_chart_bar_grouped,
             'all_stock' => $all_stock,
+            'num_order' => $num_order,
         ], 201);
     }
 
