@@ -2077,7 +2077,9 @@ class ApiController extends Controller
                 'orders.created_at as createAt',
                 'orders.updated_at as updateAt',
                 'orders.status as status',
-                'orders.type_payment as typePaymentOrder'
+                'orders.type_payment as typePaymentOrder',
+                'transections.slip as slipPayment',
+                'bankaccounts.bankaccount_number as accountNumber'
             ])
             ->get();
         foreach ($orders2 as $value) {
