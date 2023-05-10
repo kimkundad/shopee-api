@@ -1272,7 +1272,7 @@ class ApiController extends Controller
             ->leftjoin('product_options', 'product_options.id', '=', 'order_details.option1')
             ->leftjoin('product_suboptions', 'product_suboptions.id', '=', 'order_details.option2')
             ->groupBy(DB::raw('DATE_FORMAT(order_details.created_at, "%Y-%M")'))
-            ->selectRaw('DATE_FORMAT(order_details.created_at, "%Y-%M") AS month, SUM(order_details.num) AS total_num')
+            ->selectRaw('DATE_FORMAT(order_details.created_at, "%Y-%M") AS month, SUM(orders.price) AS total_price')
             ->where('shops.user_id', '=', $request->uid)
             ->get();
 
