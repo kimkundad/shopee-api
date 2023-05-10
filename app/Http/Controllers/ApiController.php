@@ -2064,7 +2064,6 @@ class ApiController extends Controller
                 'orders.type_payment as typePaymentOrder'
             ])
             ->get();
-
         foreach ($orders2 as $value) {
             $data = DB::table('order_details')
                 ->leftJoin('products', 'products.id', '=', 'order_details.product_id')
