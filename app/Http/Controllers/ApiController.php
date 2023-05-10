@@ -1241,7 +1241,7 @@ class ApiController extends Controller
             ->groupBy('products.name_product', 'shops.name_shop')
             ->selectRaw('products.name_product,shops.name_shop, SUM(CASE WHEN products.type = 1 THEN products.price WHEN products.type = 2 THEN product_options.price WHEN products.type = 3 THEN product_suboptions.price ELSE 0 END) AS total_price')
             ->where('shops.user_id', '=', $request->uid)
-            ->orderBy('total_price','desc')
+            ->orderBy('total_price', 'desc')
             ->get();
 
         $data_chart_pie_products = DB::table('order_details')
@@ -1266,6 +1266,8 @@ class ApiController extends Controller
             ->where('shops.user_id', '=', $request->uid)
             ->get();
 
+        $months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+        $chartData = [];
         $data_chart_line = DB::table('order_details')
             ->join('orders', 'orders.id', '=', 'order_details.order_id')
             ->leftjoin('shops', 'shops.id', '=', 'orders.shop_id')
@@ -1276,6 +1278,13 @@ class ApiController extends Controller
             ->selectRaw('DATE_FORMAT(order_details.created_at, "%Y-%M") AS month, SUM(orders.price) AS total_price')
             ->where('shops.user_id', '=', $request->uid)
             ->get();
+        $monthData = $data_chart_line->keyBy('month')->toArray(); // Convert the query result to an array, keyed by month
+
+        // Loop through the months array to create the chart data
+        foreach ($months as $month) {
+            $totalPrice = isset($monthData[$month]) ? $monthData[$month]['total_price'] : 0; // Check if there's data for this month
+            $chartData[] = ['month' => $month,    'total_price' => $totalPrice,];
+        }
 
         $data_chart_bar = DB::table('order_details')
             ->join('orders', 'orders.id', '=', 'order_details.order_id')
@@ -1283,8 +1292,8 @@ class ApiController extends Controller
             ->leftjoin('products', 'products.id', '=', 'order_details.product_id')
             ->leftjoin('product_options', 'product_options.id', '=', 'order_details.option1')
             ->leftjoin('product_suboptions', 'product_suboptions.id', '=', 'order_details.option2')
-            ->groupBy(DB::raw('DATE_FORMAT(order_details.created_at, "%Y-%M")'), 'shops.name_shop')
-            ->selectRaw('DATE_FORMAT(order_details.created_at, "%Y-%M") AS month,shops.name_shop, SUM(order_details.num) AS total_num')
+            ->groupBy(DB::raw('DATE_FORMAT(order_details.created_at, "%M")'), 'shops.name_shop')
+            ->selectRaw('DATE_FORMAT(order_details.created_at, "%M") AS month,shops.name_shop, SUM(order_details.num) AS total_num')
             ->where('shops.user_id', '=', $request->uid)
             ->get();
 
@@ -1335,7 +1344,7 @@ class ApiController extends Controller
             'data_table' => $data_table,
             'data_chart_pie_products' => $data_chart_pie_products,
             'data_chart_pie_shops' => $data_chart_pie_shops,
-            'data_chart_line' => $data_chart_line,
+            'data_chart_line' => $chartData,
             'data_chart_bar' => $data_chart_bar_grouped,
             'all_stock' => $all_stock,
             'total_sales' => $total_sales,
