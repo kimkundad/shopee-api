@@ -1241,6 +1241,7 @@ class ApiController extends Controller
             ->groupBy('products.name_product', 'shops.name_shop')
             ->selectRaw('products.name_product,shops.name_shop, SUM(CASE WHEN products.type = 1 THEN products.price WHEN products.type = 2 THEN product_options.price WHEN products.type = 3 THEN product_suboptions.price ELSE 0 END) AS total_price')
             ->where('shops.user_id', '=', $request->uid)
+            ->orderBy('total_price','desc')
             ->get();
 
         $data_chart_pie_products = DB::table('order_details')
