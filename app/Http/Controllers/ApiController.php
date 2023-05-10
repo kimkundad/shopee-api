@@ -1282,7 +1282,7 @@ class ApiController extends Controller
 
         // Loop through the months array to create the chart data
         foreach ($months as $month) {
-            $totalPrice = isset($monthData[$month]) ? $monthData[$month]['total_price'] : 0; // Check if there's data for this month
+            $totalPrice = isset($monthData[$month]) ? $monthData[$month]->total_price : 0; // Check if there's data for this month
             $chartData[] = ['month' => $month,    'total_price' => $totalPrice,];
         }
 
