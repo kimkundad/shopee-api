@@ -213,7 +213,7 @@ class ApiController extends Controller
                 ->join('products', 'shop_list_products.product_id', '=', 'products.id')
                 ->leftJoin('order_details', 'order_details.product_id', '=', 'products.id')
                 ->groupBy('products.id')
-                ->selectRaw('products.*,SUM(order_details.num) AS total_sales')
+                ->selectRaw('products.*,products.id AS product_id,SUM(order_details.num) AS total_sales')
                 ->where('shop_list_products.shop_id', '=', $shop_id)
                 ->where('products.id', '=', $product_id)
                 ->where('products.active', '=', 1)
