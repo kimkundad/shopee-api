@@ -2084,7 +2084,7 @@ class ApiController extends Controller
                 'orders.id as ID',
                 'orders.invoice_id as orderId',
                 'addresses.name as receiverName',
-                'addresses.province as address',
+                'addresses.province as province',
                 'addresses.tel as phoneNumber',
                 'orders.num as quantity',
                 'orders.price as amount',
