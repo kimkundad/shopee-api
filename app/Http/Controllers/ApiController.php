@@ -2171,4 +2171,19 @@ class ApiController extends Controller
             'success' => 'Set status successfully',
         ], 201);
     }
+
+    public function setStatusOrdersMulti(Request $request)
+    {
+        if($request->ids){
+            foreach ($request->ids as $ID) {
+                DB::table('orders')->where('id', $ID)->update([
+                    'status' => "กำลังแพ็ค",
+                    'updated_at' => date('Y-m-d H:i:s'),
+                ]);
+            }
+        }
+        return response()->json([
+            'success' => 'Set status successfully',
+        ], 201);
+    }
 }
