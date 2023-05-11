@@ -334,7 +334,7 @@ class ApiController extends Controller
                     $order_detail->product_id = $subItem['product_id'];
                     $order_detail->user_id = $request->user_id;
                     $order_detail->order_id = $order->id;
-                    $order_detail->shop_id = $request->shop_id;
+                    $order_detail->shop_id = $subItem['shop_id'];
                     $order_detail->option1 = $subItem['option1Id'];
                     $order_detail->option2 = $subItem['option2Id'];
                     $order_detail->num = $subItem['num'];
