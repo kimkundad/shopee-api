@@ -376,7 +376,7 @@ class ApiController extends Controller
         $owner_shop_id = $request->owner_shop_id;
 
         $orders = DB::table('orders')
-            ->join('shops', 'shops.user_id', '=', 'orders.owner_shop_id')
+            ->leftJoin('shops', 'shops.user_id', '=', 'orders.owner_shop_id')
             ->where('orders.user_id', '=', $user_id)
             ->where('orders.owner_shop_id', '=', $owner_shop_id)
             ->orderBy('orders.updated_at', 'desc')
