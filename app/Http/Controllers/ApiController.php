@@ -414,7 +414,7 @@ class ApiController extends Controller
                         'product_suboptions.price as sub_op_price', */
                     ])
                     ->where('order_details.order_id', '=', $item->id)
-                    ->orderBy('order_details.updated_at', 'desc')
+                    /* ->orderBy('order_details.updated_at', 'desc') */
                     ->get();
 
                 return $item;
