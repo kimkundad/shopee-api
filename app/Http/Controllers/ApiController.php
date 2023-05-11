@@ -164,12 +164,14 @@ class ApiController extends Controller
             $carts_id = $request->carts;
             $products = DB::table('carts')
                 ->join('shops', 'carts.shop_id', '=', 'shops.id')
+                ->leftJoin('order_details','order_details.product_id','=','products.id')
+                ->selectRaw('shops.id,shops.name AS name_shop,SUM(order_details.num) AS total_sales')
                 ->select([
                     'shops.id',
                     'shops.name_shop AS name_shop',
                 ])
                 ->orderByRaw('MAX(carts.created_at) DESC')
-                ->groupBy('shops.id', 'name_shop')
+                ->groupBy('shops.id', 'name_shop', 'products.id')
                 ->whereIn('carts.id', $carts_id)
                 ->get()
                 ->map(function ($item) use ($carts_id) {
