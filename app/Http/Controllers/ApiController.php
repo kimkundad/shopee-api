@@ -844,7 +844,7 @@ class ApiController extends Controller
                     ->select([
                         DB::raw('DISTINCT carts.id'),
                         'carts.product_id',
-                        'catrs.shop_id',
+                        'carts.shop_id',
                         'products.name_product' => 'name_product',
                         'products.detail_product' => 'detail_product',
                         'products.price AS price_type_1',
