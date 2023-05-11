@@ -2089,6 +2089,7 @@ class ApiController extends Controller
                 'orders.num as quantity',
                 'orders.price as amount',
                 'banks.icon_bank as bankThumbnail',
+                'banks.name_bank as nameBank',
                 'orders.created_at as createAt',
                 'orders.updated_at as updateAt',
                 'orders.status as status',
