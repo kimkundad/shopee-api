@@ -301,6 +301,7 @@ class ApiController extends Controller
             $order_detail = new order_details();
             $order_detail->product_id = $request->product_id;
             $order_detail->user_id = $request->user_id;
+            $order_detail->shop_id = $request->shop_id;
             $order_detail->order_id = $order->id;
             $order_detail->option1 = $request->option1;
             $order_detail->option2 = $request->option2;
@@ -332,6 +333,7 @@ class ApiController extends Controller
                     $order_detail->product_id = $subItem['product_id'];
                     $order_detail->user_id = $request->user_id;
                     $order_detail->order_id = $order->id;
+                    $order_detail->shop_id = $request->shop_id;
                     $order_detail->option1 = $subItem['option1Id'];
                     $order_detail->option2 = $subItem['option2Id'];
                     $order_detail->num = $subItem['num'];
@@ -376,13 +378,10 @@ class ApiController extends Controller
         $owner_shop_id = $request->owner_shop_id;
 
         $orders = DB::table('orders')
-            ->leftJoin('shops', 'shops.user_id', '=', 'orders.owner_shop_id')
             ->where('orders.user_id', '=', $user_id)
             ->where('orders.owner_shop_id', '=', $owner_shop_id)
             ->orderBy('orders.updated_at', 'desc')
             ->select([
-                'shops.id as id_shop',
-                'shops.name_shop as name_shop',
                 'orders.status',
                 'orders.price',
                 'orders.num',
