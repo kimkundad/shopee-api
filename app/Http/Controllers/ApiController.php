@@ -175,6 +175,7 @@ class ApiController extends Controller
                         ->join('products', 'products.id', '=', 'carts.product_id')
                         ->leftjoin('product_options', 'product_options.id', '=', 'carts.product_options_id')
                         ->leftjoin('product_suboptions', 'product_suboptions.id', '=', 'carts.product_suboptions_id')
+                        ->groupBy('shops.id')
                         ->select([
                             DB::raw('DISTINCT carts.id'),
                             'carts.product_id',
