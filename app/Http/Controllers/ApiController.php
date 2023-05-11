@@ -171,6 +171,7 @@ class ApiController extends Controller
                 ->get()
                 ->map(function ($item) use ($carts_id) {
                     $item->product = DB::table('carts')
+                        ->join('shops', 'carts.shop_id', '=', 'shops.id')
                         ->join('shop_list_products', 'shop_list_products.shop_id', '=', 'carts.shop_id')
                         ->join('products', 'products.id', '=', 'carts.product_id')
                         ->leftjoin('product_options', 'product_options.id', '=', 'carts.product_options_id')
@@ -194,7 +195,7 @@ class ApiController extends Controller
                             'product_suboptions.sub_op_name' => 'sub_op_name',
                             'product_suboptions.price AS price_type_3',
                         ])
-                        ->whereIn('carts.id', $carts_id)
+                        ->whereIn('shops.id', $item['id'])
                         ->get();
                     return $item;
                 });
