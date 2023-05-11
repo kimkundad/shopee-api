@@ -222,7 +222,6 @@ class ApiController extends Controller
             $objs = DB::table('products')
                 ->leftJoin('order_details', 'order_details.product_id', '=', 'products.id')
                 ->selectRaw('products.*,products.id AS product_id, SUM(order_details.num) AS total_sales')
-                ->select('*', 'id as product_id')
                 ->where('products.id', '=', $product_id)
                 ->get();
         }
