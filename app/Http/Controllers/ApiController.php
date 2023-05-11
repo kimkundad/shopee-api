@@ -196,7 +196,7 @@ class ApiController extends Controller
                             'product_suboptions.price AS price_type_3',
                         ])
                         ->whereIn('carts.id', $carts_id)
-                        ->where('shops.id','=',$item->id)
+                        ->where('shops.id', '=', $item->id)
                         ->get();
                     return $item;
                 });
@@ -270,13 +270,12 @@ class ApiController extends Controller
     // สร้าง order
     public function created_order(Request $request)
     {
-        $owner_id = DB::table('shops')->select('user_id')->where('id', '=', $request->shop_id)->first();
-        $total_order = DB::table('total_orders')->where('user_id', '=', $owner_id->user_id)->first();
+        $total_order = DB::table('total_orders')->where('user_id', '=', $request->owner_shop_id)->first();
         if ($request->product_id !== null) {
             $order = new orders();
             $order->user_id = $request->user_id;
             $order->address_id = $request->address_id;
-            $order->shop_id = $request->shop_id;
+            $order->owner_shop_id = $request->owner_shop_id;
             $order->order_detail_id = 0;
             $order->num = $request->num;
             $order->price = $request->total;
@@ -287,13 +286,13 @@ class ApiController extends Controller
             $order->save();
 
             if ($total_order) {
-                $total = total_orders::where('user_id', $owner_id->user_id)->first();
+                $total = total_orders::where('user_id', $request->owner_shop_id)->first();
                 $total->total_num = intval($total_order->total_num) + intval($request->num);
                 $total->total_price = intval($total_order->total_price) + intval($request->total);
                 $total->save();
             } else {
                 $total = new total_orders();
-                $total->user_id = (int)$owner_id->user_id;
+                $total->user_id = (int)$request->owner_shop_id;
                 $total->total_num = (int)$request->num;
                 $total->total_price = (int)$request->total;
                 $total->save();
@@ -317,7 +316,7 @@ class ApiController extends Controller
             $order = new orders();
             $order->user_id = $request->user_id;
             $order->address_id = $request->address_id;
-            $order->shop_id = $request->shop_id;
+            $order->owner_shop_id = $request->owner_shop_id;
             $order->order_detail_id = 0;
             $order->num = $request->num;
             $order->price = $request->total;
@@ -342,13 +341,13 @@ class ApiController extends Controller
             }
 
             if ($total_order) {
-                $total = total_orders::where('user_id', $owner_id->user_id)->first();
+                $total = total_orders::where('user_id', $request->owner_shop_id)->first();
                 $total->total_num = intval($total_order->total_num) + intval($request->num);
                 $total->total_price = intval($total_order->total_price) + intval($request->total);
                 $total->save();
             } else {
                 $total = new total_orders();
-                $total->user_id = (int)$owner_id->user_id;
+                $total->user_id = (int)$request->owner_shop_id;
                 $total->total_num = (int)$request->num;
                 $total->total_price = (int)$request->total;
                 $total->save();
