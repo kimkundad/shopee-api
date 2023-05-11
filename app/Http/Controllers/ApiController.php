@@ -380,7 +380,6 @@ class ApiController extends Controller
             ->where('orders.user_id', '=', $user_id)
             ->where('orders.owner_shop_id', '=', $owner_shop_id)
             ->orderBy('orders.updated_at', 'desc')
-            ->groupBy('shops.id')
             ->select([
                 'shops.id as id_shop',
                 'shops.name_shop as name_shop',
