@@ -56,7 +56,7 @@ class ApiController extends Controller
 
         $objs = DB::table('shop_list_products')
             ->join('products', 'shop_list_products.product_id', '=', 'products.id')
-            ->leftJoin('order_details','order_details.product_id','=','products.id')
+            ->leftJoin('order_details', 'order_details.product_id', '=', 'products.id')
             ->groupBy('products.id')
             ->selectRaw('products.*,SUM(order_details.num) AS total_sales')
             ->where('shop_list_products.shop_id', '=', $id)
@@ -164,7 +164,7 @@ class ApiController extends Controller
             $carts_id = $request->carts;
             $products = DB::table('carts')
                 ->join('shops', 'carts.shop_id', '=', 'shops.id')
-                ->leftJoin('order_details','order_details.product_id','=','products.id')
+                ->leftJoin('order_details', 'order_details.product_id', '=', 'products.id')
                 ->selectRaw('shops.id,shops.name AS name_shop,SUM(order_details.num) AS total_sales')
                 ->orderByRaw('MAX(carts.created_at) DESC')
                 ->groupBy('shops.id', 'name_shop', 'products.id')
@@ -211,12 +211,17 @@ class ApiController extends Controller
         if ($shop_id !== null) {
             $objs = DB::table('shop_list_products')
                 ->join('products', 'shop_list_products.product_id', '=', 'products.id')
+                ->leftJoin('order_details', 'order_details.product_id', '=', 'products.id')
+                ->groupBy('products.id')
+                ->selectRaw('products.*,SUM(order_details.num) AS total_sales')
                 ->where('shop_list_products.shop_id', '=', $shop_id)
                 ->where('products.id', '=', $product_id)
                 ->where('products.active', '=', 1)
                 ->get();
         } else {
             $objs = DB::table('products')
+                ->leftJoin('order_details', 'order_details.product_id', '=', 'products.id')
+                ->selectRaw('products.*,products.id AS product_id, SUM(order_details.num) AS total_sales')
                 ->select('*', 'id as product_id')
                 ->where('products.id', '=', $product_id)
                 ->get();
