@@ -172,11 +172,9 @@ class ApiController extends Controller
                 ->map(function ($item) use ($carts_id) {
                     $item->product = DB::table('carts')
                         ->join('shop_list_products', 'shop_list_products.shop_id', '=', 'carts.shop_id')
-                        ->join('shops', 'carts.shop_id', '=', 'shops.id')
                         ->join('products', 'products.id', '=', 'carts.product_id')
                         ->leftjoin('product_options', 'product_options.id', '=', 'carts.product_options_id')
                         ->leftjoin('product_suboptions', 'product_suboptions.id', '=', 'carts.product_suboptions_id')
-                        ->groupBy('shops.id')
                         ->select([
                             DB::raw('DISTINCT carts.id'),
                             'carts.product_id',
