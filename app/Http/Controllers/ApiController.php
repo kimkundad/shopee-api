@@ -439,7 +439,7 @@ class ApiController extends Controller
                         ->where('order_details.order_id', '=', $item->id)
                         ->where('order_details.shop_id','=',$subItem->shop_id)
                         ->orderBy('order_details.updated_at', 'desc')
-                        ->get()
+                        ->get();
                     });
 
                 return $item;
