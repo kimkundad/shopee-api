@@ -167,7 +167,7 @@ class ApiController extends Controller
                 ->leftJoin('order_details', 'order_details.product_id', '=', 'products.id')
                 ->selectRaw('shops.id,shops.name_shop')
                 ->orderByRaw('MAX(carts.created_at) DESC')
-                ->groupBy('shops.id', 'name_shop', 'products.id')
+                ->groupBy('shops.id', 'name_shop')
                 ->whereIn('carts.id', $carts_id)
                 ->get()
                 ->map(function ($item) use ($carts_id) {
