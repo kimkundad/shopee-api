@@ -400,7 +400,7 @@ class ApiController extends Controller
                     ->select([
                         'order_details.shop_id',
                         'shops.name_shop',
-                        'products.name_product',
+                        /* 'products.name_product',
                         'products.detail_product',
                         'products.img_product',
                         'products.type',
@@ -411,7 +411,7 @@ class ApiController extends Controller
                         'product_options.op_name',
                         'product_options.price as op_price',
                         'product_suboptions.sub_op_name',
-                        'product_suboptions.price as sub_op_price',
+                        'product_suboptions.price as sub_op_price', */
                     ])
                     ->where('order_details.order_id', '=', $item->id)
                     ->orderBy('order_details.updated_at', 'desc')
