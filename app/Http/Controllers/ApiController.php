@@ -188,8 +188,8 @@ class ApiController extends Controller
                             'products.option1' => 'option1',
                             'products.option2' => 'option2',
                             'carts.num' => 'num',
-                            'product_options.id as option1Id',
-                            'product_suboptions.id as option2Id',
+                            'carts.product_suboptions_id as option1Id',
+                            'carts.product_options_id as option2Id',
                             'product_options.op_name' => 'op_name',
                             'product_options.price AS price_type_2',
                             'product_suboptions.sub_op_name' => 'sub_op_name',
@@ -373,12 +373,12 @@ class ApiController extends Controller
     public function getAllOrder(Request $request)
     {
         $user_id = $request->user_id;
-        $shop_id = $request->shop_id;
+        $owner_shop_id = $request->owner_shop_id;
 
         $orders = DB::table('orders')
             ->join('shops', 'shops.id', '=', 'orders.shop_id')
             ->where('orders.user_id', '=', $user_id)
-            ->where('orders.shop_id', '=', $shop_id)
+            ->where('orders.owner_shop_id', '=', $owner_shop_id)
             ->orderBy('orders.updated_at', 'desc')
             ->select([
                 'shops.id as id_shop',
