@@ -416,29 +416,28 @@ class ApiController extends Controller
                     ->where('order_details.order_id', '=', $item->id)
                     /* ->orderBy('order_details.updated_at', 'desc') */
                     ->get()
-                    ->map(function ($subItem) use ($item){
+                    ->map(function ($subItem) use ($item) {
                         $subItem->products = DB::table('order_details')
-                        ->leftjoin('products', 'products.id', '=', 'order_details.product_id')
-                        ->leftjoin('product_options', 'product_options.id', '=', 'order_details.option1')
-                        ->leftjoin('product_suboptions', 'product_suboptions.id', '=', 'order_details.option2')
-                        ->select([
-                            'order_details.shop_id',
-                            'products.name_product',
-                            'products.detail_product',
-                            'products.img_product',
-                            'products.type',
-                            'products.price',
-                            'order_details.num',
-                            'products.option1',
-                            'products.option2',
-                            'product_options.op_name',
-                            'product_options.price as op_price',
-                            'product_suboptions.sub_op_name',
-                            'product_suboptions.price as sub_op_price',
-                        ])
-                        /* ->where('order_details.order_id', '=', $item->id)
+                            ->leftjoin('products', 'products.id', '=', 'order_details.product_id')
+                            ->leftjoin('product_options', 'product_options.id', '=', 'order_details.option1')
+                            ->leftjoin('product_suboptions', 'product_suboptions.id', '=', 'order_details.option2')
+                            ->select([
+                                'products.name_product',
+                                'products.detail_product',
+                                'products.img_product',
+                                'products.type',
+                                'products.price',
+                                'order_details.num',
+                                'products.option1',
+                                'products.option2',
+                                'product_options.op_name',
+                                'product_options.price as op_price',
+                                'product_suboptions.sub_op_name',
+                                'product_suboptions.price as sub_op_price',
+                            ])
+                            /* ->where('order_details.order_id', '=', $item->id)
                         ->where('order_details.shop_id','=',$subItem->shop_id) */
-                        ->get();
+                            ->get();
                     });
 
                 return $item;
@@ -2173,7 +2172,7 @@ class ApiController extends Controller
 
     public function setStatusOrdersMulti(Request $request)
     {
-        if($request->ids){
+        if ($request->ids) {
             foreach ($request->ids as $ID) {
                 DB::table('orders')->where('id', $ID)->update([
                     'status' => "กำลังแพ็ค",
