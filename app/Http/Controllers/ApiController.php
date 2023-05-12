@@ -415,7 +415,7 @@ class ApiController extends Controller
                     ->get()
                     ->map(function ($subItem) {
                         $subItem->products = DB::table('order_details')
-                            /* ->leftjoin('products', 'products.id', '=', 'order_details.product_id')
+                            ->leftjoin('products', 'products.id', '=', 'order_details.product_id')
                             ->leftjoin('product_options', 'product_options.id', '=', 'order_details.option1')
                             ->leftjoin('product_suboptions', 'product_suboptions.id', '=', 'order_details.option2')
                             ->select([
@@ -431,10 +431,12 @@ class ApiController extends Controller
                                 'product_options.price as op_price',
                                 'product_suboptions.sub_op_name',
                                 'product_suboptions.price as sub_op_price',
-                            ]) */
+                            ])
                             /* ->where('order_details.order_id', '=', $item->id)
-                        ->where('order_details.shop_id','=',$subItem->shop_id) */
+                        ->where('order_details.shop_id','=',$subItem->shop_id)*/
                             ->get();
+
+                            return $subItem;
                     });
 
                 return $item;
