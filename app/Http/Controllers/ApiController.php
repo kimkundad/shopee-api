@@ -396,7 +396,7 @@ class ApiController extends Controller
                     ->leftjoin('products', 'products.id', '=', 'order_details.product_id')
                     ->leftjoin('product_options', 'product_options.id', '=', 'order_details.option1')
                     ->leftjoin('product_suboptions', 'product_suboptions.id', '=', 'order_details.option2')
-                    ->groupBy('order_details.shop_id','products.id','order_details.option1','order_details.option2')
+                    ->groupBy('order_details.shop_id','products.id','order_details.option1','order_details.option2','order_details.id')
                     ->select([
                         'order_details.shop_id',
                         'shops.name_shop',
@@ -405,7 +405,7 @@ class ApiController extends Controller
                         'products.img_product',
                         'products.type',
                         'products.price',
-                        /* 'order_details.num', */
+                        'order_details.num',
                         'products.option1',
                         'products.option2',
                         'product_options.op_name',
