@@ -419,6 +419,7 @@ class ApiController extends Controller
                             ->leftjoin('product_options', 'product_options.id', '=', 'order_details.option1')
                             ->leftjoin('product_suboptions', 'product_suboptions.id', '=', 'order_details.option2')
                             ->select([
+                                'order_details.id',
                                 'products.name_product',
                                 'products.detail_product',
                                 'products.img_product',
