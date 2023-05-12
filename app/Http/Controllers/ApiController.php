@@ -814,8 +814,12 @@ class ApiController extends Controller
             ->get(); */
         $objs = DB::table('shop_list_products')
             ->join('products', 'shop_list_products.product_id', '=', 'products.id')
+            ->leftJoin('order_details', 'order_details.product_id', '=', 'products.id')
+            ->groupBy('products.id')
+            ->selectRaw('products.*,SUM(order_details.num) AS total_sales')
             ->where('shop_list_products.shop_id', '=', $id)
             ->whereRaw("CONCAT(products.name_product, products.detail_product) LIKE ?", ["%$search%"])
+            ->where('products.active', '=', 1)
             ->get();
         return response()->json([
             'product' => $objs,
