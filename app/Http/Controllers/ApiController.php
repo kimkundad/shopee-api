@@ -424,7 +424,7 @@ class ApiController extends Controller
                                 'products.img_product',
                                 'products.type',
                                 'products.price',
-                                'order_details.num',
+                                /* 'order_details.num', */
                                 'products.option1',
                                 'products.option2',
                                 'product_options.op_name',
