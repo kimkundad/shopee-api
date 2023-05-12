@@ -391,16 +391,16 @@ class ApiController extends Controller
             ])
             ->get()
             ->map(function ($item) {
-                $item->products = DB::table('order_details')
+                $item->shops = DB::table('order_details')
                     ->leftJoin('shops', 'shops.id', '=', 'order_details.shop_id')
                     ->leftjoin('products', 'products.id', '=', 'order_details.product_id')
                     ->leftjoin('product_options', 'product_options.id', '=', 'order_details.option1')
                     ->leftjoin('product_suboptions', 'product_suboptions.id', '=', 'order_details.option2')
-                    ->groupBy('order_details.shop_id','products.id','order_details.option1','order_details.option2','order_details.id')
+                    ->groupBy('order_details.shop_id')
                     ->select([
                         'order_details.shop_id',
                         'shops.name_shop',
-                        'products.name_product',
+                        /* 'products.name_product',
                         'products.detail_product',
                         'products.img_product',
                         'products.type',
@@ -411,12 +411,12 @@ class ApiController extends Controller
                         'product_options.op_name',
                         'product_options.price as op_price',
                         'product_suboptions.sub_op_name',
-                        'product_suboptions.price as sub_op_price',
+                        'product_suboptions.price as sub_op_price', */
                     ])
                     ->where('order_details.order_id', '=', $item->id)
                     /* ->orderBy('order_details.updated_at', 'desc') */
                     ->get()
-                    /* ->map(function ($subItem) use ($item){
+                    ->map(function ($subItem) use ($item){
                         $subItem->products = DB::table('order_details')
                         ->leftjoin('products', 'products.id', '=', 'order_details.product_id')
                         ->leftjoin('product_options', 'product_options.id', '=', 'order_details.option1')
@@ -438,9 +438,8 @@ class ApiController extends Controller
                         ])
                         ->where('order_details.order_id', '=', $item->id)
                         ->where('order_details.shop_id','=',$subItem->shop_id)
-                        ->orderBy('order_details.updated_at', 'desc')
                         ->get();
-                    }) */;
+                    });
 
                 return $item;
             });
