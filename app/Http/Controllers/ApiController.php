@@ -415,7 +415,7 @@ class ApiController extends Controller
                     ->get()
                     ->map(function ($subItem) {
                         $subItem->products = DB::table('order_details')
-                            -/* >leftjoin('products', 'products.id', '=', 'order_details.product_id')
+                            /* ->leftjoin('products', 'products.id', '=', 'order_details.product_id')
                             ->leftjoin('product_options', 'product_options.id', '=', 'order_details.option1')
                             ->leftjoin('product_suboptions', 'product_suboptions.id', '=', 'order_details.option2')
                             ->select([
