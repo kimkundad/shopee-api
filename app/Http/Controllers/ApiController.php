@@ -413,7 +413,7 @@ class ApiController extends Controller
                     ->where('order_details.order_id', '=', $item->id)
                     /* ->orderBy('order_details.updated_at', 'desc') */
                     ->get()
-                    ->map(function ($subItem) use ($item) {
+                    ->map(function ($subItem) {
                         $subItem->products = DB::table('order_details')
                             ->leftjoin('products', 'products.id', '=', 'order_details.product_id')
                             ->leftjoin('product_options', 'product_options.id', '=', 'order_details.option1')
