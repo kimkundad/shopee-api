@@ -391,7 +391,7 @@ class ApiController extends Controller
             ])
             ->get()
             ->map(function ($item) {
-                $item->shops = DB::table('order_details')
+                $item->products = DB::table('order_details')
                     ->leftJoin('shops', 'shops.id', '=', 'order_details.shop_id')
                     ->leftjoin('products', 'products.id', '=', 'order_details.product_id')
                     ->leftjoin('product_options', 'product_options.id', '=', 'order_details.option1')
