@@ -2180,7 +2180,7 @@ class ApiController extends Controller
         if ($request->ids) {
             foreach ($request->ids as $ID) {
                 DB::table('orders')->where('id', $ID)->update([
-                    'status' => "กำลังแพ็ค",
+                    'status' => $request->status,
                     'updated_at' => date('Y-m-d H:i:s'),
                 ]);
             }
