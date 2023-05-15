@@ -1184,7 +1184,7 @@ class ApiController extends Controller
         $search = $request->search;
         $reports = DB::table('order_details')
             ->join('orders', 'orders.id', '=', 'order_details.order_id')
-            ->leftjoin('shops', 'shops.id', '=', 'orders.shop_id')
+            ->leftjoin('shops', 'shops.id', '=', 'order_details.shop_id')
             ->leftjoin('users', 'users.id', '=', 'order_details.user_id')
             ->leftjoin('addresses', 'addresses.id', '=', 'orders.address_id')
             ->leftjoin('products', 'products.id', '=', 'order_details.product_id')
