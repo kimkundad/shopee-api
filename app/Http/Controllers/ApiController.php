@@ -1272,7 +1272,7 @@ class ApiController extends Controller
     {
         $data_table = DB::table('order_details')
             ->join('orders', 'orders.id', '=', 'order_details.order_id')
-            ->leftjoin('shops', 'shops.id', '=', 'orders.shop_id')
+            ->leftjoin('shops', 'shops.id', '=', 'order_details.shop_id')
             ->leftjoin('products', 'products.id', '=', 'order_details.product_id')
             ->leftjoin('product_options', 'product_options.id', '=', 'order_details.option1')
             ->leftjoin('product_suboptions', 'product_suboptions.id', '=', 'order_details.option2')
@@ -1284,7 +1284,7 @@ class ApiController extends Controller
 
         $data_chart_pie_products = DB::table('order_details')
             ->join('orders', 'orders.id', '=', 'order_details.order_id')
-            ->leftjoin('shops', 'shops.id', '=', 'orders.shop_id')
+            ->leftjoin('shops', 'shops.id', '=', 'order_details.shop_id')
             ->leftjoin('products', 'products.id', '=', 'order_details.product_id')
             ->leftjoin('product_options', 'product_options.id', '=', 'order_details.option1')
             ->leftjoin('product_suboptions', 'product_suboptions.id', '=', 'order_details.option2')
@@ -1295,7 +1295,7 @@ class ApiController extends Controller
 
         $data_chart_pie_shops = DB::table('order_details')
             ->join('orders', 'orders.id', '=', 'order_details.order_id')
-            ->leftjoin('shops', 'shops.id', '=', 'orders.shop_id')
+            ->leftjoin('shops', 'shops.id', '=', 'order_details.shop_id')
             ->leftjoin('products', 'products.id', '=', 'order_details.product_id')
             ->leftjoin('product_options', 'product_options.id', '=', 'order_details.option1')
             ->leftjoin('product_suboptions', 'product_suboptions.id', '=', 'order_details.option2')
@@ -1308,7 +1308,7 @@ class ApiController extends Controller
         $chartData = [];
         $data_chart_line = DB::table('order_details')
             ->join('orders', 'orders.id', '=', 'order_details.order_id')
-            ->leftjoin('shops', 'shops.id', '=', 'orders.shop_id')
+            ->leftjoin('shops', 'shops.id', '=', 'order_details.shop_id')
             ->leftjoin('products', 'products.id', '=', 'order_details.product_id')
             ->leftjoin('product_options', 'product_options.id', '=', 'order_details.option1')
             ->leftjoin('product_suboptions', 'product_suboptions.id', '=', 'order_details.option2')
@@ -1326,7 +1326,7 @@ class ApiController extends Controller
 
         $data_chart_bar = DB::table('order_details')
             ->join('orders', 'orders.id', '=', 'order_details.order_id')
-            ->leftjoin('shops', 'shops.id', '=', 'orders.shop_id')
+            ->leftjoin('shops', 'shops.id', '=', 'order_details.shop_id')
             ->leftjoin('products', 'products.id', '=', 'order_details.product_id')
             ->leftjoin('product_options', 'product_options.id', '=', 'order_details.option1')
             ->leftjoin('product_suboptions', 'product_suboptions.id', '=', 'order_details.option2')
@@ -1350,7 +1350,7 @@ class ApiController extends Controller
 
         $data_chart_donut = DB::table('order_details')
             ->join('orders', 'orders.id', '=', 'order_details.order_id')
-            ->leftjoin('shops', 'shops.id', '=', 'orders.shop_id')
+            ->leftjoin('shops', 'shops.id', '=', 'order_details.shop_id')
             ->leftjoin('products', 'products.id', '=', 'order_details.product_id')
             ->leftjoin('product_options', 'product_options.id', '=', 'order_details.option1')
             ->leftjoin('product_suboptions', 'product_suboptions.id', '=', 'order_details.option2')
@@ -1367,14 +1367,14 @@ class ApiController extends Controller
 
         $total_sales = DB::table('order_details')
             ->join('orders', 'orders.id', '=', 'order_details.order_id')
-            ->leftjoin('shops', 'shops.id', '=', 'orders.shop_id')
+            ->leftjoin('shops', 'shops.id', '=', 'order_details.shop_id')
             ->selectRaw('SUM(order_details.num) AS total_sales')
             ->where('shops.user_id', '=', $request->uid)
             ->get();
 
         $total_delivery = DB::table('order_details')
             ->join('orders', 'orders.id', '=', 'order_details.order_id')
-            ->leftjoin('shops', 'shops.id', '=', 'orders.shop_id')
+            ->leftjoin('shops', 'shops.id', '=', 'order_details.shop_id')
             ->selectRaw('SUM(CASE WHEN order_details.type_payment = "โอนเงิน" THEN order_details.num ELSE 0 END) AS sum_payment, SUM(CASE WHEN order_details.type_payment = "เก็บเงินปลายทาง" THEN order_details.num ELSE 0 END) AS sum_cash_on_delivery')
             ->where('shops.user_id', '=', $request->uid)
             ->get();
