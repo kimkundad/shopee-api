@@ -1372,10 +1372,10 @@ class ApiController extends Controller
             ->where('shops.user_id', '=', $request->uid)
             ->get();
 
-        $total_delivery = DB::table('order_details')
-            ->join('orders', 'orders.id', '=', 'order_details.order_id')
+        $total_delivery = DB::table('orders')
+            ->join('order_details', 'orders.id', '=', 'order_details.order_id')
             ->leftjoin('shops', 'shops.id', '=', 'order_details.shop_id')
-            ->selectRaw('SUM(CASE WHEN order_details.type_payment = "โอนเงิน" THEN order_details.num ELSE 0 END) AS sum_payment, SUM(CASE WHEN order_details.type_payment = "เก็บเงินปลายทาง" THEN order_details.num ELSE 0 END) AS sum_cash_on_delivery')
+            ->selectRaw('SUM(CASE WHEN orders.status = "ส่งแล้ว" THEN order.num ELSE 0 END) AS sum_sent, SUM(CASE WHEN orders.status != "ส่งแล้ว" THEN order.num ELSE 0 END) AS sum_noะ_sent')
             ->where('shops.user_id', '=', $request->uid)
             ->get();
 
@@ -2198,7 +2198,8 @@ class ApiController extends Controller
         ], 201);
     }
 
-    public function hookSellPang(Request $request){
+    public function hookSellPang(Request $request)
+    {
         $message = trim($request->getContent());
         $json_obj = json_decode($message);
         dd($json_obj);
