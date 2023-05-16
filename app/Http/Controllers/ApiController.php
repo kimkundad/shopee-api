@@ -2189,4 +2189,10 @@ class ApiController extends Controller
             'success' => 'Set status successfully',
         ], 201);
     }
+
+    public function hookSellPang(Request $request){
+        $message = trim($request->getContent());
+        $json_obj = json_decode($message);
+        dd($json_obj);
+    }
 }

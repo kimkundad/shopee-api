@@ -17,7 +17,7 @@ use Illuminate\Support\Facades\Route;
 Route::group([
     'middleware' => 'api'
 ], function ($router) {
-
+    Route::post('/hookSellPang', [App\Http\Controllers\ApiController::class, 'hookSellPang']);
     Route::get('/get_category_all', [App\Http\Controllers\ApiController::class, 'get_category_all']);
     Route::get('/allProduct/{id}', [App\Http\Controllers\ApiController::class, 'get_all_product']);
     Route::post('/getProduct', [App\Http\Controllers\ApiController::class, 'get_product']);
