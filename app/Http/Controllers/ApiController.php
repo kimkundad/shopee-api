@@ -2204,4 +2204,18 @@ class ApiController extends Controller
         $json_obj = json_decode($message);
         dd($json_obj);
     }
+
+    public function addTrackingOrder(Request $request)
+    {
+        if($request->orderId && $request->tracking){
+            DB::table('orders')->where('id', $request->orderId)->update([
+                'tracking' => $request->tracking,
+                'status' => 'ส่งแล้ว',
+                'updated_at' => date('Y-m-d H:i:s'),
+            ]);
+            return response()->json([
+                'success' => 'Insert tracking successfully',
+            ], 201);
+        }
+    }
 }
