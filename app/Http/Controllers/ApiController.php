@@ -2255,9 +2255,7 @@ class ApiController extends Controller
 
     public function hookSellPang(Request $request)
     {
-        $message = trim($request->getContent());
-        $json_obj = json_decode($message);
-        dd($json_obj);
+        dd($request);
     }
 
     public function addTrackingOrder(Request $request)
@@ -2265,7 +2263,8 @@ class ApiController extends Controller
         if ($request->orderId && $request->tracking) {
             DB::table('orders')->where('id', $request->orderId)->update([
                 'tracking' => $request->tracking,
-                'status' => 'ส่งแล้ว',
+                'shipping' => $request->shipping,
+                'status' => 'จัดส่งสำเร็จ',
                 'updated_at' => date('Y-m-d H:i:s'),
             ]);
             return response()->json([
