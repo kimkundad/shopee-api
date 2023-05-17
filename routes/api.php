@@ -72,7 +72,7 @@ Route::group([
     Route::post('/setDefaultAddress', [App\Http\Controllers\ApiController::class, 'setDefaultAddress']);
     Route::post('/editAddress', [App\Http\Controllers\ApiController::class, 'editAddress']);
     Route::post('/addOptionProduct', [App\Http\Controllers\ApiController::class, 'addOptionProduct']);
-    Route::get('/getOrders', [App\Http\Controllers\ApiController::class, 'getOrders']);
+    Route::post('/getOrders', [App\Http\Controllers\ApiController::class, 'getOrders']);
     Route::post('/setStatusOrders', [App\Http\Controllers\ApiController::class, 'setStatusOrders']);
     Route::post('/setStatusOrdersMulti', [App\Http\Controllers\ApiController::class, 'setStatusOrdersMulti']);
     Route::post('/addTrackingOrder', [App\Http\Controllers\ApiController::class, 'addTrackingOrder']);
