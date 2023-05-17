@@ -2080,7 +2080,7 @@ class ApiController extends Controller
         ], 201);
     }
 
-    public function getOrders()
+    public function getOrders(Request $request)
     {
         // $orders2 = DB::table('orders')
         //     ->leftjoin('order_details', 'orders.id', '=', 'order_details.order_id')
@@ -2135,7 +2135,8 @@ class ApiController extends Controller
                 'transections.date as dateSlipPayment',
                 'transections.time as timeSlipPayment',
             ])
-            ->get();
+            ->where('orders.status', $request->navbarTab)
+            ->paginate(5);
         foreach ($orders2 as $value) {
             $data = DB::table('order_details')
                 ->leftJoin('products', 'products.id', '=', 'order_details.product_id')
