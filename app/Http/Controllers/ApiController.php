@@ -1333,7 +1333,13 @@ class ApiController extends Controller
             ->groupBy(DB::raw('DATE_FORMAT(order_details.created_at, "%Y-%M-%D")'), 'shops.name_shop')
             ->selectRaw('DATE_FORMAT(order_details.created_at, "%Y-%M-%D") AS month,shops.name_shop, SUM(order_details.num) AS total_num')
             ->where('shops.user_id', '=', $request->uid)
-            ->orderBy(DB::raw('DATE_FORMAT(order_details.created_at, "%Y-%M-%D")'),'asc')
+            ->orderBy(DB::raw('DATE_FORMAT(order_details.created_at, "%Y-%M-%D")'), 'asc')
+            ->get();
+
+        $data_shop_bar = DB::table('order_details')
+            ->leftjoin('shops', 'shops.id', '=', 'order_details.shop_id')
+            ->select(['shops.name_shop'])
+            ->where('shops.user_id', '=', $request->uid)
             ->get();
 
         // Group the results by month and then by shop name
@@ -1386,6 +1392,7 @@ class ApiController extends Controller
             'total_sales' => $total_sales,
             'total_delivery' => $total_delivery,
             'total_payment' => $total_payment,
+            'data_shop_bar' => $data_shop_bar,
         ], 201);
     }
 
@@ -2198,7 +2205,7 @@ class ApiController extends Controller
 
     public function addTrackingOrder(Request $request)
     {
-        if($request->orderId && $request->tracking){
+        if ($request->orderId && $request->tracking) {
             DB::table('orders')->where('id', $request->orderId)->update([
                 'tracking' => $request->tracking,
                 'status' => 'ส่งแล้ว',
