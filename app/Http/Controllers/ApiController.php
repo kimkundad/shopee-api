@@ -1333,6 +1333,7 @@ class ApiController extends Controller
             ->groupBy(DB::raw('DATE_FORMAT(order_details.created_at, "%Y-%M-%D")'), 'shops.name_shop')
             ->selectRaw('DATE_FORMAT(order_details.created_at, "%Y-%M-%D") AS month,shops.name_shop, SUM(order_details.num) AS total_num')
             ->where('shops.user_id', '=', $request->uid)
+            ->orderBy('order_details.created_at','desc')
             ->get();
 
         // Group the results by month and then by shop name
@@ -1347,16 +1348,6 @@ class ApiController extends Controller
                 })->values()->toArray(),
             ];
         })->values()->toArray();
-
-        $data_chart_donut = DB::table('order_details')
-            ->join('orders', 'orders.id', '=', 'order_details.order_id')
-            ->leftjoin('shops', 'shops.id', '=', 'order_details.shop_id')
-            ->leftjoin('products', 'products.id', '=', 'order_details.product_id')
-            ->leftjoin('product_options', 'product_options.id', '=', 'order_details.option1')
-            ->leftjoin('product_suboptions', 'product_suboptions.id', '=', 'order_details.option2')
-            ->selectRaw('SUM(products.stock) AS allStock, SUM(orders.num) AS numOrders, SUM(CASE WHEN order_details.type_payment = "โอนเงิน" THEN order_details.num ELSE 0 END) AS sum_payment, SUM(CASE WHEN order_details.type_payment = "เก็บเงินปลายทาง" THEN order_details.num ELSE 0 END) AS sum_cash_on_delivery')
-            ->where('shops.user_id', '=', $request->uid)
-            ->get();
 
         $all_stock = DB::table('products')
             ->leftjoin('shop_list_products', 'shop_list_products.product_id', '=', 'products.id')
