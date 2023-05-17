@@ -2243,6 +2243,7 @@ class ApiController extends Controller
         if ($request->orderId && $request->tracking) {
             DB::table('orders')->where('id', $request->orderId)->update([
                 'tracking' => $request->tracking,
+                'shipping' => $request->shipping,
                 'status' => 'ส่งแล้ว',
                 'updated_at' => date('Y-m-d H:i:s'),
             ]);
