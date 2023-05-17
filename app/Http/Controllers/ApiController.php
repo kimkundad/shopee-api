@@ -1291,7 +1291,7 @@ class ApiController extends Controller
             ->groupBy('products.name_product', 'shops.name_shop')
             ->selectRaw('products.name_product, SUM(order_details.num) AS total_num')
             ->where('shops.user_id', '=', $request->uid)
-            ->orderBy('total_num','desc')
+            ->orderBy('total_num', 'desc')
             ->limit(5)
             ->get();
 
@@ -1304,7 +1304,7 @@ class ApiController extends Controller
             ->groupBy('shops.name_shop')
             ->selectRaw('shops.name_shop, SUM(order_details.num) AS total_num')
             ->where('shops.user_id', '=', $request->uid)
-            ->orderBy('total_num','desc')
+            ->orderBy('total_num', 'desc')
             ->limit(5)
             ->get();
 
@@ -2172,8 +2172,29 @@ class ApiController extends Controller
                 ->get();
             $value->orderDetails = $data;
         }
+        // ราคารวมและจำนวนของ order ทั้งหมด ของแต่ละสถานะ
+        $total_Amount = DB::table('orders')->where('status', $request->navbarTab)->sum('price');
+        $total_Num = DB::table('orders')->where('status', $request->navbarTab)->sum('num');
+
+        // จำนวน order แต่ละสถานะ
+        $count_status1 = DB::table('orders')->where('status', 'ตรวจสอบคำสั่งซื้อ')->count();
+        $count_status2 = DB::table('orders')->where('status', 'กำลังแพ็ค')->count();
+        $count_status3 = DB::table('orders')->where('status', 'พร้อมส่ง')->count();
+        $count_status4 = DB::table('orders')->where('status', 'จัดส่งสำเร็จ')->count();
+        $count_status5 = DB::table('orders')->where('status', 'ส่งสำเร็จ')->count();
+        $count_status6 = DB::table('orders')->where('status', 'ตีกลับ')->count();
+        $count_status7 = DB::table('orders')->where('status', 'ยกเลิก')->count();
         return response()->json([
             'orders' => $orders2,
+            'count_status1' => $count_status1,
+            'count_status2' => $count_status2,
+            'count_status3' => $count_status3,
+            'count_status4' => $count_status4,
+            'count_status5' => $count_status5,
+            'count_status6' => $count_status6,
+            'count_status7' => $count_status7,
+            'total_Amount' => $total_Amount,
+            'total_Num' => $total_Num,
         ], 201);
     }
 
