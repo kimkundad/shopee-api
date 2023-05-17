@@ -2244,7 +2244,7 @@ class ApiController extends Controller
             DB::table('orders')->where('id', $request->orderId)->update([
                 'tracking' => $request->tracking,
                 'shipping' => $request->shipping,
-                'status' => 'ส่งแล้ว',
+                'status' => 'จัดส่งสำเร็จ',
                 'updated_at' => date('Y-m-d H:i:s'),
             ]);
             return response()->json([
