@@ -2235,9 +2235,7 @@ class ApiController extends Controller
 
     public function hookSellPang(Request $request)
     {
-        $message = trim($request->getContent());
-        $json_obj = json_decode($message);
-        dd($json_obj);
+        dd($request);
     }
 
     public function addTrackingOrder(Request $request)
