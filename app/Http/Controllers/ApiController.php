@@ -309,7 +309,12 @@ class ApiController extends Controller
             $order_detail->option2 = $request->option2;
             $order_detail->num = $request->num;
             $order_detail->type_payment = $request->type_payment;
-            $order_detail->price = $request->price;
+            if ($request->price >= 1) {
+                $price = ($request->price * $request->price_sales) / 100;
+                $order_detail->price = $price;
+            } else {
+                $order_detail->price = $request->price;
+            }
             $order_detail->save();
 
             return response()->json([
@@ -339,12 +344,27 @@ class ApiController extends Controller
                     $order_detail->shop_id = $subItem['shops_id'];
                     $order_detail->option1 = $subItem['option1Id'];
                     $order_detail->option2 = $subItem['option2Id'];
-                    if($subItem['type'] == 1){
-                        $order_detail->price = $subItem['price_type_1'];
-                    }else if($subItem['type'] == 2){
-                        $order_detail->price = $subItem['price_type_2'];
-                    }else if($subItem['type'] == 3){
-                        $order_detail->price = $subItem['price_type_3'];
+                    if ($subItem['type'] == 1) {
+                        if ($subItem['price_sales'] >= 1) {
+                            $price = ($subItem['price_type_1'] * $subItem['price_sales']) / 100;
+                            $order_detail->price = $price;
+                        } else {
+                            $order_detail->price = $subItem['price_type_1'];
+                        }
+                    } else if ($subItem['type'] == 2) {
+                        if ($subItem['price_sales'] >= 1) {
+                            $price = ($subItem['price_type_2'] * $subItem['price_sales']) / 100;
+                            $order_detail->price = $price;
+                        } else {
+                            $order_detail->price = $subItem['price_type_2'];
+                        }
+                    } else if ($subItem['type'] == 3) {
+                        if ($subItem['price_sales'] >= 1) {
+                            $price = ($subItem['price_type_3'] * $subItem['price_sales']) / 100;
+                            $order_detail->price = $price;
+                        } else {
+                            $order_detail->price = $subItem['price_type_3'];
+                        }
                     }
                     $order_detail->num = $subItem['num'];
                     $order_detail->type_payment = $request->type_payment;
