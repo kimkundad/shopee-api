@@ -1338,6 +1338,7 @@ class ApiController extends Controller
 
         $data_shop_bar = DB::table('order_details')
             ->leftjoin('shops', 'shops.id', '=', 'order_details.shop_id')
+            ->groupBy('shops.name_shop')
             ->select(['shops.name_shop'])
             ->where('shops.user_id', '=', $request->uid)
             ->get();
