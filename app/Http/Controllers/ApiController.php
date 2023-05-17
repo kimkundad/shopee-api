@@ -2135,7 +2135,7 @@ class ApiController extends Controller
                 'transections.date as dateSlipPayment',
                 'transections.time as timeSlipPayment',
             ])
-            ->where('orders.status', $request->navbarTab)
+            ->where('orders.status', $request->status)
             ->get();
         foreach ($orders2 as $value) {
             $data = DB::table('order_details')
