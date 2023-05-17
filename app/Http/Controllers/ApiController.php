@@ -1291,6 +1291,7 @@ class ApiController extends Controller
             ->groupBy('products.name_product', 'shops.name_shop')
             ->selectRaw('products.name_product, SUM(order_details.num) AS total_num')
             ->where('shops.user_id', '=', $request->uid)
+            ->limit(5)
             ->get();
 
         $data_chart_pie_shops = DB::table('order_details')
@@ -1302,6 +1303,7 @@ class ApiController extends Controller
             ->groupBy('shops.name_shop')
             ->selectRaw('shops.name_shop, SUM(order_details.num) AS total_num')
             ->where('shops.user_id', '=', $request->uid)
+            ->limit(5)
             ->get();
 
         $months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
@@ -1341,6 +1343,7 @@ class ApiController extends Controller
             ->groupBy('shops.name_shop')
             ->select(['shops.name_shop'])
             ->where('shops.user_id', '=', $request->uid)
+            ->limit(5)
             ->get();
 
         // Group the results by month and then by shop name
