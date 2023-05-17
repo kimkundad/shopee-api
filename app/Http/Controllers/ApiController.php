@@ -2172,6 +2172,11 @@ class ApiController extends Controller
                 ->get();
             $value->orderDetails = $data;
         }
+        // ราคารวมและจำนวนของ order ทั้งหมด ของแต่ละสถานะ
+        $total_Amount = DB::table('orders')->where('status', $request->navbarTab)->sum('price');
+        $total_Num = DB::table('orders')->where('status', $request->navbarTab)->sum('num');
+
+        // จำนวน order แต่ละสถานะ
         $count_status1 = DB::table('orders')->where('status', 'ตรวจสอบคำสั่งซื้อ')->count();
         $count_status2 = DB::table('orders')->where('status', 'กำลังแพ็ค')->count();
         $count_status3 = DB::table('orders')->where('status', 'พร้อมส่ง')->count();
@@ -2188,6 +2193,8 @@ class ApiController extends Controller
             'count_status5' => $count_status5,
             'count_status6' => $count_status6,
             'count_status7' => $count_status7,
+            'total_Amount' => $total_Amount,
+            'total_Num' => $total_Num,
         ], 201);
     }
 
