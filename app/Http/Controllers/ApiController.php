@@ -1333,7 +1333,7 @@ class ApiController extends Controller
             ->groupBy(DB::raw('DATE_FORMAT(order_details.created_at, "%Y-%M-%D")'), 'shops.name_shop')
             ->selectRaw('DATE_FORMAT(order_details.created_at, "%Y-%M-%D") AS month,shops.name_shop, SUM(order_details.num) AS total_num')
             ->where('shops.user_id', '=', $request->uid)
-            ->orderBy('order_details.created_at','desc')
+            ->orderBy(DB::raw('DATE_FORMAT(order_details.created_at, "%Y-%M-%D")'),'desc')
             ->get();
 
         // Group the results by month and then by shop name
