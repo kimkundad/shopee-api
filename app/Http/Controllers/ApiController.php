@@ -1291,6 +1291,7 @@ class ApiController extends Controller
             ->groupBy('products.name_product', 'shops.name_shop')
             ->selectRaw('products.name_product, SUM(order_details.num) AS total_num')
             ->where('shops.user_id', '=', $request->uid)
+            ->orderBy('total_num','desc')
             ->limit(5)
             ->get();
 
@@ -1303,6 +1304,7 @@ class ApiController extends Controller
             ->groupBy('shops.name_shop')
             ->selectRaw('shops.name_shop, SUM(order_details.num) AS total_num')
             ->where('shops.user_id', '=', $request->uid)
+            ->orderBy('total_num','desc')
             ->limit(5)
             ->get();
 
