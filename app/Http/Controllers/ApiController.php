@@ -2264,6 +2264,14 @@ class ApiController extends Controller
                         DB::table('orders')->where('tracking', $item->barcode)->update([
                             'status' => 'ส่งสำเร็จ'
                         ]);
+                    } else if ($item->status == "203" || $item->status == "104") {
+                        DB::table('orders')->where('tracking', $item->barcode)->update([
+                            'status' => 'ตีกลับ'
+                        ]);
+                    } else if ($item->status == "209" || $item->status == "210") {
+                        DB::table('orders')->where('tracking', $item->barcode)->update([
+                            'status' => 'ยกเลิก'
+                        ]);
                     }
                 }
                 return response(['message' => 'success data'], 400);
@@ -2310,7 +2318,7 @@ class ApiController extends Controller
                     $url_insert_track = "https://trackwebhook.thailandpost.co.th/post/api/v1/hook";
 
                     $body = json_encode([
-                        "status" => "501",
+                        "status" => "all",
                         "language" => "TH",
                         "barcode" => [
                             $request->tracking,
@@ -2362,7 +2370,7 @@ class ApiController extends Controller
                         $url_insert_track = "https://trackwebhook.thailandpost.co.th/post/api/v1/hook";
 
                         $body = json_encode([
-                            "status" => "501",
+                            "status" => "all",
                             "language" => "TH",
                             "barcode" => [
                                 $request->tracking,
@@ -2392,7 +2400,7 @@ class ApiController extends Controller
                     $url_insert_track = "https://trackwebhook.thailandpost.co.th/post/api/v1/hook";
 
                     $body = json_encode([
-                        "status" => "501",
+                        "status" => "all",
                         "language" => "TH",
                         "barcode" => [
                             $request->tracking,
