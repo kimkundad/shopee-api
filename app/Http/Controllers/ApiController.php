@@ -2281,7 +2281,7 @@ class ApiController extends Controller
                 $url = "https://trackwebhook.thailandpost.co.th/post/api/v1/authenticate/token";
 
                 $response = file_get_contents($url, false, stream_context_create([
-                    'https' => [
+                    'http' => [
                         'method' => 'POST',
                         'header' => "Content-type: application/json\r\nAuthorization: Token $mainToken\r\n"
                     ]
@@ -2309,7 +2309,7 @@ class ApiController extends Controller
                     ]);
 
                     $response_insert_track = file_get_contents($url_insert_track, false, stream_context_create([
-                        'https' => [
+                        'http' => [
                             'method' => 'POST',
                             'header' => "Content-type: application/json\r\nAuthorization: Token $responseData->token\r\n",
                             'content' => $body
@@ -2334,7 +2334,7 @@ class ApiController extends Controller
                     $url = "https://trackwebhook.thailandpost.co.th/post/api/v1/authenticate/token";
 
                     $response = file_get_contents($url, false, stream_context_create([
-                        'https' => [
+                        'http' => [
                             'method' => 'POST',
                             'header' => "Content-type: application/json\r\nAuthorization: Token $mainToken\r\n"
                         ]
@@ -2361,7 +2361,7 @@ class ApiController extends Controller
                         ]);
 
                         $response_insert_track = file_get_contents($url_insert_track, false, stream_context_create([
-                            'https' => [
+                            'http' => [
                                 'method' => 'POST',
                                 'header' => "Content-type: application/json\r\nAuthorization: Token $responseData->token\r\n",
                                 'content' => $body
@@ -2391,7 +2391,7 @@ class ApiController extends Controller
                     ]);
 
                     $response_insert_track = file_get_contents($url_insert_track, false, stream_context_create([
-                        'https' => [
+                        'http' => [
                             'method' => 'POST',
                             'header' => "Content-type: application/json\r\nAuthorization: Token $thaipost_token->token\r\n",
                             'content' => $body
