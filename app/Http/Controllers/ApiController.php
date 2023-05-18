@@ -869,7 +869,7 @@ class ApiController extends Controller
             if ($request->input('num') !== null) {
                 $sum = $cartItem->num + $request->input('num');
             } else {
-                $sum = $cartItem->num + $request->input('number');
+                $sum = $request->input('number');
             }
 
             DB::table('carts')->where('id', '=', $cartItem->id)->update([
