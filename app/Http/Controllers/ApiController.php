@@ -310,7 +310,7 @@ class ApiController extends Controller
             $order_detail->num = $request->num;
             $order_detail->type_payment = $request->type_payment;
             if ($request->price_sales >= 1) {
-                $price = $request->price-(($request->price * $request->price_sales) / 100);
+                $price = $request->price - (($request->price * $request->price_sales) / 100);
                 $order_detail->price = $price;
             } else {
                 $order_detail->price = $request->price;
@@ -346,21 +346,21 @@ class ApiController extends Controller
                     $order_detail->option2 = $subItem['option2Id'];
                     if ($subItem['type_product'] == 1) {
                         if ($subItem['price_sales'] >= 1) {
-                            $price = $subItem['price_type_1']-(($subItem['price_type_1'] * $subItem['price_sales']) / 100);
+                            $price = $subItem['price_type_1'] - (($subItem['price_type_1'] * $subItem['price_sales']) / 100);
                             $order_detail->price = $price;
                         } else {
                             $order_detail->price = $subItem['price_type_1'];
                         }
                     } else if ($subItem['type_product'] == 2) {
                         if ($subItem['price_sales'] >= 1) {
-                            $price = $subItem['price_type_2']-(($subItem['price_type_2'] * $subItem['price_sales']) / 100);
+                            $price = $subItem['price_type_2'] - (($subItem['price_type_2'] * $subItem['price_sales']) / 100);
                             $order_detail->price = $price;
                         } else {
                             $order_detail->price = $subItem['price_type_2'];
                         }
                     } else if ($subItem['type_product'] == 3) {
                         if ($subItem['price_sales'] >= 1) {
-                            $price = $subItem['price_type_3']-(($subItem['price_type_3'] * $subItem['price_sales']) / 100);
+                            $price = $subItem['price_type_3'] - (($subItem['price_type_3'] * $subItem['price_sales']) / 100);
                             $order_detail->price = $price;
                         } else {
                             $order_detail->price = $subItem['price_type_3'];
@@ -2259,7 +2259,22 @@ class ApiController extends Controller
 
     public function hookSellPang(Request $request)
     {
-        dd($request);
+        try {
+            $message = trim($request->getContent());
+            if ($message) {
+                $json_obj = json_decode($message);
+                foreach ($json_obj->items as $item) {
+                    if ($item->status == "501") {
+                        DB::table('orders')->where('tracking', $item->barcode)->update([
+                            'status' => 'ส่งสำเร็จ'
+                        ]);
+                    }
+                }
+                return response(['message' => 'success data'], 400);
+            }
+        } catch (Exception $e) {
+            return response(['message' => $e->getMessage()], 422);
+        }
     }
 
     public function addTrackingOrder(Request $request)
@@ -2299,7 +2314,7 @@ class ApiController extends Controller
                     $url_insert_track = "https://trackwebhook.thailandpost.co.th/post/api/v1/hook";
 
                     $body = json_encode([
-                        "status" => "all",
+                        "status" => "501",
                         "language" => "TH",
                         "barcode" => [
                             $request->tracking,
@@ -2351,7 +2366,7 @@ class ApiController extends Controller
                         $url_insert_track = "https://trackwebhook.thailandpost.co.th/post/api/v1/hook";
 
                         $body = json_encode([
-                            "status" => "all",
+                            "status" => "501",
                             "language" => "TH",
                             "barcode" => [
                                 $request->tracking,
@@ -2381,7 +2396,7 @@ class ApiController extends Controller
                     $url_insert_track = "https://trackwebhook.thailandpost.co.th/post/api/v1/hook";
 
                     $body = json_encode([
-                        "status" => "all",
+                        "status" => "501",
                         "language" => "TH",
                         "barcode" => [
                             $request->tracking,
