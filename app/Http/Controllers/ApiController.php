@@ -1409,7 +1409,6 @@ class ApiController extends Controller
             ->get();
 
         $total_delivery = DB::table('orders')
-            ->join('order_details', 'orders.id', '=', 'order_details.order_id')
             ->leftjoin('shops', 'shops.id', '=', 'order_details.shop_id')
             ->selectRaw('SUM(CASE WHEN orders.status = "จัดส่งสำเร็จ" THEN orders.num ELSE 0 END) AS sum_sent, SUM(CASE WHEN orders.status != "จัดส่งสำเร็จ" THEN orders.num ELSE 0 END) AS sum_not_sent')
             ->where('orders.owner_shop_id', '=', $request->uid)
