@@ -1376,7 +1376,7 @@ class ApiController extends Controller
         $data_shop_bar = DB::table('order_details')
             ->leftjoin('shops', 'shops.id', '=', 'order_details.shop_id')
             ->groupBy('shops.name_shop')
-            ->select(['shops.name_shop'])
+            ->selectRaw('shops.name_shop, SUM(order_details.num) AS total_num')
             ->where('shops.user_id', '=', $request->uid)
             ->limit(5)
             ->get();
