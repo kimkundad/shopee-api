@@ -2265,6 +2265,8 @@ class ApiController extends Controller
 
     public function addTrackingOrder(Request $request)
     {
+        $mainToken = env('MAIN_TOKEN_THAIPOST');
+        dd($mainToken);
         if ($request->orderId && $request->tracking) {
             DB::table('orders')->where('id', $request->orderId)->update([
                 'tracking' => $request->tracking,
