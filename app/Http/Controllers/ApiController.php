@@ -14,6 +14,7 @@ use App\Models\product;
 use App\Models\shop;
 use App\Models\carts;
 use App\Models\total_orders;
+use App\Models\thaipost_token;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Intervention\Image\ImageManagerStatic as Image;
@@ -2271,9 +2272,146 @@ class ApiController extends Controller
                 'status' => 'จัดส่งสำเร็จ',
                 'updated_at' => date('Y-m-d H:i:s'),
             ]);
+
+            $thaipost_token = DB::table('thaipost_token')->select('*')->first();
+            if ($thaipost_token === null) {
+
+                $mainToken = env('MAIN_TOKEN_THAIPOST');
+
+                $url = "https://trackwebhook.thailandpost.co.th/post/api/v1/authenticate/token";
+
+                $response = file_get_contents($url, false, stream_context_create([
+                    'https' => [
+                        'method' => 'POST',
+                        'header' => "Content-type: application/json\r\nAuthorization: Token $mainToken\r\n"
+                    ]
+                ]));
+
+                // แปลง response เป็นรูปแบบของออบเจ็กต์
+                $responseData = json_decode($response);
+
+                // เก็บข้อมูลลงในฐานข้อมูล
+                if ($responseData !== null) {
+                    thaipost_token::insert([
+                        'token' => $responseData->token,
+                        'expire' => $responseData->expire
+                    ]);
+
+                    $url_insert_track = "https://trackwebhook.thailandpost.co.th/post/api/v1/hook";
+
+                    $body = json_encode([
+                        "status" => "all",
+                        "language" => "TH",
+                        "barcode" => [
+                            $request->tracking,
+                        ],
+                        "req_previous_status" => true
+                    ]);
+
+                    $response_insert_track = file_get_contents($url_insert_track, false, stream_context_create([
+                        'https' => [
+                            'method' => 'POST',
+                            'header' => "Content-type: application/json\r\nAuthorization: Token $responseData->token\r\n",
+                            'content' => $body
+                        ]
+                    ]));
+
+                    // แปลง response เป็นรูปแบบของออบเจ็กต์
+                    $responseDataInsertTrack = json_decode($response_insert_track);
+
+                    if ($responseDataInsertTrack->message === 'successful') {
+                        return response()->json([
+                            'success' => 'Insert tracking successfully',
+                        ], 201);
+                    }
+                }
+            } else {
+                $now = \Carbon\Carbon::now();
+                if ($now->greaterThan(\Carbon\Carbon::parse($thaipost_token->expire))) {
+                    // หมดอายุแล้ว
+                    $mainToken = env('MAIN_TOKEN_THAIPOST');
+
+                    $url = "https://trackwebhook.thailandpost.co.th/post/api/v1/authenticate/token";
+
+                    $response = file_get_contents($url, false, stream_context_create([
+                        'https' => [
+                            'method' => 'POST',
+                            'header' => "Content-type: application/json\r\nAuthorization: Token $mainToken\r\n"
+                        ]
+                    ]));
+
+                    // แปลง response เป็นรูปแบบของออบเจ็กต์
+                    $responseData = json_decode($response);
+
+                    if ($responseData !== null) {
+                        thaipost_token::where('id', $thaipost_token->id)->update([
+                            'token' => $responseData->token,
+                            'expire' => $responseData->expire
+                        ]);
+
+                        $url_insert_track = "https://trackwebhook.thailandpost.co.th/post/api/v1/hook";
+
+                        $body = json_encode([
+                            "status" => "all",
+                            "language" => "TH",
+                            "barcode" => [
+                                $request->tracking,
+                            ],
+                            "req_previous_status" => true
+                        ]);
+
+                        $response_insert_track = file_get_contents($url_insert_track, false, stream_context_create([
+                            'https' => [
+                                'method' => 'POST',
+                                'header' => "Content-type: application/json\r\nAuthorization: Token $responseData->token\r\n",
+                                'content' => $body
+                            ]
+                        ]));
+
+                        // แปลง response เป็นรูปแบบของออบเจ็กต์
+                        $responseDataInsertTrack = json_decode($response_insert_track);
+
+                        if ($responseDataInsertTrack->message === 'successful') {
+                            return response()->json([
+                                'success' => 'Insert tracking successfully',
+                            ], 201);
+                        }
+                    }
+                } else {
+                    // ยังไม่หมดอายุ
+                    $url_insert_track = "https://trackwebhook.thailandpost.co.th/post/api/v1/hook";
+
+                    $body = json_encode([
+                        "status" => "all",
+                        "language" => "TH",
+                        "barcode" => [
+                            $request->tracking,
+                        ],
+                        "req_previous_status" => true
+                    ]);
+
+                    $response_insert_track = file_get_contents($url_insert_track, false, stream_context_create([
+                        'https' => [
+                            'method' => 'POST',
+                            'header' => "Content-type: application/json\r\nAuthorization: Token $thaipost_token->token\r\n",
+                            'content' => $body
+                        ]
+                    ]));
+
+                    // แปลง response เป็นรูปแบบของออบเจ็กต์
+                    $responseDataInsertTrack = json_decode($response_insert_track);
+
+                    if ($responseDataInsertTrack->message === 'successful') {
+                        return response()->json([
+                            'success' => 'Insert tracking successfully',
+                        ], 201);
+                    }
+                }
+            }
+        } else {
             return response()->json([
-                'success' => 'Insert tracking successfully',
-            ], 201);
+                'error' => 'Insert tracking not successfully',
+            ], 500);
         }
     }
 }
