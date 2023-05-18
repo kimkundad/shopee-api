@@ -2314,7 +2314,7 @@ class ApiController extends Controller
                     $url_insert_track = "https://trackwebhook.thailandpost.co.th/post/api/v1/hook";
 
                     $body = json_encode([
-                        "status" => ["501", '901'],
+                        "status" => "501",
                         "language" => "TH",
                         "barcode" => [
                             $request->tracking,
@@ -2366,7 +2366,7 @@ class ApiController extends Controller
                         $url_insert_track = "https://trackwebhook.thailandpost.co.th/post/api/v1/hook";
 
                         $body = json_encode([
-                            "status" => ["501", '901'],
+                            "status" => "501",
                             "language" => "TH",
                             "barcode" => [
                                 $request->tracking,
@@ -2396,7 +2396,7 @@ class ApiController extends Controller
                     $url_insert_track = "https://trackwebhook.thailandpost.co.th/post/api/v1/hook";
 
                     $body = json_encode([
-                        "status" => ["501", '901'],
+                        "status" => "501",
                         "language" => "TH",
                         "barcode" => [
                             $request->tracking,
