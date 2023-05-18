@@ -863,7 +863,8 @@ class ApiController extends Controller
             ['product_id', '=', $request->input('productId')],
             ['product_options_id', '=', $request->input('productOptionId')],
             ['product_suboptions_id', '=', $request->input('productSubOptionId')],
-        ])->first();
+        ])->orWhere('id','=',$request->input('cart_id'))
+        ->first();
         if ($cartItem !== null) {
             $sum = $cartItem->num + $request->input('num');
             DB::table('carts')->where('id', '=', $cartItem->id)->update([
