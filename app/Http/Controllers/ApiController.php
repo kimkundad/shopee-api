@@ -1310,7 +1310,7 @@ class ApiController extends Controller
             ->leftjoin('product_options', 'product_options.id', '=', 'order_details.option1')
             ->leftjoin('product_suboptions', 'product_suboptions.id', '=', 'order_details.option2')
             ->groupBy('products.name_product', 'shops.name_shop')
-            ->selectRaw('products.name_product,shops.name_shop,SUM(order_details.price) AS total_price')
+            ->selectRaw('products.name_product,shops.name_shop,SUM(order_details.price*order_details.num) AS total_price')
             ->where('shops.user_id', '=', $request->uid)
             ->orderBy('total_price', 'desc')
             ->get();
