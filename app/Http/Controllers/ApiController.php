@@ -310,7 +310,7 @@ class ApiController extends Controller
             $order_detail->num = $request->num;
             $order_detail->type_payment = $request->type_payment;
             if ($request->price_sales >= 1) {
-                $price = $request->price - (($request->price * $request->price_sales) / 100);
+                $price = $request->price-(($request->price * $request->price_sales) / 100);
                 $order_detail->price = $price;
             } else {
                 $order_detail->price = $request->price;
@@ -346,21 +346,21 @@ class ApiController extends Controller
                     $order_detail->option2 = $subItem['option2Id'];
                     if ($subItem['type_product'] == 1) {
                         if ($subItem['price_sales'] >= 1) {
-                            $price = $subItem['price_type_1'] - (($subItem['price_type_1'] * $subItem['price_sales']) / 100);
+                            $price = $subItem['price_type_1']-(($subItem['price_type_1'] * $subItem['price_sales']) / 100);
                             $order_detail->price = $price;
                         } else {
                             $order_detail->price = $subItem['price_type_1'];
                         }
                     } else if ($subItem['type_product'] == 2) {
                         if ($subItem['price_sales'] >= 1) {
-                            $price = $subItem['price_type_2'] - (($subItem['price_type_2'] * $subItem['price_sales']) / 100);
+                            $price = $subItem['price_type_2']-(($subItem['price_type_2'] * $subItem['price_sales']) / 100);
                             $order_detail->price = $price;
                         } else {
                             $order_detail->price = $subItem['price_type_2'];
                         }
                     } else if ($subItem['type_product'] == 3) {
                         if ($subItem['price_sales'] >= 1) {
-                            $price = $subItem['price_type_3'] - (($subItem['price_type_3'] * $subItem['price_sales']) / 100);
+                            $price = $subItem['price_type_3']-(($subItem['price_type_3'] * $subItem['price_sales']) / 100);
                             $order_detail->price = $price;
                         } else {
                             $order_detail->price = $subItem['price_type_3'];
@@ -1414,8 +1414,10 @@ class ApiController extends Controller
             ->get();
 
         $total_payment = DB::table('order_details')
+            ->join('orders', 'orders.id', '=', 'order_details.order_id')
+            ->leftjoin('shops', 'shops.id', '=', 'order_details.shop_id')
             ->selectRaw('SUM(CASE WHEN order_details.type_payment = "โอนเงิน" THEN order_details.num ELSE 0 END) AS sum_payment, SUM(CASE WHEN order_details.type_payment = "เก็บเงินปลายทาง" THEN order_details.num ELSE 0 END) AS sum_cash_on_delivery')
-            ->where('orders.owner_shop_id', '=', $request->uid)
+            ->where('shops.user_id', '=', $request->uid)
             ->get();
         return response()->json([
             'data_table' => $data_table,
@@ -2255,30 +2257,7 @@ class ApiController extends Controller
 
     public function hookSellPang(Request $request)
     {
-        try {
-            $message = trim($request->getContent());
-            if ($message) {
-                $json_obj = json_decode($message);
-                foreach ($json_obj->items as $item) {
-                    if ($item->status == "501") {
-                        DB::table('orders')->where('tracking', $item->barcode)->update([
-                            'status' => 'ส่งสำเร็จ'
-                        ]);
-                    } else if ($item->status == "203" || $item->status == "104") {
-                        DB::table('orders')->where('tracking', $item->barcode)->update([
-                            'status' => 'ตีกลับ'
-                        ]);
-                    } else if ($item->status == "209" || $item->status == "210") {
-                        DB::table('orders')->where('tracking', $item->barcode)->update([
-                            'status' => 'ยกเลิก'
-                        ]);
-                    }
-                }
-                return response(['message' => 'success data'], 400);
-            }
-        } catch (Exception $e) {
-            return response(['message' => $e->getMessage()], 422);
-        }
+        dd($request);
     }
 
     public function addTrackingOrder(Request $request)
