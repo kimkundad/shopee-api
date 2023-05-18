@@ -344,21 +344,21 @@ class ApiController extends Controller
                     $order_detail->shop_id = $subItem['shops_id'];
                     $order_detail->option1 = $subItem['option1Id'];
                     $order_detail->option2 = $subItem['option2Id'];
-                    if ($subItem['type'] == 1) {
+                    if ($subItem['type_product'] == 1) {
                         if ($subItem['price_sales'] >= 1) {
                             $price = ($subItem['price_type_1'] * $subItem['price_sales']) / 100;
                             $order_detail->price = $price;
                         } else {
                             $order_detail->price = $subItem['price_type_1'];
                         }
-                    } else if ($subItem['type'] == 2) {
+                    } else if ($subItem['type_product'] == 2) {
                         if ($subItem['price_sales'] >= 1) {
                             $price = ($subItem['price_type_2'] * $subItem['price_sales']) / 100;
                             $order_detail->price = $price;
                         } else {
                             $order_detail->price = $subItem['price_type_2'];
                         }
-                    } else if ($subItem['type'] == 3) {
+                    } else if ($subItem['type_product'] == 3) {
                         if ($subItem['price_sales'] >= 1) {
                             $price = ($subItem['price_type_3'] * $subItem['price_sales']) / 100;
                             $order_detail->price = $price;
