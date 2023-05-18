@@ -309,7 +309,7 @@ class ApiController extends Controller
             $order_detail->option2 = $request->option2;
             $order_detail->num = $request->num;
             $order_detail->type_payment = $request->type_payment;
-            if ($request->price >= 1) {
+            if ($request->price_sales >= 1) {
                 $price = ($request->price * $request->price_sales) / 100;
                 $order_detail->price = $price;
             } else {
