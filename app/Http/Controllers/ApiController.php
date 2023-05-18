@@ -14,7 +14,6 @@ use App\Models\product;
 use App\Models\shop;
 use App\Models\carts;
 use App\Models\total_orders;
-use App\Models\thaipost_token;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Intervention\Image\ImageManagerStatic as Image;
@@ -2292,7 +2291,7 @@ class ApiController extends Controller
 
                 // เก็บข้อมูลลงในฐานข้อมูล
                 if ($responseData !== null) {
-                    thaipost_token::insert([
+                    DB::table('thaipost_token')->insert([
                         'token' => $responseData->token,
                         'expire' => $responseData->expire
                     ]);
@@ -2344,7 +2343,7 @@ class ApiController extends Controller
                     $responseData = json_decode($response);
 
                     if ($responseData !== null) {
-                        thaipost_token::where('id', $thaipost_token->id)->update([
+                        DB::table('thaipost_token')->where('id', $thaipost_token->id)->update([
                             'token' => $responseData->token,
                             'expire' => $responseData->expire
                         ]);
