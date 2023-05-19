@@ -2191,7 +2191,7 @@ class ApiController extends Controller
                     ->orWhere('addresses.tel', 'like', '%' . $search . '%')
                     ->orWhere('orders.price', 'like', '%' . $search . '%');
             })
-            ->WhereDate('orders.created_at', $searchDate)
+            ->whereDate('orders.created_at', $searchDate)
             ->paginate($request->numShowItems);
         foreach ($orders2 as $value) {
             $data = DB::table('order_details')
