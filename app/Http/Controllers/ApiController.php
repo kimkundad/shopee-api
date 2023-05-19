@@ -2220,6 +2220,7 @@ class ApiController extends Controller
                     'order_details.option2 as option2',
                     'products.name_product as nameProduct',
                     'order_details.num as num',
+                    'order_details.price as price',
                     'products.price as priceProduct',
                     'product_options.price as priceProductOption1',
                     'product_suboptions.price as priceProductOption2',
