@@ -2152,7 +2152,8 @@ class ApiController extends Controller
         //     )
         //     ->groupBy('orders.id', 'orders.invoice_id', 'addresses.name', 'addresses.province', 'addresses.tel', 'banks.icon_bank', 'orders.created_at', 'orders.status')
         //     ->get();
-
+        $search = $request->search;
+        $searchDate = Carbon::createFromTimestamp($request->searchDate);
         $orders2 = DB::table('orders')
             ->leftJoin('addresses', 'addresses.id', '=', 'orders.address_id')
             ->leftJoin('transections', 'transections.order_id', '=', 'orders.id')
@@ -2183,6 +2184,14 @@ class ApiController extends Controller
                 'transections.time as timeSlipPayment',
             ])
             ->where('orders.status', $request->navbarTab)
+            ->where(function ($query) use ($search, $searchDate) {
+                $query->where('orders.invoice_id', 'like', '%' . $search . '%')
+                    ->orWhere('addresses.name', 'like', '%' . $search . '%')
+                    ->orWhere('addresses.address', 'like', '%' . $search . '%')
+                    ->orWhere('addresses.tel', 'like', '%' . $search . '%')
+                    ->orWhere('orders.price', 'like', '%' . $search . '%')
+                    ->orWhere('orders.created_at', $searchDate);
+            })
             ->paginate($request->numShowItems);
         foreach ($orders2 as $value) {
             $data = DB::table('order_details')
