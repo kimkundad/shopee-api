@@ -2159,7 +2159,8 @@ class ApiController extends Controller
         //     )
         //     ->groupBy('orders.id', 'orders.invoice_id', 'addresses.name', 'addresses.province', 'addresses.tel', 'banks.icon_bank', 'orders.created_at', 'orders.status')
         //     ->get();
-
+        $search = $request->search;
+        $searchDate = $request->searchDate;
         $orders2 = DB::table('orders')
             ->leftJoin('addresses', 'addresses.id', '=', 'orders.address_id')
             ->leftJoin('transections', 'transections.order_id', '=', 'orders.id')
@@ -2190,6 +2191,27 @@ class ApiController extends Controller
                 'transections.time as timeSlipPayment',
             ])
             ->where('orders.status', $request->navbarTab)
+            ->where(function ($query) use ($search, $searchDate) {
+                if (!empty($searchDate) && empty($search)) {
+                    $query->whereDate('orders.created_at', $searchDate);
+                } elseif (empty($searchDate) && !empty($search)) {
+                    $query->where(function ($query) use ($search) {
+                        $query->orWhere('orders.invoice_id', 'like', '%' . $search . '%')
+                            ->orWhere('addresses.name', 'like', '%' . $search . '%')
+                            ->orWhere('addresses.address', 'like', '%' . $search . '%')
+                            ->orWhere('addresses.tel', 'like', '%' . $search . '%')
+                            ->orWhere('orders.price', 'like', '%' . $search . '%');
+                    });
+                } elseif (!empty($searchDate) && !empty($search)) {
+                    $query->where(function ($query) use ($search, $searchDate) {
+                        $query->orWhere('orders.invoice_id', 'like', '%' . $search . '%')
+                            ->orWhere('addresses.name', 'like', '%' . $search . '%')
+                            ->orWhere('addresses.address', 'like', '%' . $search . '%')
+                            ->orWhere('addresses.tel', 'like', '%' . $search . '%')
+                            ->orWhere('orders.price', 'like', '%' . $search . '%');
+                    })->whereDate('orders.created_at', $searchDate);
+                }
+            })
             ->paginate($request->numShowItems);
         foreach ($orders2 as $value) {
             $data = DB::table('order_details')
@@ -2205,6 +2227,7 @@ class ApiController extends Controller
                     'order_details.option2 as option2',
                     'products.name_product as nameProduct',
                     'order_details.num as num',
+                    'order_details.price as price',
                     'products.price as priceProduct',
                     'product_options.price as priceProductOption1',
                     'product_suboptions.price as priceProductOption2',
@@ -2457,7 +2480,7 @@ class ApiController extends Controller
             return response()->json([
                 'success' => 'Insert tracking successfully',
             ], 201);
-        }else{
+        } else {
             return response()->json([
                 'error' => 'Insert tracking not successfully',
             ], 500);
@@ -2476,7 +2499,7 @@ class ApiController extends Controller
             return response()->json([
                 'success' => 'Insert tracking successfully',
             ], 201);
-        }else{
+        } else {
             return response()->json([
                 'error' => 'Insert tracking not successfully',
             ], 500);
