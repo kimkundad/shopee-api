@@ -2153,7 +2153,7 @@ class ApiController extends Controller
         //     ->groupBy('orders.id', 'orders.invoice_id', 'addresses.name', 'addresses.province', 'addresses.tel', 'banks.icon_bank', 'orders.created_at', 'orders.status')
         //     ->get();
         $search = $request->search;
-        $searchDate = $request->searchDate;
+        $searchDate = Carbon::createFromTimestamp($request->searchDate);
         $orders2 = DB::table('orders')
             ->leftJoin('addresses', 'addresses.id', '=', 'orders.address_id')
             ->leftJoin('transections', 'transections.order_id', '=', 'orders.id')
