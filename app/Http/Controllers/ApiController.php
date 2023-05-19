@@ -1306,6 +1306,10 @@ class ApiController extends Controller
 
     public function dashboard(Request $request)
     {
+        $startDatePie = Carbon::createFromTimestamp($request->startDatePie);
+        $endDatePie = Carbon::createFromTimestamp($request->endDatePie);
+        $startDateBar = Carbon::createFromTimestamp($request->startDateBar);
+        $endDateBar = Carbon::createFromTimestamp($request->endDateBar);
         $data_table = DB::table('order_details')
             ->join('orders', 'orders.id', '=', 'order_details.order_id')
             ->leftjoin('shops', 'shops.id', '=', 'order_details.shop_id')
@@ -1327,6 +1331,7 @@ class ApiController extends Controller
             ->groupBy('products.name_product', 'shops.name_shop')
             ->selectRaw('products.name_product, SUM(order_details.num) AS total_num')
             ->where('shops.user_id', '=', $request->uid)
+            ->where('order_details.created_at','>=',$startDatePie)->where('order_details.created_at','<=',$endDatePie)
             ->orderBy('total_num', 'desc')
             ->limit(5)
             ->get();
@@ -1340,6 +1345,7 @@ class ApiController extends Controller
             ->groupBy('shops.name_shop')
             ->selectRaw('shops.name_shop, SUM(order_details.num) AS total_num')
             ->where('shops.user_id', '=', $request->uid)
+            ->where('order_details.created_at','>=',$startDatePie)->where('order_details.created_at','<=',$endDatePie)
             ->orderBy('total_num', 'desc')
             ->limit(5)
             ->get();
@@ -1373,6 +1379,7 @@ class ApiController extends Controller
             ->groupBy(DB::raw('DATE_FORMAT(order_details.created_at, "%Y-%M-%D")'), 'shops.name_shop')
             ->selectRaw('DATE_FORMAT(order_details.created_at, "%Y-%M-%D") AS month,shops.name_shop, SUM(order_details.num) AS total_num')
             ->where('shops.user_id', '=', $request->uid)
+            ->where('order_details.created_at','>=',$startDateBar)->where('order_details.created_at','<=',$endDateBar)
             ->orderBy(DB::raw('DATE_FORMAT(order_details.created_at, "%Y-%M-%D")'), 'asc')
             ->get();
 
