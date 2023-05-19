@@ -2257,7 +2257,30 @@ class ApiController extends Controller
 
     public function hookSellPang(Request $request)
     {
-        dd($request);
+        try {
+            $message = trim($request->getContent());
+            if ($message) {
+                $json_obj = json_decode($message);
+                foreach ($json_obj->items as $item) {
+                    if ($item->status == "501") {
+                        DB::table('orders')->where('tracking', $item->barcode)->update([
+                            'status' => 'ส่งสำเร็จ'
+                        ]);
+                    } else if ($item->status == "203" || $item->status == "104") {
+                        DB::table('orders')->where('tracking', $item->barcode)->update([
+                            'status' => 'ตีกลับ'
+                        ]);
+                    } else if ($item->status == "209" || $item->status == "210") {
+                        DB::table('orders')->where('tracking', $item->barcode)->update([
+                            'status' => 'ยกเลิก'
+                        ]);
+                    }
+                }
+                return response(['message' => 'success data'], 400);
+            }
+        } catch (Exception $e) {
+            return response(['message' => $e->getMessage()], 422);
+        }
     }
 
     public function addTrackingOrder(Request $request)
