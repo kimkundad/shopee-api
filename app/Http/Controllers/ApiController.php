@@ -311,7 +311,7 @@ class ApiController extends Controller
             $order_detail->num = $request->num;
             $order_detail->type_payment = $request->type_payment;
             if ($request->price_sales >= 1) {
-                $price = $request->price-(($request->price * $request->price_sales) / 100);
+                $price = $request->price - (($request->price * $request->price_sales) / 100);
                 $order_detail->price = $price;
             } else {
                 $order_detail->price = $request->price;
@@ -347,21 +347,21 @@ class ApiController extends Controller
                     $order_detail->option2 = $subItem['option2Id'];
                     if ($subItem['type_product'] == 1) {
                         if ($subItem['price_sales'] >= 1) {
-                            $price = $subItem['price_type_1']-(($subItem['price_type_1'] * $subItem['price_sales']) / 100);
+                            $price = $subItem['price_type_1'] - (($subItem['price_type_1'] * $subItem['price_sales']) / 100);
                             $order_detail->price = $price;
                         } else {
                             $order_detail->price = $subItem['price_type_1'];
                         }
                     } else if ($subItem['type_product'] == 2) {
                         if ($subItem['price_sales'] >= 1) {
-                            $price = $subItem['price_type_2']-(($subItem['price_type_2'] * $subItem['price_sales']) / 100);
+                            $price = $subItem['price_type_2'] - (($subItem['price_type_2'] * $subItem['price_sales']) / 100);
                             $order_detail->price = $price;
                         } else {
                             $order_detail->price = $subItem['price_type_2'];
                         }
                     } else if ($subItem['type_product'] == 3) {
                         if ($subItem['price_sales'] >= 1) {
-                            $price = $subItem['price_type_3']-(($subItem['price_type_3'] * $subItem['price_sales']) / 100);
+                            $price = $subItem['price_type_3'] - (($subItem['price_type_3'] * $subItem['price_sales']) / 100);
                             $order_detail->price = $price;
                         } else {
                             $order_detail->price = $subItem['price_type_3'];
@@ -2432,6 +2432,44 @@ class ApiController extends Controller
                 }
             }
         } else {
+            return response()->json([
+                'error' => 'Insert tracking not successfully',
+            ], 500);
+        }
+    }
+
+    public function addTrackingOrderKerry(Request $request)
+    {
+        if ($request->orderId && $request->tracking) {
+            DB::table('orders')->where('id', $request->orderId)->update([
+                'tracking' => $request->tracking,
+                'shipping' => $request->shipping,
+                'status' => 'จัดส่งสำเร็จ',
+                'updated_at' => date('Y-m-d H:i:s'),
+            ]);
+            return response()->json([
+                'success' => 'Insert tracking successfully',
+            ], 201);
+        }else{
+            return response()->json([
+                'error' => 'Insert tracking not successfully',
+            ], 500);
+        }
+    }
+
+    public function addTrackingOrderFlash(Request $request)
+    {
+        if ($request->orderId && $request->tracking) {
+            DB::table('orders')->where('id', $request->orderId)->update([
+                'tracking' => $request->tracking,
+                'shipping' => $request->shipping,
+                'status' => 'จัดส่งสำเร็จ',
+                'updated_at' => date('Y-m-d H:i:s'),
+            ]);
+            return response()->json([
+                'success' => 'Insert tracking successfully',
+            ], 201);
+        }else{
             return response()->json([
                 'error' => 'Insert tracking not successfully',
             ], 500);

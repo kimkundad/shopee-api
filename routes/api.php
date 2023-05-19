@@ -76,6 +76,8 @@ Route::group([
     Route::post('/setStatusOrders', [App\Http\Controllers\ApiController::class, 'setStatusOrders']);
     Route::post('/setStatusOrdersMulti', [App\Http\Controllers\ApiController::class, 'setStatusOrdersMulti']);
     Route::post('/addTrackingOrder', [App\Http\Controllers\ApiController::class, 'addTrackingOrder']);
+    Route::post('/addTrackingOrderKerry', [App\Http\Controllers\ApiController::class, 'addTrackingOrderKerry']);
+    Route::post('/addTrackingOrderFlash', [App\Http\Controllers\ApiController::class, 'addTrackingOrderFlash']);
 
     Route::post('/getMessage', [App\Http\Controllers\ApiController::class, 'getMessage']);
     Route::post('/sendMessage', [App\Http\Controllers\ApiController::class, 'sendMessage']);
