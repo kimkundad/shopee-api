@@ -2153,7 +2153,7 @@ class ApiController extends Controller
         //     ->groupBy('orders.id', 'orders.invoice_id', 'addresses.name', 'addresses.province', 'addresses.tel', 'banks.icon_bank', 'orders.created_at', 'orders.status')
         //     ->get();
         $search = $request->search;
-        $searchDate = Carbon::createFromTimestamp($request->searchDate);
+        $searchDate = $request->searchDate;
         $orders2 = DB::table('orders')
             ->leftJoin('addresses', 'addresses.id', '=', 'orders.address_id')
             ->leftJoin('transections', 'transections.order_id', '=', 'orders.id')
@@ -2190,7 +2190,7 @@ class ApiController extends Controller
                     ->orWhere('addresses.address', 'like', '%' . $search . '%')
                     ->orWhere('addresses.tel', 'like', '%' . $search . '%')
                     ->orWhere('orders.price', 'like', '%' . $search . '%')
-                    ->orWhere('orders.created_at', $searchDate);
+                    ->orWhereDate('orders.created_at', $searchDate);
             })
             ->paginate($request->numShowItems);
         foreach ($orders2 as $value) {
