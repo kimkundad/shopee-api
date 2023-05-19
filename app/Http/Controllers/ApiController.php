@@ -2184,14 +2184,15 @@ class ApiController extends Controller
                 'transections.time as timeSlipPayment',
             ])
             ->where('orders.status', $request->navbarTab)
-            ->where(function ($query) use ($search, $searchDate) {
-                $query->whereDate('orders.created_at', '=', $searchDate)
-                    ->orWhere('orders.invoice_id', 'like', '%' . $search . '%')
-                    ->orWhere('addresses.name', 'like', '%' . $search . '%')
-                    ->orWhere('addresses.address', 'like', '%' . $search . '%')
-                    ->orWhere('addresses.tel', 'like', '%' . $search . '%')
-                    ->orWhere('orders.price', 'like', '%' . $search . '%');
-            })
+            // ->where(function ($query) use ($search, $searchDate) {
+            //     $query->whereDate('orders.created_at', '=', $searchDate)
+            //         ->orWhere('orders.invoice_id', 'like', '%' . $search . '%')
+            //         ->orWhere('addresses.name', 'like', '%' . $search . '%')
+            //         ->orWhere('addresses.address', 'like', '%' . $search . '%')
+            //         ->orWhere('addresses.tel', 'like', '%' . $search . '%')
+            //         ->orWhere('orders.price', 'like', '%' . $search . '%');
+            // })
+            ->whereDate('orders.created_at', $searchDate)
             ->paginate($request->numShowItems);
         foreach ($orders2 as $value) {
             $data = DB::table('order_details')
