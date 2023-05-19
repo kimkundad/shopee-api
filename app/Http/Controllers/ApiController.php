@@ -2187,12 +2187,13 @@ class ApiController extends Controller
             ->where(function ($query) use ($search, $searchDate) {
                 if (!empty($searchDate)) {
                     $query->whereDate('orders.created_at', $searchDate);
+                } else {
+                    $query->orWhere('orders.invoice_id', 'like', '%' . $search . '%')
+                        ->orWhere('addresses.name', 'like', '%' . $search . '%')
+                        ->orWhere('addresses.address', 'like', '%' . $search . '%')
+                        ->orWhere('addresses.tel', 'like', '%' . $search . '%')
+                        ->orWhere('orders.price', 'like', '%' . $search . '%');
                 }
-                $query->orWhere('orders.invoice_id', 'like', '%' . $search . '%')
-                    ->orWhere('addresses.name', 'like', '%' . $search . '%')
-                    ->orWhere('addresses.address', 'like', '%' . $search . '%')
-                    ->orWhere('addresses.tel', 'like', '%' . $search . '%')
-                    ->orWhere('orders.price', 'like', '%' . $search . '%');
             })
             ->paginate($request->numShowItems);
         foreach ($orders2 as $value) {
