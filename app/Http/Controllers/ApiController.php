@@ -2185,14 +2185,25 @@ class ApiController extends Controller
             ])
             ->where('orders.status', $request->navbarTab)
             ->where(function ($query) use ($search, $searchDate) {
-                $query->where(function ($query) use ($search) {
-                    $query->orWhere('orders.invoice_id', 'like', '%' . $search . '%')
-                        ->orWhere('addresses.name', 'like', '%' . $search . '%')
-                        ->orWhere('addresses.address', 'like', '%' . $search . '%')
-                        ->orWhere('addresses.tel', 'like', '%' . $search . '%')
-                        ->orWhere('orders.price', 'like', '%' . $search . '%');
-                })
-                    ->orWhereDate('orders.created_at', $searchDate);
+                if (!empty($searchDate) && empty($search)) {
+                    $query->whereDate('orders.created_at', $searchDate);
+                } elseif (empty($searchDate) && !empty($search)) {
+                    $query->where(function ($query) use ($search) {
+                        $query->orWhere('orders.invoice_id', 'like', '%' . $search . '%')
+                            ->orWhere('addresses.name', 'like', '%' . $search . '%')
+                            ->orWhere('addresses.address', 'like', '%' . $search . '%')
+                            ->orWhere('addresses.tel', 'like', '%' . $search . '%')
+                            ->orWhere('orders.price', 'like', '%' . $search . '%');
+                    });
+                } elseif (!empty($searchDate) && !empty($search)) {
+                    $query->where(function ($query) use ($search, $searchDate) {
+                        $query->orWhere('orders.invoice_id', 'like', '%' . $search . '%')
+                            ->orWhere('addresses.name', 'like', '%' . $search . '%')
+                            ->orWhere('addresses.address', 'like', '%' . $search . '%')
+                            ->orWhere('addresses.tel', 'like', '%' . $search . '%')
+                            ->orWhere('orders.price', 'like', '%' . $search . '%');
+                    })->whereDate('orders.created_at', $searchDate);
+                }
             })
             ->paginate($request->numShowItems);
         foreach ($orders2 as $value) {
