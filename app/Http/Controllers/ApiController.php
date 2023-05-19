@@ -2185,13 +2185,14 @@ class ApiController extends Controller
             ])
             ->where('orders.status', $request->navbarTab)
             ->where(function ($query) use ($search, $searchDate) {
-                $query->whereDate('orders.created_at', $searchDate)
+                $query->where(function ($query) use ($searchDate) {
+                    $query->whereDate('orders.created_at', $searchDate);
+                })
                     ->orWhere('orders.invoice_id', 'like', '%' . $search . '%')
                     ->orWhere('addresses.name', 'like', '%' . $search . '%')
                     ->orWhere('addresses.address', 'like', '%' . $search . '%')
                     ->orWhere('addresses.tel', 'like', '%' . $search . '%')
                     ->orWhere('orders.price', 'like', '%' . $search . '%');
-
             })
             ->paginate($request->numShowItems);
         foreach ($orders2 as $value) {
@@ -2460,7 +2461,7 @@ class ApiController extends Controller
             return response()->json([
                 'success' => 'Insert tracking successfully',
             ], 201);
-        }else{
+        } else {
             return response()->json([
                 'error' => 'Insert tracking not successfully',
             ], 500);
@@ -2479,7 +2480,7 @@ class ApiController extends Controller
             return response()->json([
                 'success' => 'Insert tracking successfully',
             ], 201);
-        }else{
+        } else {
             return response()->json([
                 'error' => 'Insert tracking not successfully',
             ], 500);
