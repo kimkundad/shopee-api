@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Carbon\Carbon;
 use App\Models\chats;
 use App\Models\orders;
 use App\Models\addresses;
@@ -1217,6 +1218,8 @@ class ApiController extends Controller
     public function getReports(Request $request)
     {
         $search = $request->search;
+        $startDate = Carbon::createFromTimestamp($request->startDate);
+        $endDate = Carbon::createFromTimestamp($request->endDate);
         $reports = DB::table('order_details')
             ->join('orders', 'orders.id', '=', 'order_details.order_id')
             ->leftjoin('shops', 'shops.id', '=', 'order_details.shop_id')
@@ -1252,7 +1255,7 @@ class ApiController extends Controller
                     ->orWhere('orders.invoice_id', 'like', '%' . $search . '%')
                     ->orWhere('addresses.tel', 'like', '%' . $search . '%');
             })
-            ->where('order_details.created_at', '>=', date('Y-m-d H:i:s', $request->startDate / 1000))->where('order_details.created_at', '<=', date('Y-m-d H:i:s', $request->endDate / 1000))
+            ->where('order_details.created_at', '>=', $startDate)->where('order_details.created_at', '<=', $endDate)
             ->paginate($request->itemsPerPage);
 
         /* $total_num = DB::table('') */
