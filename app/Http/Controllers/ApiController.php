@@ -1458,7 +1458,7 @@ class ApiController extends Controller
     public function updateOwnerShop(Request $request)
     {
 
-        $objs = DB::table('ownershops')->where('user_code', '=', $request->user_code)->first();
+        $objs = ownershop::where('user_code', $request->user_code)->first();
 
         if ($objs) {
             $objs->fname = $request->fname;
