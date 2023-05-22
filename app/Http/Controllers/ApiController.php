@@ -1447,7 +1447,7 @@ class ApiController extends Controller
 
     // profile user
     public function getOwnershops(Request $request){
-         $obj = DB::table('ownershops')->where('user_code','=',$request->uid)->get();
+         $obj = DB::table('ownershops')->where('user_code','=',$request->uid)->first();
 
          return response()->json([
             'owner_shop' => $obj,
