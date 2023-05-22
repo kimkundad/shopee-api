@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\ownershop;
 use Carbon\Carbon;
 use App\Models\chats;
 use App\Models\orders;
@@ -897,6 +898,7 @@ class ApiController extends Controller
         $objs = DB::table('carts')
             ->join('shops', 'carts.shop_id', '=', 'shops.id')
             ->where('carts.user_id', '=', $request->user_id)
+            ->where('shops.user_code','=',$request->user_code)
             ->select([
                 'shops.id',
                 'shops.name_shop AS name_shop',
@@ -1445,7 +1447,39 @@ class ApiController extends Controller
 
     // profile user
     public function getOwnershops(Request $request){
-         $obj = DB::table('ownershops')->get();
+         $obj = DB::table('ownershops')->where('user_code','=',$request->uid)->get();
+
+         return response()->json([
+            'owner_shop' => $obj,
+         ],201);
+    }
+
+    public function addOwnerShop(Request $request){
+        $obj = new ownershop();
+        $obj->fname = $request->fname;
+        $obj->lname = $request->lname;
+        $obj->gender = $request->gender;
+        $obj->address = $request->address;
+        $obj->sub_district = $request->sub_district;
+        $obj->district = $request->district;
+        $obj->county = $request->county;
+        $obj->zip_code = $request->zip_code;
+        $obj->phone = $request->phone;
+        $obj->email = $request->email;
+        $obj->facebook = $request->facebook;
+        $obj->line = $request->line;
+        $obj->instagram = $request->instagram;
+        $obj->twitter = $request->twitter;
+        $obj->tiktok = $request->tiktok;
+        $obj->youtube = $request->youtube;
+        $obj->user_code = $request->user_code;
+        $obj->user_id = $request->user_id;
+        $obj->status = 1;
+        $obj->save();
+
+        return response()->json([
+            'status' => 'succes',
+        ],201);
     }
     // ดึงจำนวน invoice
     public function count_orders(Request $request)

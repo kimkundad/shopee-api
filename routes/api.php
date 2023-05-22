@@ -98,6 +98,10 @@ Route::group([
 
     Route::post('/confirmPayment' , [App\Http\Controllers\ApiController::class, 'confirm_payment']);
 
+    Route::post('/getOwnershops' , [App\Http\Controllers\ApiController::class, 'getOwnershops']);
+
+    Route::post('/addOwnerShop' , [App\Http\Controllers\ApiController::class, 'addOwnerShop']);
+
     Route::post('/createUser', [App\Http\Controllers\AuthController::class, 'createUser']);
     Route::post('/verify', [App\Http\Controllers\AuthController::class, 'verify']);
     Route::post('/login', [App\Http\Controllers\AuthController::class, 'login']);
