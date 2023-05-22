@@ -898,7 +898,7 @@ class ApiController extends Controller
         $objs = DB::table('carts')
             ->join('shops', 'carts.shop_id', '=', 'shops.id')
             ->where('carts.user_id', '=', $request->user_id)
-            ->where('shops.user_code','=',$request->user_code)
+            ->where('shops.user_code', '=', $request->user_code)
             ->select([
                 'shops.id',
                 'shops.name_shop AS name_shop',
@@ -1333,7 +1333,7 @@ class ApiController extends Controller
             ->groupBy('products.name_product', 'shops.name_shop')
             ->selectRaw('products.name_product, SUM(order_details.num) AS total_num')
             ->where('shops.user_code', '=', $request->uid)
-            ->where('order_details.created_at','>=',$startDatePie)->where('order_details.created_at','<=',$endDatePie)
+            ->where('order_details.created_at', '>=', $startDatePie)->where('order_details.created_at', '<=', $endDatePie)
             ->orderBy('total_num', 'desc')
             ->limit(5)
             ->get();
@@ -1347,7 +1347,7 @@ class ApiController extends Controller
             ->groupBy('shops.name_shop')
             ->selectRaw('shops.name_shop, SUM(order_details.num) AS total_num')
             ->where('shops.user_code', '=', $request->uid)
-            ->where('order_details.created_at','>=',$startDatePie)->where('order_details.created_at','<=',$endDatePie)
+            ->where('order_details.created_at', '>=', $startDatePie)->where('order_details.created_at', '<=', $endDatePie)
             ->orderBy('total_num', 'desc')
             ->limit(5)
             ->get();
@@ -1381,7 +1381,7 @@ class ApiController extends Controller
             ->groupBy(DB::raw('DATE_FORMAT(order_details.created_at, "%Y-%M-%D")'), 'shops.name_shop')
             ->selectRaw('DATE_FORMAT(order_details.created_at, "%Y-%M-%D") AS month,shops.name_shop, SUM(order_details.num) AS total_num')
             ->where('shops.user_code', '=', $request->uid)
-            ->where('order_details.created_at','>=',$startDateBar)->where('order_details.created_at','<=',$endDateBar)
+            ->where('order_details.created_at', '>=', $startDateBar)->where('order_details.created_at', '<=', $endDateBar)
             ->orderBy(DB::raw('DATE_FORMAT(order_details.created_at, "%Y-%M-%D")'), 'asc')
             ->get();
 
@@ -1446,19 +1446,45 @@ class ApiController extends Controller
     }
 
     // profile user
-    public function getOwnershops(Request $request){
-         $obj = DB::table('ownershops')->where('user_code','=',$request->user_code)->first();
+    public function getOwnershops(Request $request)
+    {
+        $obj = DB::table('ownershops')->where('user_code', '=', $request->user_code)->first();
 
-         return response()->json([
+        return response()->json([
             'owner_shop' => $obj,
-         ],201);
+        ], 201);
     }
 
-    public function updateOwnerShop(Request $request){
-        
-        $objs = DB::table('ownershops')->where('user_code','=',$request->user_code)->first();
+    public function updateOwnerShop(Request $request)
+    {
 
-        if($objs == null){
+        $objs = DB::table('ownershops')->where('user_code', '=', $request->user_code)->first();
+
+        if ($objs) {
+            $objs->fname = $request->fname;
+            $objs->lname = $request->lname;
+            $objs->gender = $request->gender;
+            $objs->address = $request->address;
+            $objs->sub_district = $request->sub_district;
+            $objs->district = $request->district;
+            $objs->county = $request->county;
+            $objs->zip_code = $request->zip_code;
+            $objs->phone = $request->phone;
+            $objs->email = $request->email;
+            $objs->facebook = $request->facebook;
+            $objs->line = $request->line;
+            $objs->instagram = $request->instagram;
+            $objs->twitter = $request->twitter;
+            $objs->tiktok = $request->tiktok;
+            $objs->youtube = $request->youtube;
+            $objs->user_id = $request->user_id;
+            $objs->status = 1;
+            $objs->update();
+
+            return response()->json([
+                'status' => 'succes',
+            ], 201);
+        } else {
             $obj = new ownershop();
             $obj->fname = $request->fname;
             $obj->lname = $request->lname;
@@ -1480,38 +1506,11 @@ class ApiController extends Controller
             $obj->user_id = $request->user_id;
             $obj->status = 1;
             $obj->save();
-    
-            return response()->json([
-                'status' => 'succes',
-            ],201);
-        }else{
-            $obj = new ownershop();
-            $obj->fname = $request->fname;
-            $obj->lname = $request->lname;
-            $obj->gender = $request->gender;
-            $obj->address = $request->address;
-            $obj->sub_district = $request->sub_district;
-            $obj->district = $request->district;
-            $obj->county = $request->county;
-            $obj->zip_code = $request->zip_code;
-            $obj->phone = $request->phone;
-            $obj->email = $request->email;
-            $obj->facebook = $request->facebook;
-            $obj->line = $request->line;
-            $obj->instagram = $request->instagram;
-            $obj->twitter = $request->twitter;
-            $obj->tiktok = $request->tiktok;
-            $obj->youtube = $request->youtube;
-            $obj->user_code = $request->user_code;
-            $obj->user_id = $request->user_id;
-            $obj->status = 1;
-            $obj->update();
 
             return response()->json([
                 'status' => 'succes',
-            ],201);
+            ], 201);
         }
-        
     }
     // ดึงจำนวน invoice
     public function count_orders(Request $request)
