@@ -100,7 +100,7 @@ Route::group([
 
     Route::post('/getOwnershops' , [App\Http\Controllers\ApiController::class, 'getOwnershops']);
 
-    Route::post('/addOwnerShop' , [App\Http\Controllers\ApiController::class, 'addOwnerShop']);
+    Route::post('/updateOwnerShop' , [App\Http\Controllers\ApiController::class, 'updateOwnerShop']);
 
     Route::post('/createUser', [App\Http\Controllers\AuthController::class, 'createUser']);
     Route::post('/verify', [App\Http\Controllers\AuthController::class, 'verify']);

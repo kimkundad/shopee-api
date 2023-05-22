@@ -1454,32 +1454,64 @@ class ApiController extends Controller
          ],201);
     }
 
-    public function addOwnerShop(Request $request){
-        $obj = new ownershop();
-        $obj->fname = $request->fname;
-        $obj->lname = $request->lname;
-        $obj->gender = $request->gender;
-        $obj->address = $request->address;
-        $obj->sub_district = $request->sub_district;
-        $obj->district = $request->district;
-        $obj->county = $request->county;
-        $obj->zip_code = $request->zip_code;
-        $obj->phone = $request->phone;
-        $obj->email = $request->email;
-        $obj->facebook = $request->facebook;
-        $obj->line = $request->line;
-        $obj->instagram = $request->instagram;
-        $obj->twitter = $request->twitter;
-        $obj->tiktok = $request->tiktok;
-        $obj->youtube = $request->youtube;
-        $obj->user_code = $request->user_code;
-        $obj->user_id = $request->user_id;
-        $obj->status = 1;
-        $obj->save();
+    public function updateOwnerShop(Request $request){
+        
+        $objs = DB::table('ownershops')->where('user_code','=',$request->user_code)->first();
 
-        return response()->json([
-            'status' => 'succes',
-        ],201);
+        if($objs == null){
+            $obj = new ownershop();
+            $obj->fname = $request->fname;
+            $obj->lname = $request->lname;
+            $obj->gender = $request->gender;
+            $obj->address = $request->address;
+            $obj->sub_district = $request->sub_district;
+            $obj->district = $request->district;
+            $obj->county = $request->county;
+            $obj->zip_code = $request->zip_code;
+            $obj->phone = $request->phone;
+            $obj->email = $request->email;
+            $obj->facebook = $request->facebook;
+            $obj->line = $request->line;
+            $obj->instagram = $request->instagram;
+            $obj->twitter = $request->twitter;
+            $obj->tiktok = $request->tiktok;
+            $obj->youtube = $request->youtube;
+            $obj->user_code = $request->user_code;
+            $obj->user_id = $request->user_id;
+            $obj->status = 1;
+            $obj->save();
+    
+            return response()->json([
+                'status' => 'succes',
+            ],201);
+        }else{
+            $obj = new ownershop();
+            $obj->fname = $request->fname;
+            $obj->lname = $request->lname;
+            $obj->gender = $request->gender;
+            $obj->address = $request->address;
+            $obj->sub_district = $request->sub_district;
+            $obj->district = $request->district;
+            $obj->county = $request->county;
+            $obj->zip_code = $request->zip_code;
+            $obj->phone = $request->phone;
+            $obj->email = $request->email;
+            $obj->facebook = $request->facebook;
+            $obj->line = $request->line;
+            $obj->instagram = $request->instagram;
+            $obj->twitter = $request->twitter;
+            $obj->tiktok = $request->tiktok;
+            $obj->youtube = $request->youtube;
+            $obj->user_code = $request->user_code;
+            $obj->user_id = $request->user_id;
+            $obj->status = 1;
+            $obj->update();
+
+            return response()->json([
+                'status' => 'succes',
+            ],201);
+        }
+        
     }
     // ดึงจำนวน invoice
     public function count_orders(Request $request)
