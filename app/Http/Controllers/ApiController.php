@@ -1318,7 +1318,7 @@ class ApiController extends Controller
             ->leftjoin('product_suboptions', 'product_suboptions.id', '=', 'order_details.option2')
             ->groupBy('products.name_product', 'shops.name_shop')
             ->selectRaw('products.name_product,shops.name_shop,SUM(order_details.price*order_details.num) AS total_price')
-            ->where('shops.user_id', '=', $request->uid)
+            ->where('shops.user_code', '=', $request->uid)
             ->orderBy('total_price', 'desc')
             ->get();
 
@@ -1330,7 +1330,7 @@ class ApiController extends Controller
             ->leftjoin('product_suboptions', 'product_suboptions.id', '=', 'order_details.option2')
             ->groupBy('products.name_product', 'shops.name_shop')
             ->selectRaw('products.name_product, SUM(order_details.num) AS total_num')
-            ->where('shops.user_id', '=', $request->uid)
+            ->where('shops.user_code', '=', $request->uid)
             ->where('order_details.created_at','>=',$startDatePie)->where('order_details.created_at','<=',$endDatePie)
             ->orderBy('total_num', 'desc')
             ->limit(5)
@@ -1344,7 +1344,7 @@ class ApiController extends Controller
             ->leftjoin('product_suboptions', 'product_suboptions.id', '=', 'order_details.option2')
             ->groupBy('shops.name_shop')
             ->selectRaw('shops.name_shop, SUM(order_details.num) AS total_num')
-            ->where('shops.user_id', '=', $request->uid)
+            ->where('shops.user_code', '=', $request->uid)
             ->where('order_details.created_at','>=',$startDatePie)->where('order_details.created_at','<=',$endDatePie)
             ->orderBy('total_num', 'desc')
             ->limit(5)
@@ -1360,7 +1360,7 @@ class ApiController extends Controller
             ->leftjoin('product_suboptions', 'product_suboptions.id', '=', 'order_details.option2')
             ->groupBy(DB::raw('DATE_FORMAT(order_details.created_at, "%M")'))
             ->selectRaw('DATE_FORMAT(order_details.created_at, "%M") AS month, SUM(order_details.price*order_details.num) AS total_price')
-            ->where('shops.user_id', '=', $request->uid)
+            ->where('shops.user_code', '=', $request->uid)
             ->get();
         $monthData = $data_chart_line->keyBy('month')->toArray(); // Convert the query result to an array, keyed by month
 
@@ -1378,7 +1378,7 @@ class ApiController extends Controller
             ->leftjoin('product_suboptions', 'product_suboptions.id', '=', 'order_details.option2')
             ->groupBy(DB::raw('DATE_FORMAT(order_details.created_at, "%Y-%M-%D")'), 'shops.name_shop')
             ->selectRaw('DATE_FORMAT(order_details.created_at, "%Y-%M-%D") AS month,shops.name_shop, SUM(order_details.num) AS total_num')
-            ->where('shops.user_id', '=', $request->uid)
+            ->where('shops.user_code', '=', $request->uid)
             ->where('order_details.created_at','>=',$startDateBar)->where('order_details.created_at','<=',$endDateBar)
             ->orderBy(DB::raw('DATE_FORMAT(order_details.created_at, "%Y-%M-%D")'), 'asc')
             ->get();
@@ -1387,7 +1387,7 @@ class ApiController extends Controller
             ->leftjoin('shops', 'shops.id', '=', 'order_details.shop_id')
             ->groupBy('shops.name_shop')
             ->selectRaw('shops.name_shop, SUM(order_details.num) AS total_num')
-            ->where('shops.user_id', '=', $request->uid)
+            ->where('shops.user_code', '=', $request->uid)
             ->limit(5)
             ->get();
 
@@ -1408,14 +1408,14 @@ class ApiController extends Controller
             ->leftjoin('shop_list_products', 'shop_list_products.product_id', '=', 'products.id')
             ->leftJoin('shops', 'shops.id', '=', 'shop_list_products.shop_id')
             ->selectRaw('SUM(products.stock) AS allStock')
-            ->where('shops.user_id', '=', $request->uid)
+            ->where('shops.user_code', '=', $request->uid)
             ->get();
 
         $total_sales = DB::table('order_details')
             ->join('orders', 'orders.id', '=', 'order_details.order_id')
             ->leftjoin('shops', 'shops.id', '=', 'order_details.shop_id')
             ->selectRaw('SUM(order_details.num) AS total_sales')
-            ->where('shops.user_id', '=', $request->uid)
+            ->where('shops.user_code', '=', $request->uid)
             ->get();
 
         $total_delivery = DB::table('orders')
@@ -1427,7 +1427,7 @@ class ApiController extends Controller
             ->join('orders', 'orders.id', '=', 'order_details.order_id')
             ->leftjoin('shops', 'shops.id', '=', 'order_details.shop_id')
             ->selectRaw('SUM(CASE WHEN order_details.type_payment = "โอนเงิน" THEN order_details.num ELSE 0 END) AS sum_payment, SUM(CASE WHEN order_details.type_payment = "เก็บเงินปลายทาง" THEN order_details.num ELSE 0 END) AS sum_cash_on_delivery')
-            ->where('shops.user_id', '=', $request->uid)
+            ->where('shops.user_code', '=', $request->uid)
             ->get();
         return response()->json([
             'data_table' => $data_table,
@@ -1443,6 +1443,10 @@ class ApiController extends Controller
         ], 201);
     }
 
+    // profile user
+    public function getOwnershops(Request $request){
+         $obj = DB::table('ownershops')->get();
+    }
     // ดึงจำนวน invoice
     public function count_orders(Request $request)
     {
