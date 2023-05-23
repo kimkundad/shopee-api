@@ -1192,6 +1192,12 @@ class ApiController extends Controller
                 'banks' => $banks,
             ], 201);
         }
+        if ($request->type == "setting") {
+            $banks = DB::table('bankaccounts')->leftjoin('banks', 'banks.id', '=', 'bankaccounts.bank_id')->where('bankaccounts.user_id', '=', $request->user_id)->get();
+            return response()->json([
+                'banks' => $banks,
+            ], 201);
+        }
         $banks = DB::table('bankaccounts')->leftjoin('banks', 'banks.id', '=', 'bankaccounts.bank_id')->where('bankaccounts.user_id', '=', $request->user_id)->where('bankaccounts.is_active', '=', 1)->get();
 
         return response()->json([
@@ -1227,25 +1233,21 @@ class ApiController extends Controller
         ], 201);
     }
 
-    public function setActiveBankacc(Request $request) {
+    public function setActiveBankacc(Request $request)
+    {
 
-        DB::table('bankaccounts')->where('id','=',$request->bankacc_id)->update([
+        DB::table('bankaccounts')->where('id', '=', $request->bankacc_id)->update([
             'is_active' => $request->checked,
         ]);
-
-        $banks = DB::table('bankaccounts')->leftjoin('banks', 'banks.id', '=', 'bankaccounts.bank_id')->where('bankaccounts.user_id', '=', $request->user_id)->get();
-
-        return response()->json([
-            'banks' => $banks,
-        ],201);
     }
 
-    public function getAllBanks(){
+    public function getAllBanks()
+    {
         $objs = DB::table('banks')->get();
 
         return response()->json([
             'banks' => $objs,
-        ],201);
+        ], 201);
     }
 
     // ดึงข้อมูลแชทสำหรับแม่ค้า
