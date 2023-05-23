@@ -13,6 +13,7 @@ use App\Models\transections;
 use Illuminate\Http\Request;
 use App\Models\category;
 use App\Models\product;
+use App\Models\bankaccount;
 use App\Models\shop;
 use App\Models\carts;
 use App\Models\total_orders;
@@ -1195,6 +1196,33 @@ class ApiController extends Controller
 
         return response()->json([
             'banks' => $banks,
+        ], 201);
+    }
+
+    //เพิ่มบัญชีธนาคาร
+    public function addBankAccount(Request $request)
+    {
+        $file = $request->input('file');
+        $filename = time() . '.' . $file->getClientOriginalExtension();
+        $image = Image::make($file->getRealPath());
+        $image->resize(300, 300, function ($constraint) {
+            $constraint->aspectRatio();
+        });
+        $image->stream();
+        Storage::disk('do_spaces')->put('shopee/QR_code/' . $file->hashName(), $image, 'public');
+        $filePaths = $file->hashName();
+
+        $objs = new bankaccount();
+        $objs->user_id = $request->uid;
+        $objs->bank_id = $request->bank_id;
+        $objs->bankaccount_name = $request->bankaccount_name;
+        $objs->bankaccount_number = $request->bankaccount_number;
+        $objs->QR_code = $filePaths;
+        $objs->is_active = 1;
+        $objs->type_deposit = $request->type_deposit;
+        $objs->branch = $request->branch;
+        return response()->json([
+            'status' => 'success',
         ], 201);
     }
 
