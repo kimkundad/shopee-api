@@ -105,6 +105,8 @@ Route::group([
     Route::get('/allBanks' , [App\Http\Controllers\ApiController::class, 'getAllBanks']);
     Route::post('/addBankAccount' , [App\Http\Controllers\ApiController::class, 'addBankAccount']);
 
+    Route::post('/activeBankAcc' , [App\Http\Controllers\ApiController::class, 'setActiveBankacc']);
+
     Route::post('/createUser', [App\Http\Controllers\AuthController::class, 'createUser']);
     Route::post('/verify', [App\Http\Controllers\AuthController::class, 'verify']);
     Route::post('/login', [App\Http\Controllers\AuthController::class, 'login']);

@@ -1227,6 +1227,15 @@ class ApiController extends Controller
         ], 201);
     }
 
+    public function setActiveBankacc(Request $request) {
+
+        DB::table('bankaccounts')->where('id','=',$request->bankacc_id)->update([
+            'is_active' => $request->checked,
+        ]);
+
+        
+    }
+
     public function getAllBanks(){
         $objs = DB::table('banks')->get();
 
