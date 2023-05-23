@@ -1193,7 +1193,7 @@ class ApiController extends Controller
             ], 201);
         }
         if ($request->type == "setting") {
-            $banks = DB::table('bankaccounts')->leftjoin('banks', 'banks.id', '=', 'bankaccounts.bank_id')->where('bankaccounts.user_id', '=', $request->user_id)->where('bankaccounts.type_account','=','eBank')->select([
+            $banks = DB::table('bankaccounts')->leftjoin('banks', 'banks.id', '=', 'bankaccounts.bank_id')->where('bankaccounts.user_id', '=', $request->user_id)->where('bankaccounts.type_account', '=', 'eBank')->select([
                 'bankaccounts.*',
                 'banks.name_bank',
                 'banks.icon_bank_circle',
@@ -1202,11 +1202,20 @@ class ApiController extends Controller
                 'banks' => $banks,
             ], 201);
         }
-        $banks = DB::table('bankaccounts')->leftjoin('banks', 'banks.id', '=', 'bankaccounts.bank_id')->where('bankaccounts.user_id', '=', $request->user_id)->where('bankaccounts.is_active', '=', 1)->where('bankaccounts.type_account','=','eBank')->get();
+        $banks = DB::table('bankaccounts')->leftjoin('banks', 'banks.id', '=', 'bankaccounts.bank_id')->where('bankaccounts.user_id', '=', $request->user_id)->where('bankaccounts.is_active', '=', 1)->where('bankaccounts.type_account', '=', 'eBank')->get();
 
         return response()->json([
             'banks' => $banks,
         ], 201);
+    }
+
+    public function getActiveCOD(Request $request)
+    {
+        $objs = DB::table('bankaccounts')->where('user_id','=',$request->uid)->where('type_account','=','COD')->first();
+
+        return response()->json([
+            'account' => $objs,
+        ],201);
     }
 
     //เพิ่มบัญชีธนาคาร
@@ -1244,7 +1253,7 @@ class ApiController extends Controller
         DB::table('bankaccounts')->where('id', '=', $request->bankacc_id)->update([
             'is_active' => $request->checked,
         ]);
-        $banks = DB::table('bankaccounts')->leftjoin('banks', 'banks.id', '=', 'bankaccounts.bank_id')->where('bankaccounts.user_id', '=', $request->user_id)->where('bankaccounts.type_account','=','eBank')->select([
+        $banks = DB::table('bankaccounts')->leftjoin('banks', 'banks.id', '=', 'bankaccounts.bank_id')->where('bankaccounts.user_id', '=', $request->user_id)->where('bankaccounts.type_account', '=', 'eBank')->select([
             'bankaccounts.*',
             'banks.name_bank',
             'banks.icon_bank_circle',
