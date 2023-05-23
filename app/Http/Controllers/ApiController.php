@@ -1202,7 +1202,7 @@ class ApiController extends Controller
     //เพิ่มบัญชีธนาคาร
     public function addBankAccount(Request $request)
     {
-        $file = $request->input('file');
+        $file = $request->file;
         $filename = time() . '.' . $file->getClientOriginalExtension();
         $image = Image::make($file->getRealPath());
         $image->resize(300, 300, function ($constraint) {
