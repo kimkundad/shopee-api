@@ -1193,7 +1193,7 @@ class ApiController extends Controller
             ], 201);
         }
         if ($request->type == "setting") {
-            $banks = DB::table('bankaccounts')->leftjoin('banks', 'banks.id', '=', 'bankaccounts.bank_id')->where('bankaccounts.user_id', '=', $request->user_id)->select([
+            $banks = DB::table('bankaccounts')->leftjoin('banks', 'banks.id', '=', 'bankaccounts.bank_id')->where('bankaccounts.user_id', '=', $request->user_id)->where('bankaccounts.type_account','=','eBank')->select([
                 'bankaccounts.*',
                 'banks.name_bank',
                 'banks.icon_bank_circle',
@@ -1202,7 +1202,7 @@ class ApiController extends Controller
                 'banks' => $banks,
             ], 201);
         }
-        $banks = DB::table('bankaccounts')->leftjoin('banks', 'banks.id', '=', 'bankaccounts.bank_id')->where('bankaccounts.user_id', '=', $request->user_id)->where('bankaccounts.is_active', '=', 1)->get();
+        $banks = DB::table('bankaccounts')->leftjoin('banks', 'banks.id', '=', 'bankaccounts.bank_id')->where('bankaccounts.user_id', '=', $request->user_id)->where('bankaccounts.is_active', '=', 1)->where('bankaccounts.type_account','=','eBank')->get();
 
         return response()->json([
             'banks' => $banks,
@@ -1244,7 +1244,7 @@ class ApiController extends Controller
         DB::table('bankaccounts')->where('id', '=', $request->bankacc_id)->update([
             'is_active' => $request->checked,
         ]);
-        $banks = DB::table('bankaccounts')->leftjoin('banks', 'banks.id', '=', 'bankaccounts.bank_id')->where('bankaccounts.user_id', '=', $request->user_id)->select([
+        $banks = DB::table('bankaccounts')->leftjoin('banks', 'banks.id', '=', 'bankaccounts.bank_id')->where('bankaccounts.user_id', '=', $request->user_id)->where('bankaccounts.type_account','=','eBank')->select([
             'bankaccounts.*',
             'banks.name_bank',
             'banks.icon_bank_circle',
