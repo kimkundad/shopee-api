@@ -1193,7 +1193,11 @@ class ApiController extends Controller
             ], 201);
         }
         if ($request->type == "setting") {
-            $banks = DB::table('bankaccounts')->leftjoin('banks', 'banks.id', '=', 'bankaccounts.bank_id')->where('bankaccounts.user_id', '=', $request->user_id)->get();
+            $banks = DB::table('bankaccounts')->leftjoin('banks', 'banks.id', '=', 'bankaccounts.bank_id')->where('bankaccounts.user_id', '=', $request->user_id)->select([
+                'bankaccounts.*',
+                'banks.name_bank',
+                'banks.icon_bank_circle',
+            ])->get();
             return response()->json([
                 'banks' => $banks,
             ], 201);
