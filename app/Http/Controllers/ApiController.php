@@ -1253,11 +1253,20 @@ class ApiController extends Controller
         DB::table('bankaccounts')->where('id', '=', $request->bankacc_id)->update([
             'is_active' => $request->checked,
         ]);
-        $banks = DB::table('bankaccounts')->leftjoin('banks', 'banks.id', '=', 'bankaccounts.bank_id')->where('bankaccounts.user_id', '=', $request->user_id)->where('bankaccounts.type_account', '=', 'eBank')->select([
-            'bankaccounts.*',
-            'banks.name_bank',
-            'banks.icon_bank_circle',
-        ])->get();
+        if($request->type == "COD"){
+            $banks = DB::table('bankaccounts')->leftjoin('banks', 'banks.id', '=', 'bankaccounts.bank_id')->where('bankaccounts.user_id', '=', $request->user_id)->where('bankaccounts.type_account', '=', 'eBank')->select([
+                'bankaccounts.*',
+                'banks.name_bank',
+                'banks.icon_bank_circle',
+            ])->first();
+        }else{
+            $banks = DB::table('bankaccounts')->leftjoin('banks', 'banks.id', '=', 'bankaccounts.bank_id')->where('bankaccounts.user_id', '=', $request->user_id)->where('bankaccounts.type_account', '=', 'eBank')->select([
+                'bankaccounts.*',
+                'banks.name_bank',
+                'banks.icon_bank_circle',
+            ])->get();
+        }
+        
         return response()->json([
             'banks' => $banks,
         ], 201);
