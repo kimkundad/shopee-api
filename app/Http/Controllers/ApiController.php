@@ -1233,7 +1233,7 @@ class ApiController extends Controller
             'is_active' => $request->checked,
         ]);
 
-        $banks = DB::table('bankaccounts')->leftjoin('banks', 'banks.id', '=', 'bankaccounts.bank_id')->where('bankaccounts.user_id', '=', $request->user_id)->where('bankaccounts.is_active', '=', 1)->get();
+        $banks = DB::table('bankaccounts')->leftjoin('banks', 'banks.id', '=', 'bankaccounts.bank_id')->where('bankaccounts.user_id', '=', $request->user_id)->get();
 
         return response()->json([
             'banks' => $banks,
