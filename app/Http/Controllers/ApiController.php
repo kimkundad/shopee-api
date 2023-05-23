@@ -1226,6 +1226,14 @@ class ApiController extends Controller
         ], 201);
     }
 
+    public function getAllBanks(){
+        $objs = DB::table('banks')->get();
+
+        return response()->json([
+            'banks' => $objs,
+        ],201);
+    }
+
     // ดึงข้อมูลแชทสำหรับแม่ค้า
     public function getUserChats(Request $request)
     {

@@ -102,6 +102,7 @@ Route::group([
 
     Route::post('/updateOwnerShop' , [App\Http\Controllers\ApiController::class, 'updateOwnerShop']);
 
+    Route::get('/allBanks' , [App\Http\Controllers\ApiController::class, 'getAllBanks']);
     Route::post('/addBankAccount' , [App\Http\Controllers\ApiController::class, 'addBankAccount']);
 
     Route::post('/createUser', [App\Http\Controllers\AuthController::class, 'createUser']);
