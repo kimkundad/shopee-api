@@ -1231,6 +1231,7 @@ class ApiController extends Controller
         $objs->is_active = 1;
         $objs->type_deposit = $request->type_deposit;
         $objs->branch = $request->branch;
+        $objs->type_account = $request->type_account;
         $objs->save();
         return response()->json([
             'status' => 'success',
