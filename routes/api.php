@@ -103,11 +103,14 @@ Route::group([
     Route::post('/updateOwnerShop' , [App\Http\Controllers\ApiController::class, 'updateOwnerShop']);
 
     Route::get('/allBanks' , [App\Http\Controllers\ApiController::class, 'getAllBanks']);
+
     Route::post('/addBankAccount' , [App\Http\Controllers\ApiController::class, 'addBankAccount']);
 
     Route::post('/activeBankAcc' , [App\Http\Controllers\ApiController::class, 'setActiveBankacc']);
 
     Route::post('/activeCOD' , [App\Http\Controllers\ApiController::class, 'getActiveCOD']);
+
+    Route::post('/delBankAcc' , [App\Http\Controllers\ApiController::class, 'deleteBankaccount']);
 
     Route::post('/createUser', [App\Http\Controllers\AuthController::class, 'createUser']);
     Route::post('/verify', [App\Http\Controllers\AuthController::class, 'verify']);
