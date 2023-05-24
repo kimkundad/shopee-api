@@ -744,8 +744,8 @@ class ApiController extends Controller
         foreach ($dataOption as $item) {
             $status_option = 1;
 
-            if ($request->file('indexImageOption')) {
-                $images = $request->file('indexImageOption');
+            if ($item->file('indexImageOption')) {
+                $images = $item->file('indexImageOption');
                 foreach ($images as $index => $img) {
                     $filename = time() . '.' . $img->getClientOriginalExtension();
                     $image = Image::make($img->getRealPath());
