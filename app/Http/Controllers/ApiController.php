@@ -723,8 +723,7 @@ class ApiController extends Controller
         $option1 = null;
         $option2 = null;
         $dataOption = json_decode($request->dataOption, true);
-        $type_product = DB::table('products')->where('id', $proID)->first('type');
-        $type = $type_product->type;
+        $type = 1;
         if ($request->option1 != 'ตัวเลือกที่ 1' && $request->option2 == 'ตัวเลือกที่ 2') {
             $option1 = $request->option1;
             $type = 2;
