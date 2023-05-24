@@ -760,23 +760,24 @@ class ApiController extends Controller
                         'product_id' => $product_id['id'],
                         'status' => 0,
                     ]);
+                    if ($item['statusOption'] != true || $item['statusOption'] != 'true') {
+                        $status_option = 0;
+                    }
+                    $pro_option = new product_option;
+                    $pro_option->product_id = $proID;
+                    $pro_option->img_id = $id_image_option;
+                    $pro_option->op_name = $item['nameOption'];
+                    $pro_option->img_name = $filePaths2;
+                    $pro_option->price = $item['priceOption'];
+                    $pro_option->stock = $item['stockOption'];
+                    $pro_option->sku = $item['skuOption'];
+                    $pro_option->status = $status_option;
+                    $pro_option->save();
                 }
             }
 
             // $img_product = DB::table('product_images')->select('image')->where('id', $item['indexImageOption'])->first();
-            if ($item['statusOption'] != true || $item['statusOption'] != 'true') {
-                $status_option = 0;
-            }
-            $pro_option = new product_option;
-            $pro_option->product_id = $proID;
-            $pro_option->img_id = $id_image_option;
-            $pro_option->op_name = $item['nameOption'];
-            $pro_option->img_name = $filePaths2;
-            $pro_option->price = $item['priceOption'];
-            $pro_option->stock = $item['stockOption'];
-            $pro_option->sku = $item['skuOption'];
-            $pro_option->status = $status_option;
-            $pro_option->save();
+
 
             foreach ($item['subOption'] as $subItem) {
                 $status_suboption = 1;
