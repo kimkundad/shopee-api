@@ -724,7 +724,7 @@ class ApiController extends Controller
         $option1 = null;
         $option2 = null;
         $filePaths2 = '';
-        $id_image_option ="";
+        $id_image_option = "";
         $dataOption = json_decode($request->dataOption, true);
         $type = 1;
         if ($request->option1 != 'ตัวเลือกที่ 1' && $request->option2 == 'ตัวเลือกที่ 2') {
@@ -755,7 +755,7 @@ class ApiController extends Controller
                     $image->stream();
                     Storage::disk('do_spaces')->put('shopee/products/' . $img->hashName(), $image, 'public');
                     $filePaths2 = $img->hashName();
-                    $id_image_option = DB::table('product_images')->lastInsertId([
+                    $id_image_option = DB::table('product_images')->insertGetId([
                         'image' => $filePaths2,
                         'product_id' => $product_id['id'],
                         'status' => 0,
@@ -763,36 +763,48 @@ class ApiController extends Controller
                     if ($item['statusOption'] != true || $item['statusOption'] != 'true') {
                         $status_option = 0;
                     }
-                    $pro_option = new product_option;
-                    $pro_option->product_id = $proID;
-                    $pro_option->img_id = $id_image_option;
-                    $pro_option->op_name = $item['nameOption'];
-                    $pro_option->img_name = $filePaths2;
-                    $pro_option->price = $item['priceOption'];
-                    $pro_option->stock = $item['stockOption'];
-                    $pro_option->sku = $item['skuOption'];
-                    $pro_option->status = $status_option;
-                    $pro_option->save();
+                    // $pro_option = new product_option;
+                    // $pro_option->product_id = $proID;
+                    // $pro_option->img_id = $id_image_option;
+                    // $pro_option->op_name = $item['nameOption'];
+                    // $pro_option->img_name = $filePaths2;
+                    // $pro_option->price = $item['priceOption'];
+                    // $pro_option->stock = $item['stockOption'];
+                    // $pro_option->sku = $item['skuOption'];
+                    // $pro_option->status = $status_option;
+                    // $pro_option->save();
+                    $id_image_suboption = DB::table('product_options')->insertGetId([
+                        'product_id' => $proID,
+                        'img_id' => $id_image_option,
+                        'op_name' => $item['nameOption'],
+                        'img_name' => $filePaths2,
+                        'price' => $item['priceOption'],
+                        'stock' => $item['stockOption'],
+                        'sku' =>  $item['skuOption'],
+                        'status' => $status_option,
+                    ]);
+
+                    foreach ($item['subOption'] as $subItem) {
+                        $status_suboption = 1;
+                        if ($subItem['statusSubOption'] != true || $subItem['statusSubOption'] != 'true') {
+                            $status_suboption = 0;
+                        }
+                        DB::table('product_suboptions')->insert([
+                            'op_id' => $id_image_suboption,
+                            'sub_op_name' => $subItem['nameSubOption'],
+                            'price' => $subItem['priceSubOption'],
+                            'stock' => $subItem['stockSubOption'],
+                            'sku' => $subItem['skuSubOption'],
+                            'status' => $status_suboption,
+                        ]);
+                    }
                 }
             }
 
             // $img_product = DB::table('product_images')->select('image')->where('id', $item['indexImageOption'])->first();
 
 
-            foreach ($item['subOption'] as $subItem) {
-                $status_suboption = 1;
-                if ($subItem['statusSubOption'] != true || $subItem['statusSubOption'] != 'true') {
-                    $status_suboption = 0;
-                }
-                DB::table('product_suboptions')->insert([
-                    'op_id' => $pro_option->id,
-                    'sub_op_name' => $subItem['nameSubOption'],
-                    'price' => $subItem['priceSubOption'],
-                    'stock' => $subItem['stockSubOption'],
-                    'sku' => $subItem['skuSubOption'],
-                    'status' => $status_suboption,
-                ]);
-            }
+
         }
 
         return response()->json([
@@ -1419,13 +1431,13 @@ class ApiController extends Controller
         ], 201);
     }
 
-    public function countNoti($id){
-        $objs = DB::table('orders')->where('owner_shop_id','=',$id)->count();
+    public function countNoti($id)
+    {
+        $objs = DB::table('orders')->where('owner_shop_id', '=', $id)->count();
 
         return response()->json([
             'count' => $objs,
-        ],201);
-
+        ], 201);
     }
 
     //เปิดปิด แจ้งเตือนหลังบ้าน
