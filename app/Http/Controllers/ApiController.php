@@ -742,23 +742,22 @@ class ApiController extends Controller
         foreach ($dataOption as $item) {
             $status_option = 1;
 
-            if (isset($item['indexImageOption']) && is_array($item['indexImageOption'])) {
-                foreach ($item['indexImageOption'] as $index => $image) {
-                    if ($image instanceof Illuminate\Http\UploadedFile) {
-                        $filename = time() . '.' . $image->getClientOriginalExtension();
-                        $image = Image::make($image->getRealPath());
-                        $image->resize(300, 300, function ($constraint) {
-                            $constraint->aspectRatio();
-                        });
-                        $image->stream();
-                        Storage::disk('do_spaces')->put('shopee/products/' . $image->hashName(), $image, 'public');
-                        $filePaths = $image->hashName();
-                        $id_image_option = DB::table('product_images')->insertGetId([
-                            'image' => $filePaths,
-                            'product_id' => $proID,
-                            'status' => 0,
-                        ]);
-                    }
+            if ($request->file('indexImageOption')) {
+                $images = $request->file('indexImageOption');
+                foreach ($images as $index => $img) {
+                    $filename = time() . '.' . $img->getClientOriginalExtension();
+                    $image = Image::make($img->getRealPath());
+                    $image->resize(300, 300, function ($constraint) {
+                        $constraint->aspectRatio();
+                    });
+                    $image->stream();
+                    Storage::disk('do_spaces')->put('shopee/products/' . $img->hashName(), $image, 'public');
+                    $filePaths = $img->hashName();
+                    $id_image_option = DB::table('product_images')->insertGetId([
+                        'image' => $filePaths,
+                        'product_id' => $product_id['id'],
+                        'status' => 0,
+                    ]);
                 }
             }
 
@@ -1408,27 +1407,28 @@ class ApiController extends Controller
         ], 201);
     }
 
-    public function getOwnerSetting(Request $request){
-        $objs = Db::table('ownershop_settings')->where('user_code','=',$request->user_code)->first();
+    public function getOwnerSetting(Request $request)
+    {
+        $objs = Db::table('ownershop_settings')->where('user_code', '=', $request->user_code)->first();
 
         return response()->json([
             'setting' => $objs,
-        ],201);
+        ], 201);
     }
 
     //เปิดปิด แจ้งเตือนหลังบ้าน
-    public function settingNoti(Request $request){
+    public function settingNoti(Request $request)
+    {
 
         $objs = ownershop_settings::where('user_code', $request->user_code)->first();
-        if($objs){
+        if ($objs) {
             $objs->setting = $request->setting;
             $objs->save();
         }
 
         return response()->json([
             'setting' => $objs,
-        ],201);
-
+        ], 201);
     }
 
     // ดึงข้อมูลแชทสำหรับแม่ค้า
