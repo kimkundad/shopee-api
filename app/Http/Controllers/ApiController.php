@@ -667,7 +667,59 @@ class ApiController extends Controller
 
     public function addOptionProduct(Request $request)
     {
-        $proID = $request->productID;
+
+        $product = new product();
+        $product->name_product = $request->name_product;
+        $product->detail_product = $request->detail_product;
+        $product->price = $request->price;
+        $product->price_sales = $request->price_sales;
+        $product->cost = $request->cost;
+        $product->stock = $request->stock;
+        $product->weight = $request->weight;
+        $product->width_product = $request->width_product;
+        $product->length_product = $request->length_product;
+        $product->height_product = $request->height_product;
+        $product->sku = $request->sku;
+        $product->category = $request->category;
+        $product->type = 1;
+        $product->active = 1;
+
+        $files = $request->file('file');
+        $filePaths = null;
+        $product_id = 0;
+        foreach ($files as $index => $file) {
+            $filename = time() . '.' . $file->getClientOriginalExtension();
+            $image = Image::make($file->getRealPath());
+            $image->resize(300, 300, function ($constraint) {
+                $constraint->aspectRatio();
+            });
+            $image->stream();
+            Storage::disk('do_spaces')->put('shopee/products/' . $file->hashName(), $image, 'public');
+            $filePaths = $file->hashName();
+            $product->img_product = $filePaths;
+            $product->save();
+            $product_id = product::select('id')->orderBy('created_at', 'desc')->first();
+
+            if ($request->file('image')) {
+                $images = $request->file('image');
+                foreach ($images as $index => $img) {
+                    $filename = time() . '.' . $img->getClientOriginalExtension();
+                    $image = Image::make($img->getRealPath());
+                    $image->resize(300, 300, function ($constraint) {
+                        $constraint->aspectRatio();
+                    });
+                    $image->stream();
+                    Storage::disk('do_spaces')->put('shopee/products/' . $img->hashName(), $image, 'public');
+                    $filePaths = $img->hashName();
+                    DB::table('product_images')->insert([
+                        'image' => $filePaths,
+                        'product_id' => $product_id['id'],
+                        'status' => 0,
+                    ]);
+                }
+            }
+        }
+        $proID = $product_id;
         $option1 = null;
         $option2 = null;
         $dataOption = json_decode($request->dataOption, true);
@@ -689,15 +741,35 @@ class ApiController extends Controller
         ]);
         foreach ($dataOption as $item) {
             $status_option = 1;
-            $img_product = DB::table('product_images')->select('image')->where('id', $item['indexImageOption'])->first();
+
+            if ($item->file('indexImageOption')) {
+                $images = $item->file('indexImageOption');
+                foreach ($images as $index => $img) {
+                    $filename = time() . '.' . $img->getClientOriginalExtension();
+                    $image = Image::make($img->getRealPath());
+                    $image->resize(300, 300, function ($constraint) {
+                        $constraint->aspectRatio();
+                    });
+                    $image->stream();
+                    Storage::disk('do_spaces')->put('shopee/products/' . $img->hashName(), $image, 'public');
+                    $filePaths = $img->hashName();
+                    $id_image_option = DB::table('product_images')->insertGetId([
+                        'image' => $filePaths,
+                        'product_id' => $proID,
+                        'status' => 0,
+                    ]);
+                }
+            }
+
+            // $img_product = DB::table('product_images')->select('image')->where('id', $item['indexImageOption'])->first();
             if ($item['statusOption'] != true || $item['statusOption'] != 'true') {
                 $status_option = 0;
             }
             $pro_option = new product_option;
             $pro_option->product_id = $proID;
-            $pro_option->img_id = $item['indexImageOption'];
+            $pro_option->img_id = $id_image_option;
             $pro_option->op_name = $item['nameOption'];
-            $pro_option->img_name = $img_product->image;
+            $pro_option->img_name = $filePaths;
             $pro_option->price = $item['priceOption'];
             $pro_option->stock = $item['stockOption'];
             $pro_option->sku = $item['skuOption'];
