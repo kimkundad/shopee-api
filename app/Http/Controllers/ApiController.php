@@ -743,11 +743,11 @@ class ApiController extends Controller
         ]);
         foreach ($dataOption as $item) {
             $status_option = 1;
-
+            return response()->json([
+                'success' => $item,
+            ], 201);
             if ($item->file('indexImageOption')) {
-                return response()->json([
-                    'success' => $item->file('indexImageOption'),
-                ], 201);
+
                 $images = $item->file('indexImageOption');
                 foreach ($images as $index => $img) {
 
