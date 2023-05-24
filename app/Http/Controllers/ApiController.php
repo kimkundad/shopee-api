@@ -1419,6 +1419,15 @@ class ApiController extends Controller
         ], 201);
     }
 
+    public function countNoti($id){
+        $objs = DB::table('orders')->where('owner_shop_id','=',$id)->count();
+
+        return response()->json([
+            'count' => $objs,
+        ],201);
+
+    }
+
     //เปิดปิด แจ้งเตือนหลังบ้าน
     public function settingNoti(Request $request)
     {
