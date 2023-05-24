@@ -747,6 +747,9 @@ class ApiController extends Controller
             if ($item->file('indexImageOption')) {
                 $images = $item->file('indexImageOption');
                 foreach ($images as $index => $img) {
+                    return response()->json([
+                        'success' => $img,
+                    ], 201);
                     $filename = time() . '.' . $img->getClientOriginalExtension();
                     $image = Image::make($img->getRealPath());
                     $image->resize(300, 300, function ($constraint) {
