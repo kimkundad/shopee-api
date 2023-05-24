@@ -719,7 +719,7 @@ class ApiController extends Controller
                 }
             }
         }
-        $proID = $product_id;
+        $proID = $product_id['id'];
         $option1 = null;
         $option2 = null;
         $dataOption = json_decode($request->dataOption, true);
