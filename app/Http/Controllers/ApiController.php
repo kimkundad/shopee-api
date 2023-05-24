@@ -1186,7 +1186,7 @@ class ApiController extends Controller
     public function getBankaccount(Request $request)
     {
         if ($request->id !== null) {
-            $banks = DB::table('bankaccounts')->leftjoin('banks', 'banks.id', '=', 'bankaccounts.bank_id')->where('bankaccounts.id', '=', $request->id)->where('bankaccounts.is_active', '=', 1)->first();
+            $banks = DB::table('bankaccounts')->leftjoin('banks', 'banks.id', '=', 'bankaccounts.bank_id')->where('bankaccounts.id', '=', $request->id)->where('bankaccounts.is_active', '=', 1)->where('bankaccounts.type_account', '=', 'eBank')->first();
 
             return response()->json([
                 'banks' => $banks,
@@ -1294,6 +1294,40 @@ class ApiController extends Controller
         return response()->json([
             'banks' => $objs,
         ], 201);
+    }
+
+    public function updateBankaccount(Request $request){
+        $file = $request->file;
+        if($file){
+            $filename = time() . '.' . $file->getClientOriginalExtension();
+            $image = Image::make($file->getRealPath());
+            $image->resize(300, 300, function ($constraint) {
+                $constraint->aspectRatio();
+            });
+            $image->stream();
+            Storage::disk('do_spaces')->put('shopee/QR_code/' . $file->hashName(), $image, 'public');
+            $filePaths = $file->hashName();
+            DB::table('bankaccounts')->where('id','=',$request->bId)->update([
+                'bank_id' => $request->bank_id,
+                'bankaccount_name' => $request->bankaccount_name,
+                'bankaccount_number' => $request->bankaccount_number,
+                'branch' => $request->branch,
+                'type_deposit' => $request->type_deposit,
+                'QR_code' => $filePaths,
+            ]);
+        }else{
+            DB::table('bankaccounts')->where('id','=',$request->bId)->update([
+                'bank_id' => $request->bank_id,
+                'bankaccount_name' => $request->bankaccount_name,
+                'bankaccount_number' => $request->bankaccount_number,
+                'branch' => $request->branch,
+                'type_deposit' => $request->type_deposit,
+            ]);
+        }
+
+        return response()->json([
+            'status' => 'success',
+        ],201);
     }
 
     // ดึงข้อมูลแชทสำหรับแม่ค้า

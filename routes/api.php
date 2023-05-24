@@ -112,6 +112,8 @@ Route::group([
 
     Route::post('/delBankAcc' , [App\Http\Controllers\ApiController::class, 'deleteBankaccount']);
 
+    Route::post('/updateBankaccount' , [App\Http\Controllers\ApiController::class, 'updateBankaccount']);
+
     Route::post('/createUser', [App\Http\Controllers\AuthController::class, 'createUser']);
     Route::post('/verify', [App\Http\Controllers\AuthController::class, 'verify']);
     Route::post('/login', [App\Http\Controllers\AuthController::class, 'login']);
