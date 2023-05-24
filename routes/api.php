@@ -114,6 +114,9 @@ Route::group([
 
     Route::post('/updateBankaccount' , [App\Http\Controllers\ApiController::class, 'updateBankaccount']);
 
+    Route::post('/getOwnerSetting' , [App\Http\Controllers\ApiController::class, 'getOwnerSetting']);
+    Route::post('/setNotification' , [App\Http\Controllers\ApiController::class, 'settingNoti']);
+
     Route::post('/createUser', [App\Http\Controllers\AuthController::class, 'createUser']);
     Route::post('/verify', [App\Http\Controllers\AuthController::class, 'verify']);
     Route::post('/login', [App\Http\Controllers\AuthController::class, 'login']);

@@ -13,6 +13,7 @@ use App\Models\transections;
 use Illuminate\Http\Request;
 use App\Models\category;
 use App\Models\product;
+use App\Models\ownershop_settings;
 use App\Models\bankaccount;
 use App\Models\shop;
 use App\Models\carts;
@@ -1333,6 +1334,29 @@ class ApiController extends Controller
         return response()->json([
             'status' => 'success',
         ], 201);
+    }
+
+    public function getOwnerSetting(Request $request){
+        $objs = Db::table('ownershop_settings')->where('user_code','=',$request->user_code)->first();
+
+        return response()->json([
+            'setting' => $objs,
+        ],201);
+    }
+
+    //เปิดปิด แจ้งเตือนหลังบ้าน
+    public function settingNoti(Request $request){
+
+        $objs = ownershop_settings::where('user_code', $request->user_code)->first();
+        if($objs){
+            $objs->setting = $request->setting;
+            $objs->save();
+        }
+
+        return response()->json([
+            'setting' => $objs,
+        ],201);
+
     }
 
     // ดึงข้อมูลแชทสำหรับแม่ค้า
