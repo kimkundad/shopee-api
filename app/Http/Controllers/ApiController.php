@@ -723,7 +723,7 @@ class ApiController extends Controller
         $proID = $product_id['id'];
         $option1 = null;
         $option2 = null;
-        $filePaths = '';
+        $filePaths2 = '';
         $id_image_option ="";
         $dataOption = json_decode($request->dataOption, true);
         $type = 1;
@@ -754,9 +754,9 @@ class ApiController extends Controller
                     });
                     $image->stream();
                     Storage::disk('do_spaces')->put('shopee/products/' . $img->hashName(), $image, 'public');
-                    $filePaths = $img->hashName();
-                    $id_image_option = DB::table('product_images')->insertGetId([
-                        'image' => $filePaths,
+                    $filePaths2 = $img->hashName();
+                    $id_image_option = DB::table('product_images')->lastInsertId([
+                        'image' => $filePaths2,
                         'product_id' => $product_id['id'],
                         'status' => 0,
                     ]);
@@ -771,7 +771,7 @@ class ApiController extends Controller
             $pro_option->product_id = $proID;
             $pro_option->img_id = $id_image_option;
             $pro_option->op_name = $item['nameOption'];
-            $pro_option->img_name = $filePaths;
+            $pro_option->img_name = $filePaths2;
             $pro_option->price = $item['priceOption'];
             $pro_option->stock = $item['stockOption'];
             $pro_option->sku = $item['skuOption'];
