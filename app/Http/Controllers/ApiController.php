@@ -1222,14 +1222,18 @@ class ApiController extends Controller
     public function addBankAccount(Request $request)
     {
         $file = $request->file;
-        $filename = time() . '.' . $file->getClientOriginalExtension();
-        $image = Image::make($file->getRealPath());
-        $image->resize(300, 300, function ($constraint) {
-            $constraint->aspectRatio();
-        });
-        $image->stream();
-        Storage::disk('do_spaces')->put('shopee/QR_code/' . $file->hashName(), $image, 'public');
-        $filePaths = $file->hashName();
+        $filePaths = null;
+        if ($file) {
+            $filename = time() . '.' . $file->getClientOriginalExtension();
+            $image = Image::make($file->getRealPath());
+            $image->resize(300, 300, function ($constraint) {
+                $constraint->aspectRatio();
+            });
+            $image->stream();
+            Storage::disk('do_spaces')->put('shopee/QR_code/' . $file->hashName(), $image, 'public');
+            $filePaths = $file->hashName();
+        }
+
 
         $objs = new bankaccount();
         $objs->user_id = $request->uid;
@@ -1281,7 +1285,7 @@ class ApiController extends Controller
             'banks.name_bank',
             'banks.icon_bank_circle',
         ])->get();
-        
+
         return response()->json([
             'banks' => $banks,
         ], 201);
@@ -1296,9 +1300,10 @@ class ApiController extends Controller
         ], 201);
     }
 
-    public function updateBankaccount(Request $request){
+    public function updateBankaccount(Request $request)
+    {
         $file = $request->file;
-        if($file){
+        if ($file) {
             $filename = time() . '.' . $file->getClientOriginalExtension();
             $image = Image::make($file->getRealPath());
             $image->resize(300, 300, function ($constraint) {
@@ -1307,7 +1312,7 @@ class ApiController extends Controller
             $image->stream();
             Storage::disk('do_spaces')->put('shopee/QR_code/' . $file->hashName(), $image, 'public');
             $filePaths = $file->hashName();
-            DB::table('bankaccounts')->where('id','=',$request->bId)->update([
+            DB::table('bankaccounts')->where('id', '=', $request->bId)->update([
                 'bank_id' => $request->bank_id,
                 'bankaccount_name' => $request->bankaccount_name,
                 'bankaccount_number' => $request->bankaccount_number,
@@ -1315,8 +1320,8 @@ class ApiController extends Controller
                 'type_deposit' => $request->type_deposit,
                 'QR_code' => $filePaths,
             ]);
-        }else{
-            DB::table('bankaccounts')->where('id','=',$request->bId)->update([
+        } else {
+            DB::table('bankaccounts')->where('id', '=', $request->bId)->update([
                 'bank_id' => $request->bank_id,
                 'bankaccount_name' => $request->bankaccount_name,
                 'bankaccount_number' => $request->bankaccount_number,
@@ -1327,7 +1332,7 @@ class ApiController extends Controller
 
         return response()->json([
             'status' => 'success',
-        ],201);
+        ], 201);
     }
 
     // ดึงข้อมูลแชทสำหรับแม่ค้า
