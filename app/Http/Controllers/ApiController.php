@@ -741,23 +741,21 @@ class ApiController extends Controller
         foreach ($dataOption as $item) {
             $status_option = 1;
 
-            if ($item->file('indexImageOption')) {
-                $images = $item->file('indexImageOption');
-                foreach ($images as $index => $img) {
-                    $filename = time() . '.' . $img->getClientOriginalExtension();
-                    $image = Image::make($img->getRealPath());
-                    $image->resize(300, 300, function ($constraint) {
-                        $constraint->aspectRatio();
-                    });
-                    $image->stream();
-                    Storage::disk('do_spaces')->put('shopee/products/' . $img->hashName(), $image, 'public');
-                    $filePaths = $img->hashName();
-                    $id_image_option = DB::table('product_images')->insertGetId([
-                        'image' => $filePaths,
-                        'product_id' => $proID,
-                        'status' => 0,
-                    ]);
-                }
+            if (isset($item['indexImageOption']) && $item['indexImageOption']) {
+                $image = $item['indexImageOption'];
+                $filename = time() . '.' . $image->getClientOriginalExtension();
+                $image = Image::make($image->getRealPath());
+                $image->resize(300, 300, function ($constraint) {
+                    $constraint->aspectRatio();
+                });
+                $image->stream();
+                Storage::disk('do_spaces')->put('shopee/products/' . $image->hashName(), $image, 'public');
+                $filePaths = $image->hashName();
+                $id_image_option = DB::table('product_images')->insertGetId([
+                    'image' => $filePaths,
+                    'product_id' => $proID,
+                    'status' => 0,
+                ]);
             }
 
             // $img_product = DB::table('product_images')->select('image')->where('id', $item['indexImageOption'])->first();
