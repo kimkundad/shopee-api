@@ -723,6 +723,8 @@ class ApiController extends Controller
         $proID = $product_id['id'];
         $option1 = null;
         $option2 = null;
+        $filePaths = '';
+        $id_image_option ="";
         $dataOption = json_decode($request->dataOption, true);
         $type = 1;
         if ($request->option1 != 'ตัวเลือกที่ 1' && $request->option2 == 'ตัวเลือกที่ 2') {
