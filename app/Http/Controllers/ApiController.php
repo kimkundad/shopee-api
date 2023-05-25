@@ -10,6 +10,7 @@ use App\Models\addresses;
 use App\Models\order_details;
 use App\Models\product_option;
 use App\Models\transections;
+use App\Models\notifications;
 use Illuminate\Http\Request;
 use App\Models\category;
 use App\Models\product;
@@ -291,6 +292,13 @@ class ApiController extends Controller
             $order->type_payment = $request->type_payment;
             $order->save();
 
+            $objs = new notifications();
+            $objs->user_code = $request->user_code;
+            $objs->order = $order->id;
+            $objs->type_noti = $request->type_noti;
+            $objs->detail = "";
+            $objs->save();
+
             if ($total_order) {
                 $total = total_orders::where('user_id', $request->user_code)->first();
                 $total->total_num = intval($total_order->total_num) + intval($request->num);
@@ -338,6 +346,13 @@ class ApiController extends Controller
             $order->invoice_id = $request->invoice_id;
             $order->type_payment = $request->type_payment;
             $order->save();
+
+            $objs = new notifications();
+            $objs->user_code = $request->user_code;
+            $objs->order = $order->id;
+            $objs->type_noti = $request->type_noti;
+            $objs->detail = "";
+            $objs->save();
 
             foreach ($products as $index => $item) {
                 foreach ($item['product'] as $subIndex => $subItem) {
@@ -1425,7 +1440,6 @@ class ApiController extends Controller
     public function countNoti($id)
     {
         $objs = DB::table('orders')->where('user_code', '=', $id)->count();
-
         return response()->json([
             'count' => $objs,
         ], 201);
