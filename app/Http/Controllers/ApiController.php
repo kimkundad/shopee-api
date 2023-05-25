@@ -294,7 +294,7 @@ class ApiController extends Controller
 
             $objs = new notifications();
             $objs->user_code = $request->user_code;
-            $objs->order = $order->id;
+            $objs->order_id = $order->id;
             $objs->type_noti = $request->type_noti;
             $objs->detail = "";
             $objs->save();
@@ -349,7 +349,7 @@ class ApiController extends Controller
 
             $objs = new notifications();
             $objs->user_code = $request->user_code;
-            $objs->order = $order->id;
+            $objs->order_id = $order->id;
             $objs->type_noti = $request->type_noti;
             $objs->detail = "";
             $objs->save();
