@@ -743,62 +743,62 @@ class ApiController extends Controller
         ]);
         foreach ($dataOption as $item) {
             $status_option = 1;
-            if ($img = $item['indexImageOption']) {
+            if ($images = $item['indexImageOption']) {
                 // $images = $item->file('indexImageOption');
-                // foreach ($images as $index => $img) {
+                foreach ($images as $index => $img) {
 
-                $filename = time() . '.' . $img->getClientOriginalExtension();
-                $image = Image::make($img->getRealPath());
-                $image->resize(300, 300, function ($constraint) {
-                    $constraint->aspectRatio();
-                });
-                $image->stream();
-                Storage::disk('do_spaces')->put('shopee/products/' . $img->hashName(), $image, 'public');
-                $filePaths2 = $img->hashName();
-                $id_image_option = DB::table('product_images')->insertGetId([
-                    'image' => $filePaths2,
-                    'product_id' => $product_id['id'],
-                    'status' => 0,
-                ]);
-                if ($item['statusOption'] != true || $item['statusOption'] != 'true') {
-                    $status_option = 0;
-                }
-                // $pro_option = new product_option;
-                // $pro_option->product_id = $proID;
-                // $pro_option->img_id = $id_image_option;
-                // $pro_option->op_name = $item['nameOption'];
-                // $pro_option->img_name = $filePaths2;
-                // $pro_option->price = $item['priceOption'];
-                // $pro_option->stock = $item['stockOption'];
-                // $pro_option->sku = $item['skuOption'];
-                // $pro_option->status = $status_option;
-                // $pro_option->save();
-                $id_image_suboption = DB::table('product_options')->insertGetId([
-                    'product_id' => $proID,
-                    'img_id' => $id_image_option,
-                    'op_name' => $item['nameOption'],
-                    'img_name' => $filePaths2,
-                    'price' => $item['priceOption'],
-                    'stock' => $item['stockOption'],
-                    'sku' =>  $item['skuOption'],
-                    'status' => $status_option,
-                ]);
-
-                foreach ($item['subOption'] as $subItem) {
-                    $status_suboption = 1;
-                    if ($subItem['statusSubOption'] != true || $subItem['statusSubOption'] != 'true') {
-                        $status_suboption = 0;
-                    }
-                    DB::table('product_suboptions')->insert([
-                        'op_id' => $id_image_suboption,
-                        'sub_op_name' => $subItem['nameSubOption'],
-                        'price' => $subItem['priceSubOption'],
-                        'stock' => $subItem['stockSubOption'],
-                        'sku' => $subItem['skuSubOption'],
-                        'status' => $status_suboption,
+                    $filename = time() . '.' . $img->getClientOriginalExtension();
+                    $image = Image::make($img->getRealPath());
+                    $image->resize(300, 300, function ($constraint) {
+                        $constraint->aspectRatio();
+                    });
+                    $image->stream();
+                    Storage::disk('do_spaces')->put('shopee/products/' . $img->hashName(), $image, 'public');
+                    $filePaths2 = $img->hashName();
+                    $id_image_option = DB::table('product_images')->insertGetId([
+                        'image' => $filePaths2,
+                        'product_id' => $product_id['id'],
+                        'status' => 0,
                     ]);
+                    if ($item['statusOption'] != true || $item['statusOption'] != 'true') {
+                        $status_option = 0;
+                    }
+                    // $pro_option = new product_option;
+                    // $pro_option->product_id = $proID;
+                    // $pro_option->img_id = $id_image_option;
+                    // $pro_option->op_name = $item['nameOption'];
+                    // $pro_option->img_name = $filePaths2;
+                    // $pro_option->price = $item['priceOption'];
+                    // $pro_option->stock = $item['stockOption'];
+                    // $pro_option->sku = $item['skuOption'];
+                    // $pro_option->status = $status_option;
+                    // $pro_option->save();
+                    $id_image_suboption = DB::table('product_options')->insertGetId([
+                        'product_id' => $proID,
+                        'img_id' => $id_image_option,
+                        'op_name' => $item['nameOption'],
+                        'img_name' => $filePaths2,
+                        'price' => $item['priceOption'],
+                        'stock' => $item['stockOption'],
+                        'sku' =>  $item['skuOption'],
+                        'status' => $status_option,
+                    ]);
+
+                    foreach ($item['subOption'] as $subItem) {
+                        $status_suboption = 1;
+                        if ($subItem['statusSubOption'] != true || $subItem['statusSubOption'] != 'true') {
+                            $status_suboption = 0;
+                        }
+                        DB::table('product_suboptions')->insert([
+                            'op_id' => $id_image_suboption,
+                            'sub_op_name' => $subItem['nameSubOption'],
+                            'price' => $subItem['priceSubOption'],
+                            'stock' => $subItem['stockSubOption'],
+                            'sku' => $subItem['skuSubOption'],
+                            'status' => $status_suboption,
+                        ]);
+                    }
                 }
-                // }
             }
 
             // $img_product = DB::table('product_images')->select('image')->where('id', $item['indexImageOption'])->first();
