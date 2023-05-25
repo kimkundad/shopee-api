@@ -744,8 +744,9 @@ class ApiController extends Controller
         foreach ($dataOption as $item) {
             $status_option = 1;
             if ($images = $item['indexImageOption']) {
-                foreach ($images as $index => $file) {
-                    $filename = time() . '.' . $file->getClientOriginalExtension();
+                foreach ($images as $index => $imageData) {
+                    $file = base64_decode($imageData);
+                    $filename = time() . '.' . pathinfo($filename, PATHINFO_EXTENSION);
                     $image = Image::make($file->getRealPath());
                     $image->resize(300, 300, function ($constraint) {
                         $constraint->aspectRatio();
