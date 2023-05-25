@@ -726,6 +726,9 @@ class ApiController extends Controller
         $filePaths2 = '';
         $id_image_option = "";
         $dataOption = json_decode($request->dataOption, true);
+        return response()->json([
+            'success' => $dataOption,
+        ], 201);
         $type = 1;
         if ($request->option1 != 'ตัวเลือกที่ 1' && $request->option2 == 'ตัวเลือกที่ 2') {
             $option1 = $request->option1;
@@ -742,9 +745,6 @@ class ApiController extends Controller
             'type' => $type,
         ]);
         foreach ($dataOption as $item) {
-            return response()->json([
-                'success' => $item['indexImageOption'],
-            ], 201);
             $status_option = 1;
             $filePaths2 = '';
             $id_image_option = '';
