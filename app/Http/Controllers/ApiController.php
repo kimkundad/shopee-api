@@ -742,6 +742,9 @@ class ApiController extends Controller
             'type' => $type,
         ]);
         foreach ($dataOption as $item) {
+            return response()->json([
+                'success' => $item['indexImageOption'],
+            ], 201);
             $status_option = 1;
             $filePaths2 = '';
             $id_image_option = '';
