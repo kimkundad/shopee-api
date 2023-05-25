@@ -747,7 +747,7 @@ class ApiController extends Controller
             $id_image_option = '';
             if ($images = $item['indexImageOption']) {
                 foreach ($images as $index => $file) {
-                    // $filename = time() . '.' . $file->getClientOriginalExtension();
+                    $filename = time() . '.' . $file->getClientOriginalExtension();
                     $image = Image::make($file->getRealPath());
                     $image->resize(300, 300, function ($constraint) {
                         $constraint->aspectRatio();
@@ -765,16 +765,6 @@ class ApiController extends Controller
             if ($item['statusOption'] != true || $item['statusOption'] != 'true') {
                 $status_option = 0;
             }
-            // $pro_option = new product_option;
-            // $pro_option->product_id = $proID;
-            // $pro_option->img_id = $id_image_option;
-            // $pro_option->op_name = $item['nameOption'];
-            // $pro_option->img_name = $filePaths2;
-            // $pro_option->price = $item['priceOption'];
-            // $pro_option->stock = $item['stockOption'];
-            // $pro_option->sku = $item['skuOption'];
-            // $pro_option->status = $status_option;
-            // $pro_option->save();
             $id_image_suboption = DB::table('product_options')->insertGetId([
                 'product_id' => $proID,
                 'img_id' => $id_image_option,
