@@ -726,9 +726,6 @@ class ApiController extends Controller
         $filePaths2 = '';
         $id_image_option = "";
         $dataOption = json_decode($request->dataOption, true);
-        return response()->json([
-            'success' => $dataOption,
-        ], 201);
         $type = 1;
         if ($request->option1 != 'ตัวเลือกที่ 1' && $request->option2 == 'ตัวเลือกที่ 2') {
             $option1 = $request->option1;
@@ -744,26 +741,27 @@ class ApiController extends Controller
             'option2' => $option2,
             'type' => $type,
         ]);
-        foreach ($dataOption as $item) {
+        foreach ($dataOption as $index => $item) {
             $status_option = 1;
             $filePaths2 = '';
             $id_image_option = '';
-            if ($images = $item['indexImageOption']) {
-                foreach ($images as $index => $file) {
-                    $filename = time() . '.' . $file->getClientOriginalExtension();
-                    $image = Image::make($file->getRealPath());
-                    $image->resize(300, 300, function ($constraint) {
-                        $constraint->aspectRatio();
-                    });
-                    $image->stream();
-                    Storage::disk('do_spaces')->put('shopee/products/' . $file->hashName(), $image, 'public');
-                    $filePaths2 = $file->hashName();
-                    $id_image_option = DB::table('product_images')->insertGetId([
-                        'image' => $filePaths2,
-                        'product_id' => $product_id['id'],
-                        'status' => 0,
-                    ]);
-                }
+            if ($request->file('fileOption')[$index]) {
+                $img = $request->file('fileOption')[$index];
+                // foreach ($images as $index => $img) {
+                $filename = time() . '.' . $img->getClientOriginalExtension();
+                $image = Image::make($img->getRealPath());
+                $image->resize(300, 300, function ($constraint) {
+                    $constraint->aspectRatio();
+                });
+                $image->stream();
+                Storage::disk('do_spaces')->put('shopee/products/' . $img->hashName(), $image, 'public');
+                $filePaths = $img->hashName();
+                DB::table('product_images')->insert([
+                    'image' => $filePaths,
+                    'product_id' => $product_id['id'],
+                    'status' => 0,
+                ]);
+                // }
             }
             if ($item['statusOption'] != true || $item['statusOption'] != 'true') {
                 $status_option = 0;
