@@ -276,12 +276,12 @@ class ApiController extends Controller
     // สร้าง order
     public function created_order(Request $request)
     {
-        $total_order = DB::table('total_orders')->where('user_id', '=', $request->owner_shop_id)->first();
+        $total_order = DB::table('total_orders')->where('user_id', '=', $request->user_code)->first();
         if ($request->product_id !== null) {
             $order = new orders();
             $order->user_id = $request->user_id;
             $order->address_id = $request->address_id;
-            $order->owner_shop_id = $request->owner_shop_id;
+            $order->user_code = $request->user_code;
             $order->order_detail_id = 0;
             $order->num = $request->num;
             $order->price = $request->total;
@@ -292,13 +292,13 @@ class ApiController extends Controller
             $order->save();
 
             if ($total_order) {
-                $total = total_orders::where('user_id', $request->owner_shop_id)->first();
+                $total = total_orders::where('user_id', $request->user_code)->first();
                 $total->total_num = intval($total_order->total_num) + intval($request->num);
                 $total->total_price = intval($total_order->total_price) + intval($request->total);
                 $total->save();
             } else {
                 $total = new total_orders();
-                $total->user_id = (int)$request->owner_shop_id;
+                $total->user_id = (int)$request->user_code;
                 $total->total_num = (int)$request->num;
                 $total->total_price = (int)$request->total;
                 $total->save();
@@ -329,7 +329,7 @@ class ApiController extends Controller
             $order = new orders();
             $order->user_id = $request->user_id;
             $order->address_id = $request->address_id;
-            $order->owner_shop_id = $request->owner_shop_id;
+            $order->user_code = $request->user_code;
             $order->order_detail_id = 0;
             $order->num = $request->num;
             $order->price = $request->total;
@@ -377,13 +377,13 @@ class ApiController extends Controller
             }
 
             if ($total_order) {
-                $total = total_orders::where('user_id', $request->owner_shop_id)->first();
+                $total = total_orders::where('user_id', $request->user_code)->first();
                 $total->total_num = intval($total_order->total_num) + intval($request->num);
                 $total->total_price = intval($total_order->total_price) + intval($request->total);
                 $total->save();
             } else {
                 $total = new total_orders();
-                $total->user_id = (int)$request->owner_shop_id;
+                $total->user_id = (int)$request->user_code;
                 $total->total_num = (int)$request->num;
                 $total->total_price = (int)$request->total;
                 $total->save();
@@ -409,11 +409,11 @@ class ApiController extends Controller
     public function getAllOrder(Request $request)
     {
         $user_id = $request->user_id;
-        $owner_shop_id = $request->owner_shop_id;
+        $user_code = $request->user_code;
 
         $orders = DB::table('orders')
             ->where('orders.user_id', '=', $user_id)
-            ->where('orders.owner_shop_id', '=', $owner_shop_id)
+            ->where('orders.user_code', '=', $user_code)
             ->orderBy('orders.updated_at', 'desc')
             ->select([
                 'orders.status',
@@ -1432,7 +1432,7 @@ class ApiController extends Controller
 
     public function countNoti($id)
     {
-        $objs = DB::table('orders')->where('owner_shop_id', '=', $id)->count();
+        $objs = DB::table('orders')->where('user_code', '=', $id)->count();
 
         return response()->json([
             'count' => $objs,
@@ -1678,7 +1678,7 @@ class ApiController extends Controller
 
         $total_delivery = DB::table('orders')
             ->selectRaw('SUM(CASE WHEN orders.status = "จัดส่งสำเร็จ" THEN orders.num ELSE 0 END) AS sum_sent, SUM(CASE WHEN orders.status != "จัดส่งสำเร็จ" THEN orders.num ELSE 0 END) AS sum_not_sent')
-            ->where('orders.owner_shop_id', '=', $request->uid)
+            ->where('orders.user_code', '=', $request->uid)
             ->get();
 
         $total_payment = DB::table('order_details')
