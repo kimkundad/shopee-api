@@ -745,6 +745,9 @@ class ApiController extends Controller
             $status_option = 1;
             if ($images = $item['indexImageOption']) {
                 foreach ($images as $index => $imageData) {
+                    if (is_array($imageData)) {
+                        continue; // ข้ามรอบถัดไปหากไม่ใช่ข้อมูลภาพที่ถูกส่งมา
+                    }
                     $file = base64_decode($imageData);
                     $filename = time() . '.' . pathinfo($filename, PATHINFO_EXTENSION);
                     $image = Image::make($file->getRealPath());
