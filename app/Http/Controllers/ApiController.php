@@ -744,17 +744,17 @@ class ApiController extends Controller
         foreach ($dataOption as $item) {
             $status_option = 1;
             if ($images = $item['indexImageOption']) {
-                // $images = $item->file('indexImageOption');
                 foreach ($images as $index => $img) {
+                    $file = $img; // เปลี่ยนตัวแปร $img เป็น $file
 
-                    $filename = time() . '.' . $img->getClientOriginalExtension();
-                    $image = Image::make($img->getRealPath());
+                    $filename = time() . '.' . $file->getClientOriginalExtension();
+                    $image = Image::make($file->getRealPath());
                     $image->resize(300, 300, function ($constraint) {
                         $constraint->aspectRatio();
                     });
                     $image->stream();
-                    Storage::disk('do_spaces')->put('shopee/products/' . $img->hashName(), $image, 'public');
-                    $filePaths2 = $img->hashName();
+                    Storage::disk('do_spaces')->put('shopee/products/' . $file->hashName(), $image, 'public');
+                    $filePaths2 = $file->hashName();
                     $id_image_option = DB::table('product_images')->insertGetId([
                         'image' => $filePaths2,
                         'product_id' => $product_id['id'],
