@@ -20,6 +20,7 @@ return new class extends Migration
             $table->integer('order_id');
             $table->string('type_noti');
             $table->string('detail');
+            $table->integer('is_seen')->default(0);
             $table->timestamps();
         });
     }
