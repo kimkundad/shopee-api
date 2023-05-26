@@ -2873,7 +2873,22 @@ class ApiController extends Controller
             DB::table('product_suboptions')->where('op_id', $value)->where('sub_op_name', $request->removedText)->delete();
         }
         return response()->json([
-            'success' => 'Insert tracking successfully',
+            'success' => 'Deleted sub option successfully',
+        ], 201);
+    }
+
+    public function deleteOption(Request $request)
+    {
+        $option_id = $request->productSelect;
+        foreach ($option_id as $index => $value) {
+            $id_image = DB::table('product_options')->where('id', $value)->where('op_name', $request->removedText)->first('img_id');
+            if ($id_image) {
+                DB::table('product_options')->where('id', $value)->where('op_name', $request->removedText)->delete();
+                DB::table('product_images')->where('id', $id_image['img_id'])->delete();
+            }
+        }
+        return response()->json([
+            'success' => 'Deleted option successfully',
         ], 201);
     }
 }
