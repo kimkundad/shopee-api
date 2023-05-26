@@ -242,7 +242,7 @@ class ApiController extends Controller
         $objs->map(function ($item) use ($image_suboption) {
             $filteredImages = $item->allImage->filter(function ($image) use ($image_suboption) {
                 return !$image_suboption->contains('img_id', $image->id);
-            });
+            })->toArray();
             $item->filteredImages = $filteredImages;
             return $item;
         });
