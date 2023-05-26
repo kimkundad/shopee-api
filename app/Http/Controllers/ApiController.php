@@ -1449,8 +1449,8 @@ class ApiController extends Controller
     public function getNoti($id)
     {
         $check = DB::table('ownershop_settings')->where('user_code','=',$id)->first();
-
-        if($check->setting->notification == true){
+        $object = json_decode($check->setting);
+        if($object->notification == true){
             $objs = DB::table('notifications')->where('user_code', '=', $id)->orWhere('user_id','=',$id)->where('is_seen','=',0)->get();
 
             return response()->json([
