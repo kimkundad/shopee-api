@@ -2881,10 +2881,10 @@ class ApiController extends Controller
     {
         $option_id = $request->productSelect;
         foreach ($option_id as $index => $value) {
-            $id_image = DB::table('product_options')->where('id', $value)->where('op_name', $request->removedText)->first('img_id');
+            $id_image = DB::table('product_options')->where('id', $value)->where('op_name', $request->removedText)->first(['img_id']);
             if ($id_image) {
                 DB::table('product_options')->where('id', $value)->where('op_name', $request->removedText)->delete();
-                DB::table('product_images')->where('id', $id_image['img_id'])->delete();
+                DB::table('product_images')->where('id', $id_image->img_id)->delete();
             }
         }
         return response()->json([
