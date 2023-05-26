@@ -2868,7 +2868,7 @@ class ApiController extends Controller
 
     public function deleteSubOption(Request $request)
     {
-        $option_id = json_decode($request->productSelect, true);
+        $option_id = $request->productSelect;
         foreach ($option_id as $index => $value) {
             DB::table('product_suboptions')->where('op_id', $value)->where('sub_op_name', $request->removedText)->delete();
         }
