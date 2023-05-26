@@ -1461,7 +1461,11 @@ class ApiController extends Controller
         $check = DB::table('ownershop_settings')->where('user_code', '=', $id)->first();
         $object = json_decode($check->setting);
         if ($object->notification == true) {
-            $objs = DB::table('notifications')->where('user_code', '=', $id)->orWhere('user_id', '=', $id)->where('is_seen', '=', 0)->orderBy('created_at', 'desc')->limit(5)->get();
+            $objs = DB::table('notifications')->join('orders', 'orders.id', '=', 'notifications.order_id')->where('notifications.user_code', '=', $id)->orWhere('notifications.user_id', '=', $id)->where('notifications.is_seen', 0)
+                ->orWhere(function ($query) {
+                    $query->where('notifications.is_seen', 1)
+                        ->limit(5);
+                })->orderBy('notifications.created_at', 'desc')->get();
 
             return response()->json([
                 'status' => "success",
