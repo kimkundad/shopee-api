@@ -245,6 +245,7 @@ class ApiController extends Controller
                         ->where('product_options.product_id', '=', 'product_images.product_id');
                 })
                 ->where('product_images.product_id', '=', $item->product_id)
+                ->select('product_images.*')
                 ->get();
             return $item;
         });
