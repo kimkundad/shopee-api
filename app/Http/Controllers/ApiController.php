@@ -242,7 +242,7 @@ class ApiController extends Controller
             $item->SubImageProduct =
                 DB::table('product_images')
                 ->leftJoin('product_options', 'product_options.img_id', '!=', 'product_images.id')
-                ->where('product_id', '=', $item->product_id)
+                ->where('product_images.product_id', '=', $item->product_id)
                 ->select('product_images.id', 'product_images.image')
                 ->get();
             return $item;
