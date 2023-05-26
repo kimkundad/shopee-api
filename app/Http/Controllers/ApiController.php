@@ -2870,8 +2870,10 @@ class ApiController extends Controller
     {
         $option_id = $request->productSelect;
         foreach ($option_id as $index => $value) {
-           DB::table('product_suboptions')->where('op_id', $value)->where('sub_op_name', $request->removedText)->delete();
+            DB::table('product_suboptions')->where('op_id', $value)->where('sub_op_name', $request->removedText)->delete();
         }
-
+        return response()->json([
+            'success' => 'Insert tracking successfully',
+        ], 201);
     }
 }
