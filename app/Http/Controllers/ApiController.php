@@ -238,12 +238,12 @@ class ApiController extends Controller
             $item->allImage = DB::table('product_images')->where('product_id', '=', $item->product_id)->get();
             return $item;
         });
-        $objs->map(function ($item) {
-            $item->allSubImage = DB::table('product_images')
-            ->join('product_options', 'product_options.img_id', '!=', 'product_images.id')
-            ->where('product_images.product_id', '=', $item->product_id)
-            ->where('product_options.product_id', '=', $item->product_id)
-            ->get();
+        $image_suboption = DB::table('product_options')->where('product_id', '=', $product_id)->get();
+        $objs->map(function ($item) use ($image_suboption) {
+            $filteredImages = $item->allImage->filter(function ($image) use ($image_suboption) {
+                return !$image_suboption->contains('img_id', $image->id);
+            });
+            $item->filteredImages = $filteredImages;
             return $item;
         });
         if ($objs !== null && $objs[0]->type == 2) {
@@ -1447,7 +1447,7 @@ class ApiController extends Controller
 
     public function newNoti($id)
     {
-        $objs = DB::table('notifications')->where('user_code', '=', $id)->orWhere('user_id','=',$id)->where('is_seen','=',0)->count();
+        $objs = DB::table('notifications')->where('user_code', '=', $id)->orWhere('user_id', '=', $id)->where('is_seen', '=', 0)->count();
 
         return response()->json([
             'count' => $objs,
@@ -1456,21 +1456,20 @@ class ApiController extends Controller
 
     public function getNoti($id)
     {
-        $check = DB::table('ownershop_settings')->where('user_code','=',$id)->first();
+        $check = DB::table('ownershop_settings')->where('user_code', '=', $id)->first();
         $object = json_decode($check->setting);
-        if($object->notification == true){
-            $objs = DB::table('notifications')->where('user_code', '=', $id)->orWhere('user_id','=',$id)->where('is_seen','=',0)->orderBy('created_at','desc')->limit(5)->get();
+        if ($object->notification == true) {
+            $objs = DB::table('notifications')->where('user_code', '=', $id)->orWhere('user_id', '=', $id)->where('is_seen', '=', 0)->orderBy('created_at', 'desc')->limit(5)->get();
 
             return response()->json([
                 'status' => "success",
                 'noti' => $objs,
             ], 201);
-        }else{
+        } else {
             return response()->json([
                 'status' => "error",
             ], 201);
         }
-
     }
 
     //เปิดปิด แจ้งเตือนหลังบ้าน
