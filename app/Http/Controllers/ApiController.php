@@ -2865,4 +2865,11 @@ class ApiController extends Controller
             ], 500);
         }
     }
+
+    public function deleteSubOption(Request $request)
+    {
+        return response()->json([
+            'optionID' => $request->productSelect,
+        ], 201);
+    }
 }

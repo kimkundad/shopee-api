@@ -78,6 +78,7 @@ Route::group([
     Route::post('/addTrackingOrder', [App\Http\Controllers\ApiController::class, 'addTrackingOrder']);
     Route::post('/addTrackingOrderKerry', [App\Http\Controllers\ApiController::class, 'addTrackingOrderKerry']);
     Route::post('/addTrackingOrderFlash', [App\Http\Controllers\ApiController::class, 'addTrackingOrderFlash']);
+    Route::post('/deleteSubOption', [App\Http\Controllers\ApiController::class, 'deleteSubOption']);
 
     Route::post('/getMessage', [App\Http\Controllers\ApiController::class, 'getMessage']);
     Route::post('/sendMessage', [App\Http\Controllers\ApiController::class, 'sendMessage']);
