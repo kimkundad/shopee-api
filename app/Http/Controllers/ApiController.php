@@ -240,7 +240,7 @@ class ApiController extends Controller
         });
         $objs->map(function ($item) {
             $item->SubImageProduct = DB::table('product_images')
-                ->leftJoin('product_options', 'product_options.product_id', '=', $item->product_id)
+                ->leftJoin('product_options', 'product_options.product_id', '=', "product_images.product_id")
                 ->where('product_images.product_id', $item->product_id)
                 ->where('product_options.img_id', '!=', DB::raw('product_images.id'))
                 ->select('product_images.id', 'product_images.image')
