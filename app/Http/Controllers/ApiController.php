@@ -239,13 +239,15 @@ class ApiController extends Controller
             return $item;
         });
         $image_suboption = DB::table('product_options')->where('product_id', '=', $product_id)->get();
-        $objs->map(function ($item) use ($image_suboption) {
-            $filteredImages = $item->allImage->filter(function ($image) use ($image_suboption) {
-                return !$image_suboption->contains('img_id', $image->id);
-            })->toArray();
+        foreach ($objs as $item) {
+            $filteredImages = collect(); // สร้าง Laravel Collection ว่างเพื่อเก็บรายการที่ผ่านการกรอง
+            foreach ($item->allImage as $image) {
+                if (!$image_suboption->contains('img_id', $image->id)) {
+                    $filteredImages->push($image); // เพิ่มรายการที่ผ่านการกรองเข้าสู่ Collection
+                }
+            }
             $item->filteredImages = $filteredImages;
-            return $item;
-        });
+        }
         if ($objs !== null && $objs[0]->type == 2) {
             $objs->map(function ($item) {
                 $item->allOption1 = DB::table('product_options')->where('product_id', '=', $item->product_id)->where('status', '=', 1)->get();
