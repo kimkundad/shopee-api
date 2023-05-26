@@ -238,6 +238,16 @@ class ApiController extends Controller
             $item->allImage = DB::table('product_images')->where('product_id', '=', $item->product_id)->get();
             return $item;
         });
+        $objs->map(function ($item) {
+            $item->allSubImage = DB::table('product_images')
+                ->join('product_options', function ($join) {
+                    $join->on('product_options.img_id', '!=', 'product_images.id')
+                        ->where('product_options.product_id', '=', 'product_images.product_id');
+                })
+                ->where('product_images.product_id', '=', $item->product_id)
+                ->get();
+            return $item;
+        });
         if ($objs !== null && $objs[0]->type == 2) {
             $objs->map(function ($item) {
                 $item->allOption1 = DB::table('product_options')->where('product_id', '=', $item->product_id)->where('status', '=', 1)->get();
