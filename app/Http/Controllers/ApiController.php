@@ -1437,13 +1437,32 @@ class ApiController extends Controller
         ], 201);
     }
 
-    public function countNoti($id)
+    public function newNoti($id)
     {
         $objs = DB::table('notifications')->where('user_code', '=', $id)->orWhere('user_id','=',$id)->where('is_seen','=',0)->count();
 
         return response()->json([
             'count' => $objs,
         ], 201);
+    }
+
+    public function getNoti($id)
+    {
+        $check = DB::table('ownershop_settings')->where('user_code','=',$id)->first();
+
+        if($check->setting->notification == true){
+            $objs = DB::table('notifications')->where('user_code', '=', $id)->orWhere('user_id','=',$id)->where('is_seen','=',0)->get();
+
+            return response()->json([
+                'status' => "success",
+                'noti' => $objs,
+            ], 201);
+        }else{
+            return response()->json([
+                'status' => "error",
+            ], 201);
+        }
+        
     }
 
     //เปิดปิด แจ้งเตือนหลังบ้าน

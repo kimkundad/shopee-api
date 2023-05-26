@@ -116,7 +116,8 @@ Route::group([
 
     Route::post('/getOwnerSetting' , [App\Http\Controllers\ApiController::class, 'getOwnerSetting']);
     Route::post('/setNotification' , [App\Http\Controllers\ApiController::class, 'settingNoti']);
-    Route::get('/countNoti/{id}', [App\Http\Controllers\ApiController::class, 'countNoti']);
+    Route::get('/newNoti/{id}', [App\Http\Controllers\ApiController::class, 'newNoti']);
+    Route::get('/getNoti/{id}', [App\Http\Controllers\ApiController::class, 'getNoti']);
 
     Route::post('/createUser', [App\Http\Controllers\AuthController::class, 'createUser']);
     Route::post('/verify', [App\Http\Controllers\AuthController::class, 'verify']);
