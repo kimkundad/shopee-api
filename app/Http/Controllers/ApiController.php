@@ -1478,6 +1478,12 @@ class ApiController extends Controller
         }
     }
 
+    public function readNoti(Request $request){
+        DB::table('notifications')->where('user_code','=',$request->user_code)->where('type_noti','=',$request->type_noti)->update([
+            'is_seen' => 1
+        ]);
+    }
+
     //เปิดปิด แจ้งเตือนหลังบ้าน
     public function settingNoti(Request $request)
     {
