@@ -296,8 +296,8 @@ class ApiController extends Controller
             ->join('product_options','product_options.product_id','=','products.id')
             ->join('product_suboptions','product_suboptions.op_id','=','product_options.id')
             ->where('products.id','=',$request->product_id)
-            ->orWhere('product_options.id','=',$request->option1)
-            ->orWhere('product_suboptions.id','=',$request->option2)
+            /* ->orWhere('product_options.id','=',$request->option1)
+            ->orWhere('product_suboptions.id','=',$request->option2) */
             ->select([
                 'products.price_sales',
                 'products.price AS price_type_1',
