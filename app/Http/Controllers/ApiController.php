@@ -305,7 +305,6 @@ class ApiController extends Controller
                 'product_suboptions.price AS price_type_3',
             ])->first();
             
-            $price = 0;
             if($product->price_sales !== 0){
                 if($request->option2 !== 0){
                     $price =( $product->price_type_3 * $product->price_sales )/100;
@@ -314,6 +313,9 @@ class ApiController extends Controller
                 }else {
                     $price =( $product->price_type_1 * $product->price_sales )/100;
                 }
+                return response()->json([
+                    's'=>$price,
+                ],201);
             }else{
                 if($request->option2 !== 0){
                     $price = $product->price_type_3;
@@ -322,6 +324,9 @@ class ApiController extends Controller
                 }else {
                     $price = $product->price_type_1;
                 }
+                return response()->json([
+                    's'=>$price,
+                ],201);
             }
 
             $order = new orders();
