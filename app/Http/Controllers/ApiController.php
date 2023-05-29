@@ -1465,7 +1465,7 @@ class ApiController extends Controller
                 ->orWhere(function ($query) {
                     $query->where('notifications.is_seen', 1)
                         ->limit(5);
-                })->orderBy('notifications.created_at', 'desc')->get();
+                })->orderBy('notifications.created_at', 'desc')->limit(5)->get();
 
             return response()->json([
                 'status' => "success",
