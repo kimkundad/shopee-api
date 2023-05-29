@@ -296,17 +296,21 @@ class ApiController extends Controller
             ->join('product_options','product_options.product_id','=','products.id')
             ->join('product_suboptions','product_suboptions.op_id','=','product_options.id')
             ->where('products.id','=',$request->product_id)
-            ->where('product_options.id','=',$request->option1)
-            ->where('product_suboptions.id','=',$request->option2)
+            ->orWhere('product_options.id','=',$request->option1)
+            ->orWhere('product_suboptions.id','=',$request->option2)
             ->select([
                 'products.price_sales',
                 'products.price AS price_type_1',
                 'product_options.price AS price_type_2',
                 'product_suboptions.price AS price_type_3',
             ])->first();
-            return response()->json([
-                'order' => $product
-            ], 201);
+            /* if($product){
+                return response()->json([
+                    'status' => 'error',
+                    'order' => $product
+                ], 201);
+            } */
+            
             if($product->price_sales !== 0){
                 if($request->option2 !== 0){
                     $price =( $product->price_type_3 * $product->price_sales )/100;
