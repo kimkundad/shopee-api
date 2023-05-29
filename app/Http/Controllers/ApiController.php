@@ -1021,11 +1021,11 @@ class ApiController extends Controller
     // เพิ่มสินค้าลงในรถเข็น
     public function addProductToCart(Request $request)
     {
-        $cartItem = DB::table('carts')->where([
+        $cartItem = DB::table('carts')->where('user_id','=',$request->input('user_id'))->where([
             ['product_id', '=', $request->input('productId')],
             ['product_options_id', '=', $request->input('productOptionId')],
             ['product_suboptions_id', '=', $request->input('productSubOptionId')],
-        ])->orWhere('id', '=', $request->input('cart_id'))->where('user_id','=',$request->input('user_id'))
+        ])->orWhere('id', '=', $request->input('cart_id'))
             ->first();
         if ($cartItem !== null) {
             if ($request->input('num') !== null) {
