@@ -2570,7 +2570,7 @@ class ApiController extends Controller
                 }
             } else {
                 $status_option = 1;
-                if ($request->hasFile('fileOption') && $request->file('fileOption')[$index]) {
+                if ($request->hasFile('fileOption')[$index] && $request->file('fileOption')[$index]) {
                     $img = $request->file('fileOption')[$index];
                     // foreach ($images as $index => $img) {
                     $filename = time() . '.' . $img->getClientOriginalExtension();
