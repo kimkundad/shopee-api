@@ -1313,6 +1313,7 @@ class ApiController extends Controller
             'banks.icon_bank',
             'banks.id as bank_id',
             'bankaccounts.id',
+            'banks.name_bank'
 
         ])->get();
 
