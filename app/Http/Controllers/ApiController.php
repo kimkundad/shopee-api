@@ -307,7 +307,7 @@ class ApiController extends Controller
             return response()->json([
                 'full' => $product,
                 '->' => $product->price_type_1,
-                'dspadsa' => $product['price_type_1'],
+                /* 'dspadsa' => $product['price_type_1'], */
             ]);
             if($product['price_sales'] !== 0){
                 if($request->option2 !== 0){
