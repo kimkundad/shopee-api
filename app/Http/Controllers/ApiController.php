@@ -27,6 +27,7 @@ use Illuminate\Support\Facades\Hash;
 use Twilio\Rest\Client;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
+use Mockery\Undefined;
 
 class ApiController extends Controller
 {
@@ -2880,7 +2881,12 @@ class ApiController extends Controller
     {
         $option_id = $request->productSelect;
         foreach ($option_id as $index => $value) {
-            DB::table('product_suboptions')->where('op_id', $value)->where('sub_op_name', $request->removedText)->delete();
+            if ($value && $value !== 'undefined') {
+                DB::table('product_suboptions')
+                    ->where('op_id', $value)
+                    ->where('sub_op_name', $request->removedText)
+                    ->delete();
+            }
         }
         return response()->json([
             'success' => 'Deleted sub option successfully',
