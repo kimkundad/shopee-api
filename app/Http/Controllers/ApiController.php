@@ -289,14 +289,47 @@ class ApiController extends Controller
     public function created_order(Request $request)
     {
         $total_order = DB::table('total_orders')->where('user_id', '=', $request->user_code)->first();
+
         if ($request->product_id !== null) {
+
+
+            $product = DB::table('products')
+            ->join('product_options','product_options.product_id','=','products.id')
+            ->join('product_suboptions','product_suboptions.op_id','=','product_options.id')
+            ->where('products.id','=',$request->product_id)
+            ->where('product_options.id','=',$request->option1)
+            ->where('product_suboptions.id','=',$request->option2)
+            ->select([
+                'products.price_sales',
+                'products.price AS price_type_1',
+                'product_options AS price_type_2',
+                'product_suboptions AS price_type_3',
+            ])->first();
+            if($product->price_sales !== 0){
+                if($request->option2 !== 0){
+                    $price =( $product->price_type_3 * $product->price_sales )/100;
+                }else if($request->option1 !== 0){
+                    $price =( $product->price_type_2 * $product->price_sales )/100;
+                }else {
+                    $price =( $product->price_type_1 * $product->price_sales )/100;
+                }
+            }else{
+                if($request->option2 !== 0){
+                    $price = $product->price_type_3;
+                }else if($request->option1 !== 0){
+                    $price = $product->price_type_2;
+                }else {
+                    $price = $product->price_type_1;
+                }
+            }
+
             $order = new orders();
             $order->user_id = $request->user_id;
             $order->address_id = $request->address_id;
             $order->user_code = $request->user_code;
             $order->order_detail_id = 0;
             $order->num = $request->num;
-            $order->price = $request->total;
+            $order->price = $price*$request->num;
             $order->discount = $request->discount;
             $order->status = $request->status;
             $order->invoice_id = $request->invoice_id;
@@ -332,12 +365,7 @@ class ApiController extends Controller
             $order_detail->option2 = $request->option2;
             $order_detail->num = $request->num;
             $order_detail->type_payment = $request->type_payment;
-            if ($request->price_sales >= 1) {
-                $price = $request->price - (($request->price * $request->price_sales) / 100);
-                $order_detail->price = $price;
-            } else {
-                $order_detail->price = $request->price;
-            }
+            $order_detail->price = $price;
             $order_detail->save();
 
             return response()->json([
@@ -1307,15 +1335,15 @@ class ApiController extends Controller
             ], 201);
         }
         $banks = DB::table('bankaccounts')->leftjoin('banks', 'banks.id', '=', 'bankaccounts.bank_id')->where('bankaccounts.user_id', '=', $request->user_id)->where('bankaccounts.is_active', '=', 1)->where('bankaccounts.type_account', '=', 'eBank')
-        ->select([
-            'bankaccounts.bankaccount_name',
-            'bankaccounts.bankaccount_number',
-            'banks.icon_bank',
-            'banks.id as bank_id',
-            'bankaccounts.id',
-            'banks.name_bank'
+            ->select([
+                'bankaccounts.bankaccount_name',
+                'bankaccounts.bankaccount_number',
+                'banks.icon_bank',
+                'banks.id as bank_id',
+                'bankaccounts.id',
+                'banks.name_bank'
 
-        ])->get();
+            ])->get();
 
         return response()->json([
             'banks' => $banks,
@@ -1488,8 +1516,9 @@ class ApiController extends Controller
         }
     }
 
-    public function readNoti(Request $request){
-        DB::table('notifications')->where('user_code','=',$request->user_code)->where('type_noti','=',$request->type_noti)->update([
+    public function readNoti(Request $request)
+    {
+        DB::table('notifications')->where('user_code', '=', $request->user_code)->where('type_noti', '=', $request->type_noti)->update([
             'is_seen' => 1
         ]);
     }
