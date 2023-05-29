@@ -323,6 +323,7 @@ class ApiController extends Controller
                 }
                 return response()->json([
                     'dsa' => $price,
+                    'dsaaa' => $product->price_type_3,
                 ],201);
             }
 
