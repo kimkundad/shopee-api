@@ -291,38 +291,36 @@ class ApiController extends Controller
 
         if ($request->product_id !== null) {
 
-
             $product = DB::table('products')
-            ->leftJoin('product_options','product_options.product_id','=','products.id')
-            ->leftJoin('product_suboptions','product_suboptions.op_id','=','product_options.id')
-            ->where('products.id','=',$request->product_id)
-            ->orWhere('product_options.id','=',$request->option1)
-            ->orWhere('product_suboptions.id','=',$request->option2)
-            ->select([
-                'products.price_sales',
-                'products.price AS price_type_1',
-                'product_options.price AS price_type_2',
-                'product_suboptions.price AS price_type_3',
-            ])->first();
-            
-            if($product->price_sales !== 0){
-                if($product->price_type_3 !== null){
-                    $price = ( $product->price_type_3 * $product->price_sales )/100;
-                }else if($product->price_type_2 !== null){
-                    $price =( $product->price_type_2 * $product->price_sales )/100;
-                }else {
-                    $price =( $product->price_type_1 * $product->price_sales )/100;
-                }
-            }else{
+                ->leftJoin('product_options', 'product_options.product_id', '=', 'products.id')
+                ->leftJoin('product_suboptions', 'product_suboptions.op_id', '=', 'product_options.id')
+                ->where('products.id', '=', $request->product_id)
+                ->orWhere('product_options.id', '=', $request->option1)
+                ->orWhere('product_suboptions.id', '=', $request->option2)
+                ->select([
+                    'products.price_sales',
+                    'products.price AS price_type_1',
+                    'product_options.price AS price_type_2',
+                    'product_suboptions.price AS price_type_3',
+                ])->first();
 
-                if($product->price_type_3 !== null){
+            if ($product->price_sales !== 0) {
+                if ($product->price_type_3 !== null) {
+                    $price = ($product->price_type_3 * $product->price_sales) / 100;
+                } else if ($product->price_type_2 !== null) {
+                    $price = ($product->price_type_2 * $product->price_sales) / 100;
+                } else {
+                    $price = ($product->price_type_1 * $product->price_sales) / 100;
+                }
+            } else {
+
+                if ($product->price_type_3 !== null) {
                     $price = $product->price_type_3;
-                }else if($product->price_type_2 !== null){
+                } else if ($product->price_type_2 !== null) {
                     $price = $product->price_type_2;
-                }else {
+                } else {
                     $price = $product->price_type_1;
                 }
-                
             }
             $order = new orders();
             $order->user_id = $request->user_id;
@@ -330,7 +328,7 @@ class ApiController extends Controller
             $order->user_code = $request->user_code;
             $order->order_detail_id = 0;
             $order->num = $request->num;
-            $order->price = $price*$request->num;
+            $order->price = $price * $request->num;
             $order->discount = $request->discount;
             $order->status = $request->status;
             $order->invoice_id = $request->invoice_id;
@@ -374,6 +372,20 @@ class ApiController extends Controller
             ], 201);
         } else {
             $products = json_decode($request->products, true);
+
+                /* $product = DB::table('products')
+                    ->leftJoin('product_options', 'product_options.product_id', '=', 'products.id')
+                    ->leftJoin('product_suboptions', 'product_suboptions.op_id', '=', 'product_options.id')
+                    ->where('products.id', '=', $request->product_id)
+                    ->orWhere('product_options.id', '=', $request->option1)
+                    ->orWhere('product_suboptions.id', '=', $request->option2)
+                    ->select([
+                        'products.price_sales',
+                        'products.price AS price_type_1',
+                        'product_options.price AS price_type_2',
+                        'product_suboptions.price AS price_type_3',
+                    ])->get(); */
+
             $order = new orders();
             $order->user_id = $request->user_id;
             $order->address_id = $request->address_id;
@@ -396,6 +408,20 @@ class ApiController extends Controller
 
             foreach ($products as $index => $item) {
                 foreach ($item['product'] as $subIndex => $subItem) {
+
+                    $product = DB::table('products')
+                        ->leftJoin('product_options', 'product_options.product_id', '=', 'products.id')
+                        ->leftJoin('product_suboptions', 'product_suboptions.op_id', '=', 'product_options.id')
+                        ->where('products.id', '=', $subItem['product_id'])
+                        ->orWhere('product_options.id', '=', $subItem['option1Id'])
+                        ->orWhere('product_suboptions.id', '=', $subItem['option2Id'])
+                        ->select([
+                            'products.price_sales',
+                            'products.price AS price_type_1',
+                            'product_options.price AS price_type_2',
+                            'product_suboptions.price AS price_type_3',
+                        ])->first();
+
                     $order_detail = new order_details();
                     $order_detail->product_id = $subItem['product_id'];
                     $order_detail->user_id = $request->user_id;
@@ -403,26 +429,26 @@ class ApiController extends Controller
                     $order_detail->shop_id = $subItem['shops_id'];
                     $order_detail->option1 = $subItem['option1Id'];
                     $order_detail->option2 = $subItem['option2Id'];
-                    if ($subItem['type_product'] == 1) {
-                        if ($subItem['price_sales'] >= 1) {
-                            $price = $subItem['price_type_1'] - (($subItem['price_type_1'] * $subItem['price_sales']) / 100);
+                    if ($product->price_type_3 !== null) {
+                        if ($product->price_sales >= 1) {
+                            $price = $product->price_type_3 - (($product->price_type_3 * $product->price_sales) / 100);
                             $order_detail->price = $price;
                         } else {
-                            $order_detail->price = $subItem['price_type_1'];
+                            $order_detail->price = $product->price_type_3;
                         }
-                    } else if ($subItem['type_product'] == 2) {
-                        if ($subItem['price_sales'] >= 1) {
-                            $price = $subItem['price_type_2'] - (($subItem['price_type_2'] * $subItem['price_sales']) / 100);
+                    } else if ($product->price_type_2 !== null) {
+                        if ($product->price_sales >= 1) {
+                            $price = $product->price_type_2 - (($product->price_type_2 * $product->price_sales) / 100);
                             $order_detail->price = $price;
                         } else {
-                            $order_detail->price = $subItem['price_type_2'];
+                            $order_detail->price = $product->price_type_2;
                         }
-                    } else if ($subItem['type_product'] == 3) {
-                        if ($subItem['price_sales'] >= 1) {
-                            $price = $subItem['price_type_3'] - (($subItem['price_type_3'] * $subItem['price_sales']) / 100);
+                    } else if ($product->price_type_1 !== null) {
+                        if ($product->price_sales >= 1) {
+                            $price = $product->price_type_1 - (($product->price_type_1 * $product->price_sales) / 100);
                             $order_detail->price = $price;
                         } else {
-                            $order_detail->price = $subItem['price_type_3'];
+                            $order_detail->price = $product->price_type_1;
                         }
                     }
                     $order_detail->num = $subItem['num'];
@@ -999,7 +1025,7 @@ class ApiController extends Controller
             ['product_id', '=', $request->input('productId')],
             ['product_options_id', '=', $request->input('productOptionId')],
             ['product_suboptions_id', '=', $request->input('productSubOptionId')],
-        ])->orWhere('id', '=', $request->input('cart_id'))
+        ])->orWhere('id', '=', $request->input('cart_id'))->where('user_id','=',$request->input('user_id'))
             ->first();
         if ($cartItem !== null) {
             if ($request->input('num') !== null) {
