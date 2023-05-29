@@ -1306,7 +1306,13 @@ class ApiController extends Controller
                 'banks' => $banks,
             ], 201);
         }
-        $banks = DB::table('bankaccounts')->leftjoin('banks', 'banks.id', '=', 'bankaccounts.bank_id')->where('bankaccounts.user_id', '=', $request->user_id)->where('bankaccounts.is_active', '=', 1)->where('bankaccounts.type_account', '=', 'eBank')->get();
+        $banks = DB::table('bankaccounts')->leftjoin('banks', 'banks.id', '=', 'bankaccounts.bank_id')->where('bankaccounts.user_id', '=', $request->user_id)->where('bankaccounts.is_active', '=', 1)->where('bankaccounts.type_account', '=', 'eBank')
+        ->select([
+            'bankaccounts.bankaccount_name',
+            'bankaccounts.bankaccount_number',
+            'banks.icon_bank',
+            'banks.bank_id'
+        ])->get();
 
         return response()->json([
             'banks' => $banks,
