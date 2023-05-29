@@ -305,28 +305,25 @@ class ApiController extends Controller
                 'product_suboptions.price AS price_type_3',
             ])->first();
             
-            if($product->price_sales !== 0){
+            if($product['price_sales'] !== 0){
                 if($request->option2 !== 0){
-                    $price = ( $product->price_type_3 * $product->price_sales )/100;
+                    $price = ( $product['price_type_3'] * $product['price_sales'] )/100;
                 }else if($request->option1 !== 0){
-                    $price =( $product->price_type_2 * $product->price_sales )/100;
+                    $price =( $product['price_type_2'] * $product['price_sales'] )/100;
                 }else {
-                    $price =( $product->price_type_1 * $product->price_sales )/100;
+                    $price =( $product['price_type_1'] * $product['price_sales'] )/100;
                 }
             }else{
                 if($request->option2 !== 0){
-                    $price = $product->price_type_3;
+                    $price = $product['price_type_3'];
                 }else if($request->option1 !== 0){
-                    $price = $product->price_type_2;
+                    $price = $product['price_type_2'];
                 }else {
-                    $price = $product->price_type_1;
+                    $price = $product['price_type_1'];
                 }
                 
             }
-            return response()->json([
-                'dsa' => $product,
-                'dsaaa' => $product->price_type_3,
-            ],201);
+
             $order = new orders();
             $order->user_id = $request->user_id;
             $order->address_id = $request->address_id;
