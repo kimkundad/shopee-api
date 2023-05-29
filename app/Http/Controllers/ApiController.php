@@ -1311,7 +1311,9 @@ class ApiController extends Controller
             'bankaccounts.bankaccount_name',
             'bankaccounts.bankaccount_number',
             'banks.icon_bank',
-            'banks.bank_id'
+            'banks.id as bank_id',
+            'bankaccounts.id',
+
         ])->get();
 
         return response()->json([
