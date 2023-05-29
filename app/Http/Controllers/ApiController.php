@@ -1449,7 +1449,7 @@ class ApiController extends Controller
 
     public function newNoti($id)
     {
-        $objs = DB::table('notifications')->where('user_code', '=', $id)->orWhere('user_id', '=', $id)->where('is_seen', '=', 0)->count();
+        $objs = DB::table('notifications')->where('user_code', '=', $id)->where('is_seen', '=', 0)->count();
 
         return response()->json([
             'count' => $objs,
