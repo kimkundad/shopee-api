@@ -323,6 +323,9 @@ class ApiController extends Controller
                 }
             }
 
+            return response()->json([
+                's' => $price,
+            ],201);
             $order = new orders();
             $order->user_id = $request->user_id;
             $order->address_id = $request->address_id;
