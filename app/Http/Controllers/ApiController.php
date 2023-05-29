@@ -294,7 +294,7 @@ class ApiController extends Controller
 
             $product = DB::table('products')
             ->join('product_options','product_options.product_id','=','products.id')
-            ->join('product_suboptions','product_suboptions.op_id','=','product_options.id')
+            /* ->join('product_suboptions','product_suboptions.op_id','=','product_options.id') */
             ->where('products.id','=',$request->product_id)
             /* ->orWhere('product_options.id','=',$request->option1)
             ->orWhere('product_suboptions.id','=',$request->option2) */
@@ -302,9 +302,8 @@ class ApiController extends Controller
                 'products.price_sales',
                 'products.price AS price_type_1',
                 'product_options.price AS price_type_2',
-                'product_suboptions.price AS price_type_3',
-            ])->get();
-
+                /* 'product_suboptions.price AS price_type_3', */
+            ])->first();
                 return response()->json([
                     'status' => 'error',
                     'order' => $product
