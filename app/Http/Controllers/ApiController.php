@@ -251,14 +251,14 @@ class ApiController extends Controller
         }
         if ($objs !== null && $objs[0]->type == 2) {
             $objs->map(function ($item) {
-                $item->allOption1 = DB::table('product_options')->where('product_id', '=', $item->product_id)->where('status', '=', 1)->select(['product_options.price'])->get();
+                $item->allOption1 = DB::table('product_options')->where('product_id', '=', $item->product_id)->where('status', '=', 1)->get();
                 return $item;
             });
         } else if ($objs !== null && $objs[0]->type == 3) {
             $objs->map(function ($item) {
                 $item->allOption1 = DB::table('product_options')->where('product_id', '=', $item->product_id)->where('status', '=', 1)->get();
                 $item->allOption1->map(function ($item2) {
-                    $item2->allOption2 = DB::table('product_suboptions')->where('op_id', '=', $item2->id)->where('status', '=', 1)->select(['product_suboptions.price'])->get();
+                    $item2->allOption2 = DB::table('product_suboptions')->where('op_id', '=', $item2->id)->where('status', '=', 1)->get();
                     return $item2;
                 });
                 return $item;
