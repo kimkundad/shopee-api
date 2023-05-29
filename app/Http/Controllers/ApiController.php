@@ -2468,77 +2468,216 @@ class ApiController extends Controller
         $proID = $request->productID;
         $option = null;
         $sub_option = null;
+        $type = 1;
         // $dataOption = json_decode($request->dataOption, true);
         if ($request->option1 !== 'ตัวเลือกที่ 1') {
             $option = $request->option1;
+            $type = 2;
         }
         if ($request->option2 !== 'ตัวเลือกที่ 2') {
             $sub_option = $request->option2;
+            $type = 3;
         }
         DB::table('products')->where('id', $proID)->update([
             'option1' => $option,
             'option2' => $sub_option,
+            'type' => $type,
         ]);
-
-        foreach ($request->dataOption as $item) {
+        $dataOption = json_decode($request->dataOption, true);
+        foreach ($dataOption as $index => $item) {
             if (array_key_exists('id', $item) && $item['id']) {
-                DB::table('product_options')->where('id', $item['id'])->update([
-                    'product_id' => $proID,
-                    'img_id' => $item['img_id'],
-                    'img_name' => $item['img_name'],
-                    'op_name' => $item['op_name'],
-                    'price' => $item['price'],
-                    'sku' => $item['sku'],
-                    'status' => $item['status'],
-                    'stock' => $item['stock'],
-                ]);
-
-                foreach ($item['allOption2'] as $subItem) {
-                    if (array_key_exists('id', $subItem) && $subItem['id']) {
-                        DB::table('product_suboptions')->where('id', $subItem['id'])->update([
-                            'op_id' => $item['id'],
-                            'sub_op_name' => $subItem['sub_op_name'],
-                            'price' => $subItem['price'],
-                            'stock' => $subItem['stock'],
-                            'sku' => $subItem['sku'],
-                            'status' => $subItem['status'],
+                if ($item["imagePreviewOption"] == "") {
+                    DB::table('product_options')->where('id', $item['id'])->update([
+                        'product_id' => $proID,
+                        'img_id' => $item['img_id'],
+                        'img_name' => $item['img_name'],
+                        'op_name' => $item['op_name'],
+                        'price' => $item['price'],
+                        'sku' => $item['sku'],
+                        'status' => $item['status'],
+                        'stock' => $item['stock'],
+                    ]);
+                    foreach ($item['allOption2'] as $subItem) {
+                        if (array_key_exists('id', $subItem) && $subItem['id']) {
+                            DB::table('product_suboptions')->where('id', $subItem['id'])->update([
+                                'op_id' => $item['id'],
+                                'sub_op_name' => $subItem['sub_op_name'],
+                                'price' => $subItem['price'],
+                                'stock' => $subItem['stock'],
+                                'sku' => $subItem['sku'],
+                                'status' => $subItem['status'],
+                            ]);
+                        } else {
+                            DB::table('product_suboptions')->insert([
+                                'op_id' => $item['id'],
+                                'sub_op_name' => $subItem['sub_op_name'],
+                                'price' => $subItem['price'],
+                                'stock' => $subItem['stock'],
+                                'sku' => $subItem['sku'],
+                                'status' => $subItem['status'],
+                            ]);
+                        }
+                    }
+                } else {
+                    if ($request->file('fileOption')[$index]) {
+                        $img = $request->file('fileOption')[$index];
+                        // foreach ($images as $index => $img) {
+                        $filename = time() . '.' . $img->getClientOriginalExtension();
+                        $image = Image::make($img->getRealPath());
+                        $image->resize(300, 300, function ($constraint) {
+                            $constraint->aspectRatio();
+                        });
+                        $image->stream();
+                        Storage::disk('do_spaces')->put('shopee/products/' . $img->hashName(), $image, 'public');
+                        $filePaths2 = $img->hashName();
+                        $id_image_option = DB::table('product_images')->insertGetId([
+                            'image' => $filePaths2,
+                            'product_id' => $proID,
+                            'status' => 0,
                         ]);
-                    } else {
-                        DB::table('product_suboptions')->insert([
-                            'op_id' => $item['id'],
-                            'sub_op_name' => $subItem['sub_op_name'],
-                            'price' => $subItem['price'],
-                            'stock' => $subItem['stock'],
-                            'sku' => $subItem['sku'],
-                            'status' => $subItem['status'],
+                        DB::table('product_options')->where('id', $item['id'])->update([
+                            'product_id' => $proID,
+                            'img_id' => $id_image_option,
+                            'img_name' => $filePaths2,
+                            'op_name' => $item['op_name'],
+                            'price' => $item['price'],
+                            'sku' => $item['sku'],
+                            'status' => $item['status'],
+                            'stock' => $item['stock'],
                         ]);
+                        foreach ($item['allOption2'] as $subItem) {
+                            if (array_key_exists('id', $subItem) && $subItem['id']) {
+                                DB::table('product_suboptions')->where('id', $subItem['id'])->update([
+                                    'op_id' => $item['id'],
+                                    'sub_op_name' => $subItem['sub_op_name'],
+                                    'price' => $subItem['price'],
+                                    'stock' => $subItem['stock'],
+                                    'sku' => $subItem['sku'],
+                                    'status' => $subItem['status'],
+                                ]);
+                            } else {
+                                DB::table('product_suboptions')->insert([
+                                    'op_id' => $item['id'],
+                                    'sub_op_name' => $subItem['sub_op_name'],
+                                    'price' => $subItem['price'],
+                                    'stock' => $subItem['stock'],
+                                    'sku' => $subItem['sku'],
+                                    'status' => $subItem['status'],
+                                ]);
+                            }
+                        }
                     }
                 }
             } else {
-                $img_product = DB::table('product_images')->select('image')->where('id', $item['indexImageOption'])->first();
-                $id_proOp = DB::table('product_options')->insertGetId([
-                    'product_id' => $proID,
-                    'img_id' => $item['indexImageOption'],
-                    'img_name' => $img_product->image,
-                    'op_name' => $item['op_name'],
-                    'price' => $item['price'],
-                    'sku' => $item['sku'],
-                    'status' => $item['status'],
-                    'stock' => $item['stock'],
-                ]);
-
-                foreach ($item['allOption2'] as $subItem) {
-                    DB::table('product_suboptions')->insert([
-                        'op_id' => $id_proOp,
-                        'sub_op_name' => $subItem['sub_op_name'],
-                        'price' => $subItem['price'],
-                        'stock' => $subItem['stock'],
-                        'sku' => $subItem['sku'],
-                        'status' => $subItem['status'],
+                $status_option = 1;
+                if ($request->hasFile('fileOption') && $request->file('fileOption')[$index]) {
+                    $img = $request->file('fileOption')[$index];
+                    // foreach ($images as $index => $img) {
+                    $filename = time() . '.' . $img->getClientOriginalExtension();
+                    $image = Image::make($img->getRealPath());
+                    $image->resize(300, 300, function ($constraint) {
+                        $constraint->aspectRatio();
+                    });
+                    $image->stream();
+                    Storage::disk('do_spaces')->put('shopee/products/' . $img->hashName(), $image, 'public');
+                    $filePaths2 = $img->hashName();
+                    $id_image_option = DB::table('product_images')->insertGetId([
+                        'image' => $filePaths2,
+                        'product_id' => $proID,
+                        'status' => 0,
                     ]);
+                    // }
+                    if ($item['statusOption'] != true || $item['statusOption'] != 'true') {
+                        $status_option = 0;
+                    }
+
+                    $id_image_suboption = DB::table('product_options')->insertGetId([
+                        'product_id' => $proID,
+                        'img_id' => $id_image_option,
+                        'op_name' => $item['op_name'],
+                        'img_name' => $filePaths2,
+                        'price' => $item['price'],
+                        'stock' => $item['stock'],
+                        'sku' =>  $item['sku'],
+                        'status' => $status_option,
+                    ]);
+
+                    foreach ($item['subOption'] as $subItem) {
+                        $status_suboption = 1;
+                        if ($subItem['statusSubOption'] != true || $subItem['statusSubOption'] != 'true') {
+                            $status_suboption = 0;
+                        }
+                        DB::table('product_suboptions')->insert([
+                            'op_id' => $id_image_suboption,
+                            'sub_op_name' => $subItem['sub_op_name'],
+                            'price' => $subItem['price'],
+                            'stock' => $subItem['stock'],
+                            'sku' => $subItem['sku'],
+                            'status' => $status_suboption,
+                        ]);
+                    }
                 }
             }
         }
+        // foreach ($request->dataOption as $item) {
+        //     if (array_key_exists('id', $item) && $item['id']) {
+        //         DB::table('product_options')->where('id', $item['id'])->update([
+        //             'product_id' => $proID,
+        //             'img_id' => $item['img_id'],
+        //             'img_name' => $item['img_name'],
+        //             'op_name' => $item['op_name'],
+        //             'price' => $item['price'],
+        //             'sku' => $item['sku'],
+        //             'status' => $item['status'],
+        //             'stock' => $item['stock'],
+        //         ]);
+
+        //         foreach ($item['allOption2'] as $subItem) {
+        //             if (array_key_exists('id', $subItem) && $subItem['id']) {
+        //                 DB::table('product_suboptions')->where('id', $subItem['id'])->update([
+        //                     'op_id' => $item['id'],
+        //                     'sub_op_name' => $subItem['sub_op_name'],
+        //                     'price' => $subItem['price'],
+        //                     'stock' => $subItem['stock'],
+        //                     'sku' => $subItem['sku'],
+        //                     'status' => $subItem['status'],
+        //                 ]);
+        //             } else {
+        //                 DB::table('product_suboptions')->insert([
+        //                     'op_id' => $item['id'],
+        //                     'sub_op_name' => $subItem['sub_op_name'],
+        //                     'price' => $subItem['price'],
+        //                     'stock' => $subItem['stock'],
+        //                     'sku' => $subItem['sku'],
+        //                     'status' => $subItem['status'],
+        //                 ]);
+        //             }
+        //         }
+        //     } else {
+        //         $img_product = DB::table('product_images')->select('image')->where('id', $item['indexImageOption'])->first();
+        //         $id_proOp = DB::table('product_options')->insertGetId([
+        //             'product_id' => $proID,
+        //             'img_id' => $item['indexImageOption'],
+        //             'img_name' => $img_product->image,
+        //             'op_name' => $item['op_name'],
+        //             'price' => $item['price'],
+        //             'sku' => $item['sku'],
+        //             'status' => $item['status'],
+        //             'stock' => $item['stock'],
+        //         ]);
+
+        //         foreach ($item['allOption2'] as $subItem) {
+        //             DB::table('product_suboptions')->insert([
+        //                 'op_id' => $id_proOp,
+        //                 'sub_op_name' => $subItem['sub_op_name'],
+        //                 'price' => $subItem['price'],
+        //                 'stock' => $subItem['stock'],
+        //                 'sku' => $subItem['sku'],
+        //                 'status' => $subItem['status'],
+        //             ]);
+        //         }
+        //     }
+        // }
 
         return response()->json([
             'success' => "Updated option product successfully.",
