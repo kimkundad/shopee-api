@@ -304,12 +304,11 @@ class ApiController extends Controller
                 'product_options.price AS price_type_2',
                 'product_suboptions.price AS price_type_3',
             ])->first();
-            /* if($product){
+
                 return response()->json([
                     'status' => 'error',
                     'order' => $product
                 ], 201);
-            } */
             
             if($product->price_sales !== 0){
                 if($request->option2 !== 0){
