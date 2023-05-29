@@ -301,8 +301,8 @@ class ApiController extends Controller
             ->select([
                 'products.price_sales',
                 'products.price AS price_type_1',
-                'product_options AS price_type_2',
-                'product_suboptions AS price_type_3',
+                'product_options.price AS price_type_2',
+                'product_suboptions.price AS price_type_3',
             ])->first();
             if($product->price_sales !== 0){
                 if($request->option2 !== 0){
