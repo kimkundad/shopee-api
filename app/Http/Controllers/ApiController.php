@@ -330,14 +330,11 @@ class ApiController extends Controller
                 return response()->json([
                     'full' => $product,
                     '->' => $product->price_type_1,
+                    'price' => $price,
                     /* 'dspadsa' => $product['price_type_1'], */
                 ]);
                 
             }
-            return response()->json([
-                'dsa' => $product,
-                'dsaaa' => $product->price_type_3,
-            ],201);
             $order = new orders();
             $order->user_id = $request->user_id;
             $order->address_id = $request->address_id;
