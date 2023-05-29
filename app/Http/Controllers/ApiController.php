@@ -303,7 +303,7 @@ class ApiController extends Controller
                 'products.price AS price_type_1',
                 'product_options.price AS price_type_2',
                 'product_suboptions.price AS price_type_3',
-            ])->first();
+            ])->get();
 
                 return response()->json([
                     'status' => 'error',
