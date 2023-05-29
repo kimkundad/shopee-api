@@ -315,18 +315,18 @@ class ApiController extends Controller
                 }
             }else{
                 if($request->option2 !== 0){
-                    $price = (int)$product->price_type_3;
+                    $price = $product->price_type_3;
                 }else if($request->option1 !== 0){
-                    $price = (int)$product->price_type_2;
+                    $price = $product->price_type_2;
                 }else {
-                    $price = (int)$product->price_type_1;
+                    $price = $product->price_type_1;
                 }
-                return response()->json([
-                    'dsa' => $price,
-                    'dsaaa' => $product->price_type_3,
-                ],201);
+                
             }
-
+            return response()->json([
+                'dsa' => $product,
+                'dsaaa' => $product->price_type_3,
+            ],201);
             $order = new orders();
             $order->user_id = $request->user_id;
             $order->address_id = $request->address_id;
