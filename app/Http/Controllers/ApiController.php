@@ -1555,7 +1555,7 @@ class ApiController extends Controller
     public function settingNoti(Request $request)
     {
 
-        $objs = ownershop_settings::where('user_code', $request->user_code)->first();
+        $objs = ownershop_settings::where('user_id', auth('api')->user()->id)->first();
         if ($objs) {
             $objs->setting = $request->setting;
             $objs->save();
