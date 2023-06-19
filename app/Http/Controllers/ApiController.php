@@ -2602,7 +2602,7 @@ class ApiController extends Controller
                         'status' => $status_option,
                     ]);
 
-                    foreach ($item['subOption'] as $subItem) {
+                    foreach ($item['allOption2'] as $subItem) {
                         $status_suboption = 1;
                         if ($subItem['status'] != true || $subItem['status'] != 'true') {
                             $status_suboption = 0;
