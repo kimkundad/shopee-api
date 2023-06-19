@@ -89,7 +89,7 @@ class ApiController extends Controller
 
     public function get_all_shops(Request $request)
     {
-        $code_user = $request->code_user;
+        $code_user = $request['code_user'];
         $objs = DB::table('shops')
             ->select('*')
             ->where('user_code', $code_user)
