@@ -1269,14 +1269,14 @@ class ApiController extends Controller
         ], 201);
     }
     // -------------------------------ดึงข้อมูลของ users และ role ของ users ออกมาทั้งหมด create by อั้นเอง----------------------------
-    public function getAllUsers()
+    public function getAllUsers(Request $request)
     {
         $objs = DB::table('users')->select('users.*', 'users.id as userID', 'roles.name as role_name', 'users.name as user_name', 'users.created_at as user_created_at', 'sub_admins.*')
             ->join('role_user', 'role_user.user_id', '=', 'users.id')
             ->join('roles', 'roles.id', '=', 'role_user.role_id')
             ->join('sub_admins', 'sub_admins.sub_admin', '=', 'users.id')
             ->orderBy('users.id', 'desc')
-            ->where('sub_admins.owner_admin', auth('api')->user()->id)
+            ->where('sub_admins.owner_admin', $request->user_id)
             ->get();
 
         return response()->json([
