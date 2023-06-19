@@ -1275,7 +1275,7 @@ class ApiController extends Controller
             ->get();
 
         return response()->json([
-            'users' => Auth::user()->id,
+            'users' => Auth::user(),
         ], 201);
     }
 
