@@ -27,7 +27,7 @@ Route::group([
     Route::post('/addProduct', [App\Http\Controllers\ApiController::class, 'addProduct']);
     Route::get('/shop/{id}', [App\Http\Controllers\ApiController::class, 'get_shop_name']);
     Route::post('/searchProduct/{id}', [App\Http\Controllers\ApiController::class, 'search_product']);
-    Route::get('/getAllProduct', [App\Http\Controllers\ApiController::class, 'get_allproduct']);
+    Route::post('/getAllProduct', [App\Http\Controllers\ApiController::class, 'get_allproduct']);
     Route::post('/getAllShops', [App\Http\Controllers\ApiController::class, 'get_all_shops']); // route ดึงข้อมูลร้านค้าออกมาทั้งหมด create by อั้นเอง
     Route::get('/getSearchShops', [App\Http\Controllers\ApiController::class, 'get_search_shops']); // route ค้นหาชื่อร้านค้า create by อั้นเอง
     Route::get('/getSearchProduct', [App\Http\Controllers\ApiController::class, 'getSearchProduct']); // route ค้นหาชื่อร้านค้า create by อั้นเอง

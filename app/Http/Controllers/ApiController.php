@@ -75,11 +75,12 @@ class ApiController extends Controller
     }
 
     // ดึงข้อมูลสินค้าทั้งหมด
-    public function get_allproduct()
+    public function get_allproduct(Request $request)
     {
 
         $objs = DB::table('products')->select('*')
             ->orderBy('id', 'DESC')
+            ->where('user_code', $request->code_user)
             ->get();
 
         return response()->json([
