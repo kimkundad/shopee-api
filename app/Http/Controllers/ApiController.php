@@ -1506,7 +1506,7 @@ class ApiController extends Controller
 
     public function getOwnerSetting(Request $request)
     {
-        $objs = Db::table('ownershop_settings')->where('user_code', '=', auth('api')->user()->id)->first();
+        $objs = Db::table('ownershop_settings')->where('user_id', '=', auth('api')->user()->id)->first();
 
         return response()->json([
             'setting' => $objs,
