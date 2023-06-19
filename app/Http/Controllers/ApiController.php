@@ -2587,7 +2587,7 @@ class ApiController extends Controller
                         'status' => 0,
                     ]);
                     // }
-                    if ($item['statusOption'] != true || $item['statusOption'] != 'true') {
+                    if ($item['status'] != true || $item['status'] != 'true') {
                         $status_option = 0;
                     }
 
@@ -2604,7 +2604,7 @@ class ApiController extends Controller
 
                     foreach ($item['subOption'] as $subItem) {
                         $status_suboption = 1;
-                        if ($subItem['statusSubOption'] != true || $subItem['statusSubOption'] != 'true') {
+                        if ($subItem['status'] != true || $subItem['status'] != 'true') {
                             $status_suboption = 0;
                         }
                         DB::table('product_suboptions')->insert([
