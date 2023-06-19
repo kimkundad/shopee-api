@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\Validator;
 class AuthController extends Controller
 {
     //
-    
+
     public function login(Request $request)
     {
         $request->validate([
@@ -23,7 +23,7 @@ class AuthController extends Controller
         $credentials = $request->only('phone', 'password');
 
         $token = auth('api')->attempt($credentials);
-     
+
         if (!$token) {
             return response()->json([
                 'status' => 'error',
@@ -32,8 +32,9 @@ class AuthController extends Controller
         }
 
         $user = auth('api')->user();
+        Auth::login($user);
 
-       
+
 
             return response()->json([
                 'status' => 'success',
@@ -44,7 +45,7 @@ class AuthController extends Controller
                 ]
             ], 200);
 
-    
+
 
 
     }
@@ -92,7 +93,7 @@ class AuthController extends Controller
         $phone   = $request->phone;
         $phone2 = '';
         $phone2 = $this->phonize($phone, $country);
- 
+
         /* Get credentials from .env */
         $token = getenv("TWILIO_AUTH_TOKEN");
         $twilio_sid = getenv("TWILIO_SID");
@@ -143,7 +144,7 @@ class AuthController extends Controller
         $phone   = $request->phone;
         $phone2 = '';
         $phone2 = $this->phonize($phone, $country);
-        
+
 
         /* Get credentials from .env */
         $token = getenv("TWILIO_AUTH_TOKEN");
@@ -197,7 +198,7 @@ class AuthController extends Controller
             'de' => '+43',
             'it' => '+39'
         );
-    
+
         return preg_replace('/[^0-9+]/', '',
                preg_replace('/^0/', $countryCodes[$country], $phoneNumber));
     }
