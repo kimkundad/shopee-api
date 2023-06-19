@@ -87,16 +87,15 @@ class ApiController extends Controller
         ], 201);
     }
 
-    public function get_all_shops(Request $request)
+    public function get_all_shops()
     {
-        $code_user = $request['code_user'];
+
         $objs = DB::table('shops')
             ->select('*')
-            ->where('user_code', $code_user)
             ->get();
 
         return response()->json([
-            'shops' => $objs,
+            'shops' => auth('api')->user(),
         ], 201);
     }
 
