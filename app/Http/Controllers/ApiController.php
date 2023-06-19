@@ -699,6 +699,7 @@ class ApiController extends Controller
         $product->width_product = $request->width_product;
         $product->length_product = $request->length_product;
         $product->height_product = $request->height_product;
+        $product->user_code = $request->user_code;
         $product->sku = $request->sku;
         $product->category = $request->category;
         $product->type = 1;
@@ -762,6 +763,7 @@ class ApiController extends Controller
         $product->width_product = $request->width_product;
         $product->length_product = $request->length_product;
         $product->height_product = $request->height_product;
+        $product->user_code = $request->user_code;
         $product->sku = $request->sku;
         $product->category = $request->category;
         $product->type = 1;
