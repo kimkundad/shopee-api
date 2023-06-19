@@ -95,7 +95,7 @@ class ApiController extends Controller
             ->get();
 
         return response()->json([
-            'shops' => auth('api')->user(),
+            'shops' => $objs,
         ], 201);
     }
 
