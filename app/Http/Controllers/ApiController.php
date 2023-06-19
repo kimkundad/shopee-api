@@ -2569,6 +2569,9 @@ class ApiController extends Controller
                     }
                 }
             } else {
+                return response()->json([
+                    'success' => "In else edit product",
+                ], 201);
                 $status_option = 1;
                 if (is_array($request->file('fileOption')) && $request->file('fileOption')[$index]) {
                     $img = $request->file('fileOption')[$index];
