@@ -89,9 +89,10 @@ class ApiController extends Controller
 
     public function get_all_shops()
     {
-
+        $code_user = auth('api')->user()->code_user;
         $objs = DB::table('shops')
             ->select('*')
+            ->where('user_code', $code_user)
             ->get();
 
         return response()->json([
