@@ -32,9 +32,6 @@ class AuthController extends Controller
         }
 
         $user = auth('api')->user();
-        Auth::login($user);
-
-
 
             return response()->json([
                 'status' => 'success',
