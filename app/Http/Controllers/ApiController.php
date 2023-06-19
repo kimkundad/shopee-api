@@ -1559,6 +1559,11 @@ class ApiController extends Controller
         if ($objs) {
             $objs->setting = $request->setting;
             $objs->save();
+        }else{
+            $objs = ownershop_settings::insert([
+                'user_id' => auth('api')->user()->id,
+                'setting' => $request->setting
+            ]);
         }
 
         return response()->json([
