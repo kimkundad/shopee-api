@@ -100,6 +100,7 @@ Route::group([
 
     Route::post('/confirmPayment' , [App\Http\Controllers\ApiController::class, 'confirm_payment']);
 
+
     Route::post('/getOwnershops' , [App\Http\Controllers\ApiController::class, 'getOwnershops']);
 
     Route::post('/updateOwnerShop' , [App\Http\Controllers\ApiController::class, 'updateOwnerShop']);
@@ -116,7 +117,7 @@ Route::group([
 
     Route::post('/updateBankaccount' , [App\Http\Controllers\ApiController::class, 'updateBankaccount']);
 
-    Route::post('/getOwnerSetting' , [App\Http\Controllers\ApiController::class, 'getOwnerSetting']);
+    Route::get('/getOwnerSetting' , [App\Http\Controllers\ApiController::class, 'getOwnerSetting']);
     Route::post('/setNotification' , [App\Http\Controllers\ApiController::class, 'settingNoti']);
     Route::get('/newNoti/{id}', [App\Http\Controllers\ApiController::class, 'newNoti']);
     Route::get('/getNoti/{id}', [App\Http\Controllers\ApiController::class, 'getNoti']);
