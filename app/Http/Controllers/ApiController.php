@@ -2020,7 +2020,7 @@ class ApiController extends Controller
 
         // set permissions and owner admin
         DB::table('sub_admins')->insert([
-            'owner_admin' => 1,
+            'owner_admin' => $request['owner_admin'],
             'sub_admin' => $lastInsertId,
             'permission' => $json_permission,
             'created_at' =>  date('Y-m-d H:i:s'),
