@@ -1272,11 +1272,10 @@ class ApiController extends Controller
             ->join('roles', 'roles.id', '=', 'role_user.role_id')
             ->join('sub_admins', 'sub_admins.sub_admin', '=', 'users.id')
             ->orderBy('users.id', 'desc')
-            ->where('sub_admins.owner_admin', Auth::id())
             ->get();
 
         return response()->json([
-            'users' => Auth::id(),
+            'users' => $objs,
         ], 201);
     }
 
