@@ -641,12 +641,14 @@ class ApiController extends Controller
         try {
             // Validate input
             $checked = filter_var($request->input('checked'), FILTER_VALIDATE_BOOLEAN);
+            $ucode = $request->input('ucode');
+
             if ($checked) {
                 product::query()->update(['active' => 1]);
             } else {
                 product::query()->update(['active' => 0]);
             }
-            $products = Product::all();
+            $products = Product::where('user_code', $ucode)->all();
             return response()->json([
                 'product' => $products,
             ], 201);
