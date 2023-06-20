@@ -2776,6 +2776,7 @@ class ApiController extends Controller
                 'transections.date as dateSlipPayment',
                 'transections.time as timeSlipPayment',
             ])
+            ->where('orders.user_code', $request->user_code)
             ->where('orders.status', $request->navbarTab)
             ->where(function ($query) use ($search, $searchDate) {
                 if (!empty($searchDate) && empty($search)) {
@@ -2798,7 +2799,6 @@ class ApiController extends Controller
                     })->whereDate('orders.created_at', $searchDate);
                 }
             })
-            ->where('orders.user_code', $request->user_code)
             ->paginate($request->numShowItems);
         foreach ($orders2 as $value) {
             $data = DB::table('order_details')
