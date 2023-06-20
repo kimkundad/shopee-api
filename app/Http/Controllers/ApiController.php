@@ -375,7 +375,7 @@ class ApiController extends Controller
         } else {
             $products = json_decode($request->products, true);
 
-                /* $product = DB::table('products')
+            /* $product = DB::table('products')
                     ->leftJoin('product_options', 'product_options.product_id', '=', 'products.id')
                     ->leftJoin('product_suboptions', 'product_suboptions.op_id', '=', 'product_options.id')
                     ->where('products.id', '=', $request->product_id)
@@ -648,7 +648,10 @@ class ApiController extends Controller
             } else {
                 product::query()->update(['active' => 0]);
             }
-            $products = Product::where('user_code', $ucode)->all();
+            $products = product::select('id', 'img_product', 'name_product', 'cost', 'price', 'maker', 'created_at', 'stock', 'active')
+                ->where('user_code', $ucode)
+                ->orderBy('id', 'desc')
+                ->get();
             return response()->json([
                 'product' => $products,
             ], 201);
@@ -1030,7 +1033,7 @@ class ApiController extends Controller
     // เพิ่มสินค้าลงในรถเข็น
     public function addProductToCart(Request $request)
     {
-        $cartItem = DB::table('carts')->where('user_id','=',$request->input('user_id'))->where([
+        $cartItem = DB::table('carts')->where('user_id', '=', $request->input('user_id'))->where([
             ['product_id', '=', $request->input('productId')],
             ['product_options_id', '=', $request->input('productOptionId')],
             ['product_suboptions_id', '=', $request->input('productSubOptionId')],
@@ -1531,7 +1534,7 @@ class ApiController extends Controller
         ], 201);
     }
 
-    public function getNoti($code_user,$id)
+    public function getNoti($code_user, $id)
     {
         $check = DB::table('ownershop_settings')->where('user_id', '=', $id)->first();
         $object = json_decode($check->setting);
@@ -1568,7 +1571,7 @@ class ApiController extends Controller
         if ($objs) {
             $objs->setting = $request->setting;
             $objs->save();
-        }else{
+        } else {
             $objs = ownershop_settings::insert([
                 'user_id' => auth('api')->user()->id,
                 'setting' => $request->setting
@@ -2456,8 +2459,8 @@ class ApiController extends Controller
             $products = product::when($search, function ($query, $search) {
                 return $query->where('name_product', 'like', '%' . $search . '%');
             })
-            ->where('user_code', $ucode)
-            ->get();
+                ->where('user_code', $ucode)
+                ->get();
         } else {
             $products = DB::table('products')->select('*')
                 ->where('user_code', $ucode)
