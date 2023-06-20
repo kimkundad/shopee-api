@@ -610,6 +610,8 @@ class ApiController extends Controller
             // Validate input
             $id = $request->input('id');
             $checked = $request->input('checked');
+            $ucode = $request->input('ucode');
+
             if (!$id || $checked === null) {
                 throw new Exception('Invalid input');
             }
@@ -620,6 +622,7 @@ class ApiController extends Controller
             }
 
             $products = product::select('id', 'img_product', 'name_product', 'cost', 'price', 'maker', 'created_at', 'stock', 'active')
+                ->where('user_code', $ucode)
                 ->orderBy('id', 'desc')
                 ->get();
             return response()->json([
