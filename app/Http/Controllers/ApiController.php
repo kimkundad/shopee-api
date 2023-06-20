@@ -144,25 +144,30 @@ class ApiController extends Controller
     public function get_filter_shops(Request $request)
     {
         $type = $request->query('type');
+        $ucode = $request->query('ucode');
 
         if ($type == 'asc') {
             $stores = DB::table('shops')
                 ->select('*')
+                ->where('user_code', $ucode)
                 ->orderBy('name_shop', 'asc')
                 ->get();
         } else if ($type == 'createdDateShop') {
             $stores = DB::table('shops')
                 ->select('*')
+                ->where('user_code', $ucode)
                 ->orderBy('created_at', 'asc')
                 ->get();
         } else if ($type == 'modifiedDateShop') {
             $stores = DB::table('shops')
                 ->select('*')
+                ->where('user_code', $ucode)
                 ->orderBy('updated_at', 'asc')
                 ->get();
         } else {
             $stores = DB::table('shops')
                 ->select('*')
+                ->where('user_code', $ucode)
                 ->get();
         }
 
