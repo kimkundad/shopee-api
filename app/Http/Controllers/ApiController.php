@@ -2445,13 +2445,17 @@ class ApiController extends Controller
     public function getSearchProduct(Request $request)
     {
         $search = $request->query('search');
+        $ucode = $request->query('user_code');
 
         if ($search != 'null') {
             $products = product::when($search, function ($query, $search) {
                 return $query->where('name_product', 'like', '%' . $search . '%');
-            })->get();
+            })
+            ->where('user_code', $ucode)
+            ->get();
         } else {
             $products = DB::table('products')->select('*')
+                ->where('user_code', $ucode)
                 ->orderBy('id', 'DESC')
                 ->get();
         }
