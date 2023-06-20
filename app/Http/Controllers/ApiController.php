@@ -1531,7 +1531,7 @@ class ApiController extends Controller
         $check = DB::table('ownershop_settings')->where('user_id', '=', $id)->first();
         $object = json_decode($check->setting);
         if ($object->notification == true) {
-            $objs = DB::table('notifications')->join('orders', 'orders.id', '=', 'notifications.order_id')->where('notifications.user_code', '=', $code_user)->orWhere('notifications.user_id', '=', $code_user)->where('notifications.is_seen', 0)
+            $objs = DB::table('notifications')->join('orders', 'orders.id', '=', 'notifications.order_id')->where('notifications.user_code', '=', $code_user)->orWhere('notifications.user_id', '=', $id)->where('notifications.is_seen', 0)
                 ->orWhere(function ($query) {
                     $query->where('notifications.is_seen', 1)
                         ->limit(5);
@@ -3120,6 +3120,14 @@ class ApiController extends Controller
         }
         return response()->json([
             'success' => 'Deleted option successfully',
+        ], 201);
+    }
+
+    public function getAddressOwnerShop($code_user)
+    {
+        $objs = DB::table('ownershops')->select('*')->where('user_code', $code_user)->first();
+        return response()->json([
+            'ownerShop' => $objs,
         ], 201);
     }
 }

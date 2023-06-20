@@ -123,6 +123,8 @@ Route::group([
     Route::get('/getNoti/{code_user}/{id}', [App\Http\Controllers\ApiController::class, 'getNoti']);
     Route::post('/readNoti', [App\Http\Controllers\ApiController::class, 'readNoti']);
 
+    Route::get('/getAddressOwnerShop/{code_user}', [App\Http\Controllers\ApiController::class, 'getAddressOwnerShop']);
+
     Route::post('/createUser', [App\Http\Controllers\AuthController::class, 'createUser']);
     Route::post('/verify', [App\Http\Controllers\AuthController::class, 'verify']);
     Route::post('/login', [App\Http\Controllers\AuthController::class, 'login']);
