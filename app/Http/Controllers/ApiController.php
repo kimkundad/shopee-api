@@ -104,13 +104,16 @@ class ApiController extends Controller
     public function get_search_shops(Request $request)
     {
         $search = $request->query('search');
+        $ucode = $request->query('ucode');
 
         if ($search != 'null') {
             $stores = shop::when($search, function ($query, $search) {
                 return $query->where('name_shop', 'like', '%' . $search . '%');
-            })->get();
+            })
+            ->where('user_code', $ucode)
+            ->get();
         } else {
-            $stores = DB::table('shops')->select('*')->get();
+            $stores = DB::table('shops')->select('*')->where('user_code', $ucode)->get();
         }
 
         return response()->json([
@@ -121,13 +124,16 @@ class ApiController extends Controller
     public function get_search_date_shops(Request $request)
     {
         $search = $request->query('search');
+        $ucode = $request->query('ucode');
 
         if ($search != 'null') {
             $stores = shop::when($search, function ($query, $search) {
                 $query->whereDate('created_at', $search);
-            })->get();
+            })
+            ->where('user_code', $ucode)
+            ->get();
         } else {
-            $stores = DB::table('shops')->select('*')->get();
+            $stores = DB::table('shops')->select('*')->where('user_code', $ucode)->get();
         }
 
         return response()->json([
