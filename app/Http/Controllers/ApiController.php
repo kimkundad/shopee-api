@@ -2102,12 +2102,14 @@ class ApiController extends Controller
     public function getSearchDateSubAdmin(Request $request)
     {
         $search = $request->query('search');
+        $uid = $request->query('uid');
 
         if ($search != 'null') {
             $objs = DB::table('users')->select('users.*', 'users.id as userID', 'roles.name as role_name', 'users.name as user_name', 'users.created_at as user_created_at', 'sub_admins.*')
                 ->join('role_user', 'role_user.user_id', '=', 'users.id')
                 ->join('roles', 'roles.id', '=', 'role_user.role_id')
                 ->join('sub_admins', 'sub_admins.sub_admin', '=', 'users.id')
+                ->where('users.id', $uid)
                 ->whereDate('users.created_at', $search)
                 ->orderBy('users.id', 'desc')
                 ->get();
@@ -2116,6 +2118,7 @@ class ApiController extends Controller
                 ->join('role_user', 'role_user.user_id', '=', 'users.id')
                 ->join('roles', 'roles.id', '=', 'role_user.role_id')
                 ->join('sub_admins', 'sub_admins.sub_admin', '=', 'users.id')
+                ->where('users.id', $uid)
                 ->orderBy('users.id', 'desc')
                 ->get();
         }
@@ -2129,12 +2132,14 @@ class ApiController extends Controller
     public function getSearchName(Request $request)
     {
         $search = $request->query('search');
+        $uid = $request->query('uid');
 
         if ($search != 'null') {
             $objs = DB::table('users')->select('users.*', 'users.id as userID', 'roles.name as role_name', 'users.name as user_name', 'users.created_at as user_created_at', 'sub_admins.*')
                 ->join('role_user', 'role_user.user_id', '=', 'users.id')
                 ->join('roles', 'roles.id', '=', 'role_user.role_id')
                 ->join('sub_admins', 'sub_admins.sub_admin', '=', 'users.id')
+                ->where('users.id', $uid)
                 ->where('users.name', 'like', '%' . $search . '%')
                 ->orderBy('users.id', 'desc')
                 ->get();
@@ -2143,6 +2148,7 @@ class ApiController extends Controller
                 ->join('role_user', 'role_user.user_id', '=', 'users.id')
                 ->join('roles', 'roles.id', '=', 'role_user.role_id')
                 ->join('sub_admins', 'sub_admins.sub_admin', '=', 'users.id')
+                ->where('users.id', $uid)
                 ->orderBy('users.id', 'desc')
                 ->get();
         }
