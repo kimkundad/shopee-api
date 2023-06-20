@@ -1526,12 +1526,12 @@ class ApiController extends Controller
         ], 201);
     }
 
-    public function getNoti($id)
+    public function getNoti($code_user,$id)
     {
-        $check = DB::table('ownershop_settings')->where('user_code', '=', $id)->first();
+        $check = DB::table('ownershop_settings')->where('user_id', '=', $id)->first();
         $object = json_decode($check->setting);
         if ($object->notification == true) {
-            $objs = DB::table('notifications')->join('orders', 'orders.id', '=', 'notifications.order_id')->where('notifications.user_code', '=', $id)->orWhere('notifications.user_id', '=', $id)->where('notifications.is_seen', 0)
+            $objs = DB::table('notifications')->join('orders', 'orders.id', '=', 'notifications.order_id')->where('notifications.user_code', '=', $code_user)->orWhere('notifications.user_id', '=', $code_user)->where('notifications.is_seen', 0)
                 ->orWhere(function ($query) {
                     $query->where('notifications.is_seen', 1)
                         ->limit(5);
