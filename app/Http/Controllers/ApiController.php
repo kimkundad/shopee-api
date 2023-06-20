@@ -2798,7 +2798,7 @@ class ApiController extends Controller
                     })->whereDate('orders.created_at', $searchDate);
                 }
             })
-            // ->where('orders.user_code', $request->user_code)
+            ->where('orders.user_code', $request->user_code)
             ->paginate($request->numShowItems);
         foreach ($orders2 as $value) {
             $data = DB::table('order_details')
