@@ -2777,8 +2777,6 @@ class ApiController extends Controller
         //     ->get();
         $search = $request->search;
         $searchDate = $request->searchDate;
-        $ucode = $request->user_code;
-
         $orders2 = DB::table('orders')
             ->leftJoin('addresses', 'addresses.id', '=', 'orders.address_id')
             ->leftJoin('transections', 'transections.order_id', '=', 'orders.id')
@@ -2810,9 +2808,9 @@ class ApiController extends Controller
             ])
             ->where('orders.user_code', $request->user_code)
             ->where('orders.status', $request->navbarTab)
-            ->where(function ($query) use ($search, $searchDate, $ucode) {
+            ->where(function ($query) use ($search, $searchDate) {
                 if (!empty($searchDate) && empty($search)) {
-                    $query->whereDate('orders.created_at', $searchDate)->where('orders.user_code', $ucode);
+                    $query->whereDate('orders.created_at', $searchDate);
                 } elseif (empty($searchDate) && !empty($search)) {
                     $query->where(function ($query) use ($search) {
                         $query->orWhere('orders.invoice_id', 'like', '%' . $search . '%')
@@ -2820,15 +2818,15 @@ class ApiController extends Controller
                             ->orWhere('addresses.address', 'like', '%' . $search . '%')
                             ->orWhere('addresses.tel', 'like', '%' . $search . '%')
                             ->orWhere('orders.price', 'like', '%' . $search . '%');
-                    })->where('orders.user_code', $ucode);
+                    });
                 } elseif (!empty($searchDate) && !empty($search)) {
-                    $query->where(function ($query) use ($search) {
+                    $query->where(function ($query) use ($search, $searchDate) {
                         $query->orWhere('orders.invoice_id', 'like', '%' . $search . '%')
                             ->orWhere('addresses.name', 'like', '%' . $search . '%')
                             ->orWhere('addresses.address', 'like', '%' . $search . '%')
                             ->orWhere('addresses.tel', 'like', '%' . $search . '%')
                             ->orWhere('orders.price', 'like', '%' . $search . '%');
-                    })->whereDate('orders.created_at', $searchDate)->where('orders.user_code', $ucode);
+                    })->whereDate('orders.created_at', $searchDate);
                 }
             })
             ->paginate($request->numShowItems);
