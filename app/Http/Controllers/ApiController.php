@@ -2824,17 +2824,17 @@ class ApiController extends Controller
             $value->orderDetails = $data;
         }
         // ราคารวมและจำนวนของ order ทั้งหมด ของแต่ละสถานะ
-        $total_Amount = DB::table('orders')->where('status', $request->navbarTab)->sum('price');
-        $total_Num = DB::table('orders')->where('status', $request->navbarTab)->sum('num');
+        $total_Amount = DB::table('orders')->where('status', $request->navbarTab)->where('user_code', $request->user_code)->sum('price');
+        $total_Num = DB::table('orders')->where('status', $request->navbarTab)->where('user_code', $request->user_code)->sum('num');
 
         // จำนวน order แต่ละสถานะ
-        $count_status1 = DB::table('orders')->where('status', 'ตรวจสอบคำสั่งซื้อ')->count();
-        $count_status2 = DB::table('orders')->where('status', 'กำลังแพ็ค')->count();
-        $count_status3 = DB::table('orders')->where('status', 'พร้อมส่ง')->count();
-        $count_status4 = DB::table('orders')->where('status', 'จัดส่งสำเร็จ')->count();
-        $count_status5 = DB::table('orders')->where('status', 'ส่งสำเร็จ')->count();
-        $count_status6 = DB::table('orders')->where('status', 'ตีกลับ')->count();
-        $count_status7 = DB::table('orders')->where('status', 'ยกเลิก')->count();
+        $count_status1 = DB::table('orders')->where('status', 'ตรวจสอบคำสั่งซื้อ')->where('user_code', $request->user_code)->count();
+        $count_status2 = DB::table('orders')->where('status', 'กำลังแพ็ค')->where('user_code', $request->user_code)->count();
+        $count_status3 = DB::table('orders')->where('status', 'พร้อมส่ง')->where('user_code', $request->user_code)->count();
+        $count_status4 = DB::table('orders')->where('status', 'จัดส่งสำเร็จ')->where('user_code', $request->user_code)->count();
+        $count_status5 = DB::table('orders')->where('status', 'ส่งสำเร็จ')->where('user_code', $request->user_code)->count();
+        $count_status6 = DB::table('orders')->where('status', 'ตีกลับ')->where('user_code', $request->user_code)->count();
+        $count_status7 = DB::table('orders')->where('status', 'ยกเลิก')->where('user_code', $request->user_code)->count();
         return response()->json([
             'orders' => $orders2,
             'count_status1' => $count_status1,
