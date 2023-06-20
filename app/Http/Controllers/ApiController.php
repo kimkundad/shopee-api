@@ -110,8 +110,8 @@ class ApiController extends Controller
             $stores = shop::when($search, function ($query, $search) {
                 return $query->where('name_shop', 'like', '%' . $search . '%');
             })
-                ->where('user_code', $ucode)
-                ->get();
+            ->where('user_code', $ucode)
+            ->get();
         } else {
             $stores = DB::table('shops')->select('*')->where('user_code', $ucode)->get();
         }
@@ -130,8 +130,8 @@ class ApiController extends Controller
             $stores = shop::when($search, function ($query, $search) {
                 $query->whereDate('created_at', $search);
             })
-                ->where('user_code', $ucode)
-                ->get();
+            ->where('user_code', $ucode)
+            ->get();
         } else {
             $stores = DB::table('shops')->select('*')->where('user_code', $ucode)->get();
         }
@@ -2786,16 +2786,9 @@ class ApiController extends Controller
             ->where('orders.status', $request->navbarTab)
             ->where(function ($query) use ($search, $searchDate, $request) {
                 $query->where('orders.user_code', $request->user_code);
-                if (empty($search) && empty($searchDate)) {
-                    // เงื่อนไขเมื่อทั้ง $search และ $searchDate เป็นค่าว่าง
-                    return;
-                }
-
-                // เงื่อนไขค้นหาอื่น ๆ
-                if (!empty($searchDate)) {
+                if (!empty($searchDate) && empty($search)) {
                     $query->whereDate('orders.created_at', $searchDate);
-                }
-                if (!empty($search)) {
+                } elseif (empty($searchDate) && !empty($search)) {
                     $query->where(function ($query) use ($search) {
                         $query->orWhere('orders.invoice_id', 'like', '%' . $search . '%')
                             ->orWhere('addresses.name', 'like', '%' . $search . '%')
@@ -2803,26 +2796,15 @@ class ApiController extends Controller
                             ->orWhere('addresses.tel', 'like', '%' . $search . '%')
                             ->orWhere('orders.price', 'like', '%' . $search . '%');
                     });
+                } elseif (!empty($searchDate) && !empty($search)) {
+                    $query->where(function ($query) use ($search, $searchDate) {
+                        $query->orWhere('orders.invoice_id', 'like', '%' . $search . '%')
+                            ->orWhere('addresses.name', 'like', '%' . $search . '%')
+                            ->orWhere('addresses.address', 'like', '%' . $search . '%')
+                            ->orWhere('addresses.tel', 'like', '%' . $search . '%')
+                            ->orWhere('orders.price', 'like', '%' . $search . '%');
+                    })->whereDate('orders.created_at', $searchDate);
                 }
-                // if (!empty($searchDate) && empty($search)) {
-                //     $query->whereDate('orders.created_at', $searchDate);
-                // } elseif (empty($searchDate) && !empty($search)) {
-                //     $query->where(function ($query) use ($search) {
-                //         $query->orWhere('orders.invoice_id', 'like', '%' . $search . '%')
-                //             ->orWhere('addresses.name', 'like', '%' . $search . '%')
-                //             ->orWhere('addresses.address', 'like', '%' . $search . '%')
-                //             ->orWhere('addresses.tel', 'like', '%' . $search . '%')
-                //             ->orWhere('orders.price', 'like', '%' . $search . '%');
-                //     });
-                // } elseif (!empty($searchDate) && !empty($search)) {
-                //     $query->where(function ($query) use ($search, $searchDate) {
-                //         $query->orWhere('orders.invoice_id', 'like', '%' . $search . '%')
-                //             ->orWhere('addresses.name', 'like', '%' . $search . '%')
-                //             ->orWhere('addresses.address', 'like', '%' . $search . '%')
-                //             ->orWhere('addresses.tel', 'like', '%' . $search . '%')
-                //             ->orWhere('orders.price', 'like', '%' . $search . '%');
-                //     })->whereDate('orders.created_at', $searchDate);
-                // }
             })
             ->paginate($request->numShowItems);
         foreach ($orders2 as $value) {
