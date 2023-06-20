@@ -2109,7 +2109,7 @@ class ApiController extends Controller
                 ->join('role_user', 'role_user.user_id', '=', 'users.id')
                 ->join('roles', 'roles.id', '=', 'role_user.role_id')
                 ->join('sub_admins', 'sub_admins.sub_admin', '=', 'users.id')
-                ->where('users.id', $uid)
+                ->where('sub_admins.owner_admin', $uid)
                 ->whereDate('users.created_at', $search)
                 ->orderBy('users.id', 'desc')
                 ->get();
@@ -2118,7 +2118,7 @@ class ApiController extends Controller
                 ->join('role_user', 'role_user.user_id', '=', 'users.id')
                 ->join('roles', 'roles.id', '=', 'role_user.role_id')
                 ->join('sub_admins', 'sub_admins.sub_admin', '=', 'users.id')
-                ->where('users.id', $uid)
+                ->where('sub_admins.owner_admin', $uid)
                 ->orderBy('users.id', 'desc')
                 ->get();
         }
