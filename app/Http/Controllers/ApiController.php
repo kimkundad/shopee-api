@@ -2807,10 +2807,10 @@ class ApiController extends Controller
                 'transections.time as timeSlipPayment',
             ])
             ->where('orders.status', $request->navbarTab)
-            ->where(function ($query) use ($search, $searchDate, $request) {
+            ->where('orders.user_code', $request->user_code)
+            ->where(function ($query) use ($search, $searchDate) {
                 if (!empty($searchDate) && empty($search)) {
-                    $query->whereDate('orders.created_at', $searchDate)
-                    ->where('orders.user_code', $request->user_code);
+                    $query->whereDate('orders.created_at', $searchDate);
                 } elseif (empty($searchDate) && !empty($search)) {
                     $query->where(function ($query) use ($search) {
                         $query->orWhere('orders.invoice_id', 'like', '%' . $search . '%')
@@ -2818,7 +2818,7 @@ class ApiController extends Controller
                             ->orWhere('addresses.address', 'like', '%' . $search . '%')
                             ->orWhere('addresses.tel', 'like', '%' . $search . '%')
                             ->orWhere('orders.price', 'like', '%' . $search . '%');
-                    })->where('orders.user_code', $request->user_code);
+                    });
                 } elseif (!empty($searchDate) && !empty($search)) {
                     $query->where(function ($query) use ($search, $searchDate) {
                         $query->orWhere('orders.invoice_id', 'like', '%' . $search . '%')
@@ -2826,13 +2826,11 @@ class ApiController extends Controller
                             ->orWhere('addresses.address', 'like', '%' . $search . '%')
                             ->orWhere('addresses.tel', 'like', '%' . $search . '%')
                             ->orWhere('orders.price', 'like', '%' . $search . '%');
-                    })->whereDate('orders.created_at', $searchDate)
-                    ->where('orders.user_code', $request->user_code);
-                } else {
-                    $query->where('orders.user_code', $request->user_code);
+                    })->whereDate('orders.created_at', $searchDate);
                 }
             })
             ->paginate($request->numShowItems);
+
         foreach ($orders2 as $value) {
             $data = DB::table('order_details')
                 ->leftJoin('products', 'products.id', '=', 'order_details.product_id')
