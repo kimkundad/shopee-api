@@ -2807,7 +2807,9 @@ class ApiController extends Controller
                 'transections.time as timeSlipPayment',
             ])
             ->where('orders.status', $request->navbarTab)
-            ->where(function ($query) use ($search, $searchDate) {
+            ->where(function ($query) use ($search, $searchDate, $request) {
+                $query->where('orders.user_code', $request->user_code);
+
                 if (!empty($searchDate) && empty($search)) {
                     $query->whereDate('orders.created_at', $searchDate);
                 } elseif (empty($searchDate) && !empty($search)) {
