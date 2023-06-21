@@ -2807,9 +2807,7 @@ class ApiController extends Controller
                 'transections.time as timeSlipPayment',
             ])
             ->where('orders.status', $request->navbarTab)
-            ->where(function ($query) use ($search, $searchDate, $request) {
-                $query->where('orders.user_code', $request->user_code);
-
+            ->where(function ($query) use ($search, $searchDate) {
                 if (!empty($searchDate) && empty($search)) {
                     $query->whereDate('orders.created_at', $searchDate);
                 } elseif (empty($searchDate) && !empty($search)) {
@@ -2828,8 +2826,6 @@ class ApiController extends Controller
                             ->orWhere('addresses.tel', 'like', '%' . $search . '%')
                             ->orWhere('orders.price', 'like', '%' . $search . '%');
                     })->whereDate('orders.created_at', $searchDate);
-                } else {
-                    $query->whereNotNull('orders.id'); // เพิ่มเงื่อนไขเพื่อให้คิวรีคืนค่าทั้งหมด
                 }
             })
             ->paginate($request->numShowItems);
