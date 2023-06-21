@@ -110,8 +110,8 @@ class ApiController extends Controller
             $stores = shop::when($search, function ($query, $search) {
                 return $query->where('name_shop', 'like', '%' . $search . '%');
             })
-            ->where('user_code', $ucode)
-            ->get();
+                ->where('user_code', $ucode)
+                ->get();
         } else {
             $stores = DB::table('shops')->select('*')->where('user_code', $ucode)->get();
         }
@@ -130,8 +130,8 @@ class ApiController extends Controller
             $stores = shop::when($search, function ($query, $search) {
                 $query->whereDate('created_at', $search);
             })
-            ->where('user_code', $ucode)
-            ->get();
+                ->where('user_code', $ucode)
+                ->get();
         } else {
             $stores = DB::table('shops')->select('*')->where('user_code', $ucode)->get();
         }
@@ -2806,12 +2806,9 @@ class ApiController extends Controller
                 'transections.date as dateSlipPayment',
                 'transections.time as timeSlipPayment',
             ])
-            // ->where('orders.user_code', $request->user_code)
+            ->where('orders.user_code', $request->user_code)
             ->where('orders.status', $request->navbarTab)
-            ->where(function ($query) use ($search, $searchDate, $request) {
-                $query->where('orders.user_code', $request->user_code); // เพิ่มเงื่อนไขนี้
-
-                // เงื่อนไขค้นหาต่างๆ ที่เดิม
+            ->where(function ($query) use ($search, $searchDate) {
                 if (!empty($searchDate) && empty($search)) {
                     $query->whereDate('orders.created_at', $searchDate);
                 } elseif (empty($searchDate) && !empty($search)) {
