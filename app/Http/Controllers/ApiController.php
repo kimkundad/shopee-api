@@ -2806,29 +2806,32 @@ class ApiController extends Controller
                 'transections.date as dateSlipPayment',
                 'transections.time as timeSlipPayment',
             ])
-            ->where('orders.user_code', $request->user_code)
             ->where('orders.status', $request->navbarTab)
-            // ->where(function ($query) use ($search, $searchDate) {
-            //     if (!empty($searchDate) && empty($search)) {
-            //         $query->whereDate('orders.created_at', $searchDate);
-            //     } elseif (empty($searchDate) && !empty($search)) {
-            //         $query->where(function ($query) use ($search) {
-            //             $query->orWhere('orders.invoice_id', 'like', '%' . $search . '%')
-            //                 ->orWhere('addresses.name', 'like', '%' . $search . '%')
-            //                 ->orWhere('addresses.address', 'like', '%' . $search . '%')
-            //                 ->orWhere('addresses.tel', 'like', '%' . $search . '%')
-            //                 ->orWhere('orders.price', 'like', '%' . $search . '%');
-            //         });
-            //     } elseif (!empty($searchDate) && !empty($search)) {
-            //         $query->where(function ($query) use ($search, $searchDate) {
-            //             $query->orWhere('orders.invoice_id', 'like', '%' . $search . '%')
-            //                 ->orWhere('addresses.name', 'like', '%' . $search . '%')
-            //                 ->orWhere('addresses.address', 'like', '%' . $search . '%')
-            //                 ->orWhere('addresses.tel', 'like', '%' . $search . '%')
-            //                 ->orWhere('orders.price', 'like', '%' . $search . '%');
-            //         })->whereDate('orders.created_at', $searchDate);
-            //     }
-            // })
+            ->where(function ($query) use ($search, $searchDate, $request) {
+                if (!empty($searchDate) && empty($search)) {
+                    $query->whereDate('orders.created_at', $searchDate)
+                    ->where('orders.user_code', $request->user_code);
+                } elseif (empty($searchDate) && !empty($search)) {
+                    $query->where(function ($query) use ($search) {
+                        $query->orWhere('orders.invoice_id', 'like', '%' . $search . '%')
+                            ->orWhere('addresses.name', 'like', '%' . $search . '%')
+                            ->orWhere('addresses.address', 'like', '%' . $search . '%')
+                            ->orWhere('addresses.tel', 'like', '%' . $search . '%')
+                            ->orWhere('orders.price', 'like', '%' . $search . '%');
+                    })->where('orders.user_code', $request->user_code);
+                } elseif (!empty($searchDate) && !empty($search)) {
+                    $query->where(function ($query) use ($search, $searchDate) {
+                        $query->orWhere('orders.invoice_id', 'like', '%' . $search . '%')
+                            ->orWhere('addresses.name', 'like', '%' . $search . '%')
+                            ->orWhere('addresses.address', 'like', '%' . $search . '%')
+                            ->orWhere('addresses.tel', 'like', '%' . $search . '%')
+                            ->orWhere('orders.price', 'like', '%' . $search . '%');
+                    })->whereDate('orders.created_at', $searchDate)
+                    ->where('orders.user_code', $request->user_code);
+                } else {
+                    $query->where('orders.user_code', $request->user_code);
+                }
+            })
             ->paginate($request->numShowItems);
         foreach ($orders2 as $value) {
             $data = DB::table('order_details')
