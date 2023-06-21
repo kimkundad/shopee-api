@@ -2777,7 +2777,61 @@ class ApiController extends Controller
         //     ->get();
         $search = $request->search;
         $searchDate = $request->searchDate;
-        $orders2 = DB::table('orders')
+        if($search != "" || $searchDate != ""){
+            $orders2 = DB::table('orders')
+            ->leftJoin('addresses', 'addresses.id', '=', 'orders.address_id')
+            ->leftJoin('transections', 'transections.order_id', '=', 'orders.id')
+            ->leftJoin('bankaccounts', 'bankaccounts.id', '=', 'transections.bankaccount_id')
+            ->leftjoin('banks', 'banks.id', '=', 'bankaccounts.bank_id')
+            ->orderBy('orders.id', 'DESC')
+            ->select([
+                'orders.id as ID',
+                'orders.invoice_id as orderId',
+                'addresses.name as receiverName',
+                'addresses.address as address',
+                'addresses.district as district',
+                'addresses.sub_district as sub_district',
+                'addresses.province as province',
+                'addresses.postcode as postcode',
+                'addresses.tel as phoneNumber',
+                'orders.num as quantity',
+                'orders.price as amount',
+                'banks.icon_bank as bankThumbnail',
+                'banks.name_bank as nameBank',
+                'orders.created_at as createAt',
+                'orders.updated_at as updateAt',
+                'orders.status as status',
+                'orders.type_payment as typePaymentOrder',
+                'transections.slip as slipPayment',
+                'bankaccounts.bankaccount_number as accountNumber',
+                'transections.date as dateSlipPayment',
+                'transections.time as timeSlipPayment',
+            ])
+            ->where('orders.status', $request->navbarTab)
+            ->where(function ($query) use ($search, $searchDate, $request) {
+                if (!empty($searchDate) && empty($search)) {
+                    $query->whereDate('orders.created_at', $searchDate)->where('orders.user_code', $request->user_code);
+                } elseif (empty($searchDate) && !empty($search)) {
+                    $query->where(function ($query) use ($search) {
+                        $query->orWhere('orders.invoice_id', 'like', '%' . $search . '%')
+                            ->orWhere('addresses.name', 'like', '%' . $search . '%')
+                            ->orWhere('addresses.address', 'like', '%' . $search . '%')
+                            ->orWhere('addresses.tel', 'like', '%' . $search . '%')
+                            ->orWhere('orders.price', 'like', '%' . $search . '%');
+                    })->where('orders.user_code', $request->user_code);
+                } elseif (!empty($searchDate) && !empty($search)) {
+                    $query->where(function ($query) use ($search, $searchDate) {
+                        $query->orWhere('orders.invoice_id', 'like', '%' . $search . '%')
+                            ->orWhere('addresses.name', 'like', '%' . $search . '%')
+                            ->orWhere('addresses.address', 'like', '%' . $search . '%')
+                            ->orWhere('addresses.tel', 'like', '%' . $search . '%')
+                            ->orWhere('orders.price', 'like', '%' . $search . '%');
+                    })->whereDate('orders.created_at', $searchDate)->where('orders.user_code', $request->user_code);
+                }
+            })
+            ->paginate($request->numShowItems);
+        }else{
+            $orders2 = DB::table('orders')
             ->leftJoin('addresses', 'addresses.id', '=', 'orders.address_id')
             ->leftJoin('transections', 'transections.order_id', '=', 'orders.id')
             ->leftJoin('bankaccounts', 'bankaccounts.id', '=', 'transections.bankaccount_id')
@@ -2808,28 +2862,9 @@ class ApiController extends Controller
             ])
             ->where('orders.user_code', $request->user_code)
             ->where('orders.status', $request->navbarTab)
-            ->where(function ($query) use ($search, $searchDate) {
-                if (!empty($searchDate) && empty($search)) {
-                    $query->whereDate('orders.created_at', $searchDate);
-                } elseif (empty($searchDate) && !empty($search)) {
-                    $query->where(function ($query) use ($search) {
-                        $query->orWhere('orders.invoice_id', 'like', '%' . $search . '%')
-                            ->orWhere('addresses.name', 'like', '%' . $search . '%')
-                            ->orWhere('addresses.address', 'like', '%' . $search . '%')
-                            ->orWhere('addresses.tel', 'like', '%' . $search . '%')
-                            ->orWhere('orders.price', 'like', '%' . $search . '%');
-                    });
-                } elseif (!empty($searchDate) && !empty($search)) {
-                    $query->where(function ($query) use ($search, $searchDate) {
-                        $query->orWhere('orders.invoice_id', 'like', '%' . $search . '%')
-                            ->orWhere('addresses.name', 'like', '%' . $search . '%')
-                            ->orWhere('addresses.address', 'like', '%' . $search . '%')
-                            ->orWhere('addresses.tel', 'like', '%' . $search . '%')
-                            ->orWhere('orders.price', 'like', '%' . $search . '%');
-                    })->whereDate('orders.created_at', $searchDate);
-                }
-            })
             ->paginate($request->numShowItems);
+        }
+
         foreach ($orders2 as $value) {
             $data = DB::table('order_details')
                 ->leftJoin('products', 'products.id', '=', 'order_details.product_id')
