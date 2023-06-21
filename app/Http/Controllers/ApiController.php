@@ -2807,7 +2807,7 @@ class ApiController extends Controller
                 'transections.time as timeSlipPayment',
             ])
             ->where('orders.status', $request->navbarTab)
-            ->where(function ($query) use ($search, $searchDate, $request) {
+            ->where(function ($query) use ($search, $searchDate) {
                 if (!empty($searchDate) && empty($search)) {
                     $query->whereDate('orders.created_at', $searchDate);
                 } elseif (empty($searchDate) && !empty($search)) {
@@ -2826,8 +2826,6 @@ class ApiController extends Controller
                             ->orWhere('addresses.tel', 'like', '%' . $search . '%')
                             ->orWhere('orders.price', 'like', '%' . $search . '%');
                     })->whereDate('orders.created_at', $searchDate);
-                } else {
-                    $query->where('orders.user_code', $request->user_code);
                 }
             })
             ->paginate($request->numShowItems);
