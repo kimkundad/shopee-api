@@ -3161,4 +3161,9 @@ class ApiController extends Controller
             'ownerShop' => $objs,
         ], 201);
     }
+
+    //chat message
+    public function messages(Request $request){
+        return [];
+    }
 }
