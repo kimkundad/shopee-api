@@ -1304,6 +1304,40 @@ class ApiController extends Controller
         ], 201);
     }
 
+    public function getMessage2($user_id = 0 ,$shop_id = 0 ,$type = 0 ){
+
+        if ($type == 'customer') {
+            DB::table('chats')->where('recived_id', '=', $user_id)->where('shop_id', '=', $shop_id)->update([
+                'status' => 1,
+            ]);
+        } else if ($type == 'shop') {
+            DB::table('chats')->where('sender_id', '=', $user_id)->where('shop_id', '=', $shop_id)->update([
+                'status' => 1,
+            ]);
+        } else {
+            return response()->json([
+                'status' => 'error',
+            ], 201);
+        }
+
+        $message = DB::table('chats')
+            ->join('users', 'users.id', '=', 'chats.user_id')
+            ->join('shops', 'shops.id', '=', 'chats.shop_id')
+            ->select('chats.*', 'users.avatar', 'shops.img_shop')
+            ->where(function ($query) use ($request) {
+                $query->where('chats.sender_id', $user_id)
+                    ->orWhere('chats.recived_id', $user_id);
+            })
+            ->where('chats.shop_id', $shop_id)
+            ->orderBy('chats.created_at', 'asc')
+            ->get();
+
+        return response()->json([
+            'message' => $message,
+        ], 201);
+       
+    }
+
     // ดึงข้อมูลแชท
     public function getMessage(Request $request)
     {

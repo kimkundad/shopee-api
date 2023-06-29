@@ -82,6 +82,7 @@ Route::group([
     Route::post('/deleteOption', [App\Http\Controllers\ApiController::class, 'deleteOption']);
 
     Route::post('/getMessage', [App\Http\Controllers\ApiController::class, 'getMessage']);
+    Route::get('/getMessage2/{user_id}/{shop_id}/{type}', [App\Http\Controllers\ApiController::class, 'getMessage2']);
     Route::post('/sendMessage', [App\Http\Controllers\ApiController::class, 'sendMessage']);
     Route::post('/getBank', [App\Http\Controllers\ApiController::class, 'getBankaccount']);
 
