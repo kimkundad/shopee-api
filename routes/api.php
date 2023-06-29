@@ -120,7 +120,7 @@ Route::group([
 
     Route::post('/updateBankaccount' , [App\Http\Controllers\ApiController::class, 'updateBankaccount']);
 
-    Route::get('/getOwnerSetting' , [App\Http\Controllers\ApiController::class, 'getOwnerSetting']);
+    Route::post('/getOwnerSetting' , [App\Http\Controllers\ApiController::class, 'getOwnerSetting']);
     Route::post('/setNotification' , [App\Http\Controllers\ApiController::class, 'settingNoti']);
     Route::get('/newNoti/{id}', [App\Http\Controllers\ApiController::class, 'newNoti']);
     Route::get('/getNoti/{code_user}/{id}', [App\Http\Controllers\ApiController::class, 'getNoti']);

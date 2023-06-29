@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\Message;
 use App\Models\ownershop;
 use Carbon\Carbon;
 use App\Models\chats;
@@ -1359,7 +1360,7 @@ class ApiController extends Controller
                 'shops.img_shop',
             ])
             ->get();
-
+        event(new Message($objs->id, $message[0]->sender_id, $message[0]->recived_id, $message[0]->user_id, $message[0]->shop_id, $message[0]->message, $message[0]->img_message, $message[0]->status, $message[0]->created_at, $message[0]->updated_at, $message[0]->avatar, $message[0]->img_shop));
         return response()->json([
             'message' => $message,
         ], 201);
@@ -1527,9 +1528,9 @@ class ApiController extends Controller
         ], 201);
     }
 
-    public function getOwnerSetting()
+    public function getOwnerSetting(Request $request)
     {
-        $objs = Db::table('ownershop_settings')->where('user_id', '=', auth('api')->user()->id)->first();
+        $objs = Db::table('ownershop_settings')->where('user_id', '=', $request->user_id)->first();
 
         return response()->json([
             'setting' => $objs,
@@ -1578,13 +1579,13 @@ class ApiController extends Controller
     public function settingNoti(Request $request)
     {
 
-        $objs = ownershop_settings::where('user_id', auth('api')->user()->id)->first();
+        $objs = ownershop_settings::where('user_id', $request->user_id)->first();
         if ($objs) {
             $objs->setting = $request->setting;
             $objs->save();
         } else {
             $objs = ownershop_settings::insert([
-                'user_id' => auth('api')->user()->id,
+                'user_id' => $request->user_id,
                 'setting' => $request->setting
             ]);
         }
@@ -3164,6 +3165,7 @@ class ApiController extends Controller
 
     //chat message
     public function messages(Request $request){
+        event(new Message($request->input('username'), $request->input('message')));
         return [];
     }
 }
