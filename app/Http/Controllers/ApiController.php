@@ -1360,6 +1360,7 @@ class ApiController extends Controller
                 'shops.img_shop',
             ])
             ->get();
+
         event(new Message($objs->id, $message[0]->sender_id, $message[0]->recived_id, $message[0]->user_id, $message[0]->shop_id, $message[0]->message, $message[0]->img_message, $message[0]->status, $message[0]->created_at, $message[0]->updated_at, $message[0]->avatar, $message[0]->img_shop));
         return response()->json([
             'message' => $message,
@@ -1596,11 +1597,11 @@ class ApiController extends Controller
     }
 
     // ดึงข้อมูลแชทสำหรับแม่ค้า
-    public function getUserChats(Request $request)
+    public function getUserChats($id)
     {
         $objs = DB::table('chats as c1')
             ->join('users', 'users.id', '=', 'c1.user_id')
-            ->where('c1.shop_id', '=', $request->shop_id)
+            ->where('c1.shop_id', '=', $id)
             ->where(function ($query) {
                 $query->whereRaw('c1.created_at = (SELECT MAX(created_at) FROM chats as c2 WHERE c2.user_id = c1.user_id and c2.shop_id = c1.shop_id)');
             })
