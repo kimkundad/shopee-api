@@ -1324,10 +1324,8 @@ class ApiController extends Controller
             ->join('users', 'users.id', '=', 'chats.user_id')
             ->join('shops', 'shops.id', '=', 'chats.shop_id')
             ->select('chats.*', 'users.avatar', 'shops.img_shop')
-            ->where(function ($query) use ($request) {
-                $query->where('chats.sender_id', $user_id)
-                    ->orWhere('chats.recived_id', $user_id);
-            })
+            ->where('chats.sender_id', $user_id)
+            ->orWhere('chats.recived_id', $user_id)
             ->where('chats.shop_id', $shop_id)
             ->orderBy('chats.created_at', 'asc')
             ->get();
