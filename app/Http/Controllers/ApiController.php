@@ -1653,15 +1653,15 @@ class ApiController extends Controller
         $startDate = Carbon::createFromTimestamp($request->startDate);
         $endDate = Carbon::createFromTimestamp($request->endDate);
 
-        $user_id = DB::table('users')->where('code_user', $request->user_code)->first('id');
-        $check_subadmin = DB::table('sub_admins')->where('sub_admin', $user_id->id)->count();
-        if($check_subadmin == 0){
-            $code_user = $request->user_code;
-        }else{
-            $owner_id = DB::table('sub_admins')->where('sub_admin', $user_id->id)->first('owner_admin');
-            $code_user_owner = DB::table('users')->where('id', $owner_id->owner_admin)->first('code_user');
-            $code_user = $code_user_owner->code_user;
-        }
+        // $user_id = DB::table('users')->where('code_user', $request->user_code)->first('id');
+        // $check_subadmin = DB::table('sub_admins')->where('sub_admin', $user_id->id)->count();
+        // if($check_subadmin == 0){
+        //     $code_user = $request->user_code;
+        // }else{
+        //     $owner_id = DB::table('sub_admins')->where('sub_admin', $user_id->id)->first('owner_admin');
+        //     $code_user_owner = DB::table('users')->where('id', $owner_id->owner_admin)->first('code_user');
+        //     $code_user = $code_user_owner->code_user;
+        // }
 
         $reports = DB::table('order_details')
             ->join('orders', 'orders.id', '=', 'order_details.order_id')
@@ -1689,7 +1689,7 @@ class ApiController extends Controller
                 'product_options.sku AS sku_type_2',
                 'product_suboptions.sku AS sku_type_3',
             ])
-            ->where('orders.user_code', $code_user)
+            ->where('orders.user_code', $request->user_code)
             ->where(function ($query) use ($search) {
                 $query->where('shops.name_shop', 'like', '%' . $search . '%')
                     ->orWhere('products.name_product', 'like', '%' . $search . '%')
