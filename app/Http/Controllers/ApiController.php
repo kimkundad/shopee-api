@@ -1333,7 +1333,7 @@ class ApiController extends Controller
         return response()->json([
             'message' => $message,
         ], 201);
-       
+
     }
 
     // ดึงข้อมูลแชท
@@ -1652,6 +1652,17 @@ class ApiController extends Controller
         $search = $request->search;
         $startDate = Carbon::createFromTimestamp($request->startDate);
         $endDate = Carbon::createFromTimestamp($request->endDate);
+
+        $user_id = DB::table('users')->where('code_user', $request->user_code)->first('id');
+        $check_subadmin = DB::table('sub_admins')->where('sub_admin', $user_id->id)->count();
+        if($check_subadmin == 0){
+            $code_user = $request->user_code;
+        }else{
+            $owner_id = DB::table('sub_admins')->where('sub_admin', $user_id->id)->first('owner_admin');
+            $code_user_owner = DB::table('users')->where('id', $owner_id->owner_admin)->first('code_user');
+            $code_user = $code_user_owner->code_user;
+        }
+
         $reports = DB::table('order_details')
             ->join('orders', 'orders.id', '=', 'order_details.order_id')
             ->leftjoin('shops', 'shops.id', '=', 'order_details.shop_id')
@@ -1678,7 +1689,7 @@ class ApiController extends Controller
                 'product_options.sku AS sku_type_2',
                 'product_suboptions.sku AS sku_type_3',
             ])
-            ->where('orders.user_code', $request->user_code)
+            ->where('orders.user_code', $code_user)
             ->where(function ($query) use ($search) {
                 $query->where('shops.name_shop', 'like', '%' . $search . '%')
                     ->orWhere('products.name_product', 'like', '%' . $search . '%')
@@ -1743,6 +1754,16 @@ class ApiController extends Controller
         $endDatePie = Carbon::createFromTimestamp($request->endDatePie);
         $startDateBar = Carbon::createFromTimestamp($request->startDateBar);
         $endDateBar = Carbon::createFromTimestamp($request->endDateBar);
+        $user_id = DB::table('users')->where('code_user', $request->uid)->first('id');
+        $check_owner_subadmin = DB::table('sub_admins')->where('sub_admin', $user_id->id)->count();
+
+        if($check_owner_subadmin == 0){
+            $user_code = $request->uid;
+        }else{
+            $owner_id = DB::table('sub_admins')->where('sub_admin', $user_id->id)->first('owner_admin');
+            $code_user_owner = DB::table('users')->where('id', $owner_id->owner_admin)->first('code_user');
+            $user_code = $code_user_owner->code_user;
+        }
         $data_table = DB::table('order_details')
             ->join('orders', 'orders.id', '=', 'order_details.order_id')
             ->leftjoin('shops', 'shops.id', '=', 'order_details.shop_id')
@@ -1751,7 +1772,7 @@ class ApiController extends Controller
             ->leftjoin('product_suboptions', 'product_suboptions.id', '=', 'order_details.option2')
             ->groupBy('products.name_product', 'shops.name_shop')
             ->selectRaw('products.name_product,shops.name_shop,SUM(order_details.price*order_details.num) AS total_price')
-            ->where('shops.user_code', '=', $request->uid)
+            ->where('shops.user_code', '=', $user_code)
             ->orderBy('total_price', 'desc')
             ->get();
 
@@ -1763,7 +1784,7 @@ class ApiController extends Controller
             ->leftjoin('product_suboptions', 'product_suboptions.id', '=', 'order_details.option2')
             ->groupBy('products.name_product', 'shops.name_shop')
             ->selectRaw('products.name_product, SUM(order_details.num) AS total_num')
-            ->where('shops.user_code', '=', $request->uid)
+            ->where('shops.user_code', '=', $user_code)
             ->where('order_details.created_at', '>=', $startDatePie)->where('order_details.created_at', '<=', $endDatePie)
             ->orderBy('total_num', 'desc')
             ->limit(5)
@@ -1777,7 +1798,7 @@ class ApiController extends Controller
             ->leftjoin('product_suboptions', 'product_suboptions.id', '=', 'order_details.option2')
             ->groupBy('shops.name_shop')
             ->selectRaw('shops.name_shop, SUM(order_details.num) AS total_num')
-            ->where('shops.user_code', '=', $request->uid)
+            ->where('shops.user_code', '=', $user_code)
             ->where('order_details.created_at', '>=', $startDatePie)->where('order_details.created_at', '<=', $endDatePie)
             ->orderBy('total_num', 'desc')
             ->limit(5)
@@ -1793,7 +1814,7 @@ class ApiController extends Controller
             ->leftjoin('product_suboptions', 'product_suboptions.id', '=', 'order_details.option2')
             ->groupBy(DB::raw('DATE_FORMAT(order_details.created_at, "%M")'))
             ->selectRaw('DATE_FORMAT(order_details.created_at, "%M") AS month, SUM(order_details.price*order_details.num) AS total_price')
-            ->where('shops.user_code', '=', $request->uid)
+            ->where('shops.user_code', '=', $user_code)
             ->get();
         $monthData = $data_chart_line->keyBy('month')->toArray(); // Convert the query result to an array, keyed by month
 
@@ -1811,7 +1832,7 @@ class ApiController extends Controller
             ->leftjoin('product_suboptions', 'product_suboptions.id', '=', 'order_details.option2')
             ->groupBy(DB::raw('DATE_FORMAT(order_details.created_at, "%Y-%M-%D")'), 'shops.name_shop')
             ->selectRaw('DATE_FORMAT(order_details.created_at, "%Y-%M-%D") AS month,shops.name_shop, SUM(order_details.num) AS total_num')
-            ->where('shops.user_code', '=', $request->uid)
+            ->where('shops.user_code', '=', $user_code)
             ->where('order_details.created_at', '>=', $startDateBar)->where('order_details.created_at', '<=', $endDateBar)
             ->orderBy(DB::raw('DATE_FORMAT(order_details.created_at, "%Y-%M-%D")'), 'asc')
             ->get();
@@ -1820,7 +1841,7 @@ class ApiController extends Controller
             ->leftjoin('shops', 'shops.id', '=', 'order_details.shop_id')
             ->groupBy('shops.name_shop')
             ->selectRaw('shops.name_shop, SUM(order_details.num) AS total_num')
-            ->where('shops.user_code', '=', $request->uid)
+            ->where('shops.user_code', '=', $user_code)
             ->limit(5)
             ->get();
 
@@ -1841,26 +1862,26 @@ class ApiController extends Controller
             ->leftjoin('shop_list_products', 'shop_list_products.product_id', '=', 'products.id')
             ->leftJoin('shops', 'shops.id', '=', 'shop_list_products.shop_id')
             ->selectRaw('SUM(products.stock) AS allStock')
-            ->where('shops.user_code', '=', $request->uid)
+            ->where('shops.user_code', '=', $user_code)
             ->get();
 
         $total_sales = DB::table('order_details')
             ->join('orders', 'orders.id', '=', 'order_details.order_id')
             ->leftjoin('shops', 'shops.id', '=', 'order_details.shop_id')
             ->selectRaw('SUM(order_details.num) AS total_sales')
-            ->where('shops.user_code', '=', $request->uid)
+            ->where('shops.user_code', '=', $user_code)
             ->get();
 
         $total_delivery = DB::table('orders')
             ->selectRaw('SUM(CASE WHEN orders.status = "จัดส่งสำเร็จ" THEN orders.num ELSE 0 END) AS sum_sent, SUM(CASE WHEN orders.status != "จัดส่งสำเร็จ" THEN orders.num ELSE 0 END) AS sum_not_sent')
-            ->where('orders.user_code', '=', $request->uid)
+            ->where('orders.user_code', '=', $user_code)
             ->get();
 
         $total_payment = DB::table('order_details')
             ->join('orders', 'orders.id', '=', 'order_details.order_id')
             ->leftjoin('shops', 'shops.id', '=', 'order_details.shop_id')
             ->selectRaw('SUM(CASE WHEN order_details.type_payment = "โอนเงิน" THEN order_details.num ELSE 0 END) AS sum_payment, SUM(CASE WHEN order_details.type_payment = "เก็บเงินปลายทาง" THEN order_details.num ELSE 0 END) AS sum_cash_on_delivery')
-            ->where('shops.user_code', '=', $request->uid)
+            ->where('shops.user_code', '=', $user_code)
             ->get();
         return response()->json([
             'data_table' => $data_table,
@@ -2068,7 +2089,9 @@ class ApiController extends Controller
         DB::table('users')->insert([
             'name' => $request['name_sub_admin'],
             'email' => $request['email_sub_admin'],
+            'phone' => $request['email_sub_admin'],
             'password' => Hash::make($request['password_sub_admin']),
+            'code_user' => sprintf( "%07d", rand(0,9999999) ),
             'created_at' =>  date('Y-m-d H:i:s'),
             'updated_at' => date('Y-m-d H:i:s'),
         ]);
@@ -3200,5 +3223,20 @@ class ApiController extends Controller
     public function messages(Request $request){
         event(new Message($request->input('username'), $request->input('message')));
         return [];
+    }
+
+    //get Check Subadmin
+    public function getCheckSubadmin($id){
+        $isSubadmin = DB::table('sub_admins')->where('sub_admin', $id)->first();
+        if($isSubadmin){
+            return response()->json([
+                'permission' => json_decode($isSubadmin->permission, true),
+                'isSubadmin' => 1,
+            ], 201);
+        }else{
+            return response()->json([
+                'isSubadmin' => 0,
+            ], 201);
+        }
     }
 }

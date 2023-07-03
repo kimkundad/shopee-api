@@ -93,6 +93,8 @@ Route::group([
 
     Route::get('/getUserChats/{id}' , [App\Http\Controllers\ApiController::class, 'getUserChats']);
 
+    Route::get('/getCheckSubadmin/{id}' , [App\Http\Controllers\ApiController::class, 'getCheckSubadmin']);
+
     Route::post('/searchUserChats' , [App\Http\Controllers\ApiController::class, 'search_users_chats']);
 
     Route::post('/getReports' , [App\Http\Controllers\ApiController::class, 'getReports']);
