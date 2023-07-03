@@ -79,9 +79,19 @@ class ApiController extends Controller
     public function get_allproduct(Request $request)
     {
 
+        $user_id = DB::table('users')->where('code_user', $request->code_user)->first('id');
+        $check_subadmin = DB::table('sub_admins')->where('sub_admin', $user_id->id)->count();
+        if ($check_subadmin == 0) {
+            $code_user = $request->code_user;
+        } else {
+            $owner_id = DB::table('sub_admins')->where('sub_admin', $user_id->id)->first('owner_admin');
+            $owner_code_user = DB::table('users')->where('id', $owner_id->owner_admin)->first('code_user');
+            $code_user = $owner_code_user->code_user;
+        }
+
         $objs = DB::table('products')->select('*')
             ->orderBy('id', 'DESC')
-            ->where('user_code', $request->code_user)
+            ->where('user_code', $code_user)
             ->get();
 
         return response()->json([
@@ -92,9 +102,19 @@ class ApiController extends Controller
     public function get_all_shops(Request $request)
     {
 
+        $user_id = DB::table('users')->where('code_user', $request->code_user)->first('id');
+        $check_subadmin = DB::table('sub_admins')->where('sub_admin', $user_id->id)->count();
+        if ($check_subadmin == 0) {
+            $code_user = $request->code_user;
+        } else {
+            $owner_id = DB::table('sub_admins')->where('sub_admin', $user_id->id)->first('owner_admin');
+            $owner_code_user = DB::table('users')->where('id', $owner_id->owner_admin)->first('code_user');
+            $code_user = $owner_code_user->code_user;
+        }
+
         $objs = DB::table('shops')
             ->select('*')
-            ->where('user_code', $request->code_user)
+            ->where('user_code', $code_user)
             ->get();
 
         return response()->json([
@@ -106,15 +126,24 @@ class ApiController extends Controller
     {
         $search = $request->query('search');
         $ucode = $request->query('ucode');
+        $user_id = DB::table('users')->where('code_user', $ucode)->first('id');
+        $check_subadmin = DB::table('sub_admins')->where('sub_admin', $user_id->id)->count();
+        if ($check_subadmin == 0) {
+            $code_user = $ucode;
+        } else {
+            $owner_id = DB::table('sub_admins')->where('sub_admin', $user_id->id)->first('owner_admin');
+            $owner_code_user = DB::table('users')->where('id', $owner_id->owner_admin)->first('code_user');
+            $code_user = $owner_code_user->code_user;
+        }
 
         if ($search != 'null') {
             $stores = shop::when($search, function ($query, $search) {
                 return $query->where('name_shop', 'like', '%' . $search . '%');
             })
-                ->where('user_code', $ucode)
+                ->where('user_code', $code_user)
                 ->get();
         } else {
-            $stores = DB::table('shops')->select('*')->where('user_code', $ucode)->get();
+            $stores = DB::table('shops')->select('*')->where('user_code', $code_user)->get();
         }
 
         return response()->json([
@@ -126,15 +155,24 @@ class ApiController extends Controller
     {
         $search = $request->query('search');
         $ucode = $request->query('ucode');
+        $user_id = DB::table('users')->where('code_user', $ucode)->first('id');
+        $check_subadmin = DB::table('sub_admins')->where('sub_admin', $user_id->id)->count();
+        if ($check_subadmin == 0) {
+            $code_user = $ucode;
+        } else {
+            $owner_id = DB::table('sub_admins')->where('sub_admin', $user_id->id)->first('owner_admin');
+            $owner_code_user = DB::table('users')->where('id', $owner_id->owner_admin)->first('code_user');
+            $code_user = $owner_code_user->code_user;
+        }
 
         if ($search != 'null') {
             $stores = shop::when($search, function ($query, $search) {
                 $query->whereDate('created_at', $search);
             })
-                ->where('user_code', $ucode)
+                ->where('user_code', $code_user)
                 ->get();
         } else {
-            $stores = DB::table('shops')->select('*')->where('user_code', $ucode)->get();
+            $stores = DB::table('shops')->select('*')->where('user_code', $code_user)->get();
         }
 
         return response()->json([
@@ -146,29 +184,38 @@ class ApiController extends Controller
     {
         $type = $request->query('type');
         $ucode = $request->query('ucode');
+        $user_id = DB::table('users')->where('code_user', $ucode)->first('id');
+        $check_subadmin = DB::table('sub_admins')->where('sub_admin', $user_id->id)->count();
+        if ($check_subadmin == 0) {
+            $code_user = $ucode;
+        } else {
+            $owner_id = DB::table('sub_admins')->where('sub_admin', $user_id->id)->first('owner_admin');
+            $owner_code_user = DB::table('users')->where('id', $owner_id->owner_admin)->first('code_user');
+            $code_user = $owner_code_user->code_user;
+        }
 
         if ($type == 'asc') {
             $stores = DB::table('shops')
                 ->select('*')
-                ->where('user_code', $ucode)
+                ->where('user_code', $code_user)
                 ->orderBy('name_shop', 'asc')
                 ->get();
         } else if ($type == 'createdDateShop') {
             $stores = DB::table('shops')
                 ->select('*')
-                ->where('user_code', $ucode)
+                ->where('user_code', $code_user)
                 ->orderBy('created_at', 'asc')
                 ->get();
         } else if ($type == 'modifiedDateShop') {
             $stores = DB::table('shops')
                 ->select('*')
-                ->where('user_code', $ucode)
+                ->where('user_code', $code_user)
                 ->orderBy('updated_at', 'asc')
                 ->get();
         } else {
             $stores = DB::table('shops')
                 ->select('*')
-                ->where('user_code', $ucode)
+                ->where('user_code', $code_user)
                 ->get();
         }
 
@@ -1304,7 +1351,8 @@ class ApiController extends Controller
         ], 201);
     }
 
-    public function getMessage2($user_id = 0 ,$shop_id = 0 ,$type = 0 ){
+    public function getMessage2($user_id = 0, $shop_id = 0, $type = 0)
+    {
 
         if ($type == 'customer') {
             DB::table('chats')->where('recived_id', '=', $user_id)->where('shop_id', '=', $shop_id)->update([
@@ -1333,7 +1381,6 @@ class ApiController extends Controller
         return response()->json([
             'message' => $message,
         ], 201);
-
     }
 
     // ดึงข้อมูลแชท
@@ -1655,9 +1702,9 @@ class ApiController extends Controller
 
         $user_id = DB::table('users')->where('code_user', $request->user_code)->first('id');
         $check_subadmin = DB::table('sub_admins')->where('sub_admin', $user_id->id)->count();
-        if($check_subadmin == 0){
+        if ($check_subadmin == 0) {
             $code_user = $request->user_code;
-        }else{
+        } else {
             $owner_id = DB::table('sub_admins')->where('sub_admin', $user_id->id)->first('owner_admin');
             $code_user_owner = DB::table('users')->where('id', $owner_id->owner_admin)->first('code_user');
             $code_user = $code_user_owner->code_user;
@@ -1757,9 +1804,9 @@ class ApiController extends Controller
         $user_id = DB::table('users')->where('code_user', $request->uid)->first('id');
         $check_owner_subadmin = DB::table('sub_admins')->where('sub_admin', $user_id->id)->count();
 
-        if($check_owner_subadmin == 0){
+        if ($check_owner_subadmin == 0) {
             $user_code = $request->uid;
-        }else{
+        } else {
             $owner_id = DB::table('sub_admins')->where('sub_admin', $user_id->id)->first('owner_admin');
             $code_user_owner = DB::table('users')->where('id', $owner_id->owner_admin)->first('code_user');
             $user_code = $code_user_owner->code_user;
@@ -2091,7 +2138,7 @@ class ApiController extends Controller
             'email' => $request['email_sub_admin'],
             'phone' => $request['email_sub_admin'],
             'password' => Hash::make($request['password_sub_admin']),
-            'code_user' => sprintf( "%07d", rand(0,9999999) ),
+            'code_user' => sprintf("%07d", rand(0, 9999999)),
             'created_at' =>  date('Y-m-d H:i:s'),
             'updated_at' => date('Y-m-d H:i:s'),
         ]);
@@ -2274,12 +2321,22 @@ class ApiController extends Controller
 
             $ran_num = rand(100000000, 999999999);
 
+            $user_id = DB::table('users')->where('code_user', $request['code_user'])->first('id');
+            $check_subadmin = DB::table('sub_admins')->where('sub_admin', $user_id->id)->count();
+            if ($check_subadmin == 0) {
+                $code_user = $request['code_user'];
+            } else {
+                $owner_id = DB::table('sub_admins')->where('sub_admin', $user_id->id)->first('owner_admin');
+                $owner_code_user = DB::table('users')->where('id', $owner_id->owner_admin)->first('code_user');
+                $code_user = $owner_code_user->code_user;
+            }
+
             DB::table('shops')->insert([
                 'name_shop' => $request['nameShop'],
                 'detail_shop' => $request['detailShop'],
                 'img_shop' => $filePaths,
                 'cover_img_shop' => $filePaths2,
-                'user_code' => $request['code_user'],
+                'user_code' => $code_user,
                 'code_shop' => $ran_num,
                 'url_shop' => $randomString . '' . $ran_num,
                 'theme' => $request->themeShop,
@@ -3220,20 +3277,22 @@ class ApiController extends Controller
     }
 
     //chat message
-    public function messages(Request $request){
+    public function messages(Request $request)
+    {
         event(new Message($request->input('username'), $request->input('message')));
         return [];
     }
 
     //get Check Subadmin
-    public function getCheckSubadmin($id){
+    public function getCheckSubadmin($id)
+    {
         $isSubadmin = DB::table('sub_admins')->where('sub_admin', $id)->first();
-        if($isSubadmin){
+        if ($isSubadmin) {
             return response()->json([
                 'permission' => json_decode($isSubadmin->permission, true),
                 'isSubadmin' => 1,
             ], 201);
-        }else{
+        } else {
             return response()->json([
                 'isSubadmin' => 0,
             ], 201);
