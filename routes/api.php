@@ -136,6 +136,14 @@ Route::group([
     Route::post('/verify', [App\Http\Controllers\AuthController::class, 'verify']);
     Route::post('/login', [App\Http\Controllers\AuthController::class, 'login']);
     Route::get('/logout', [App\Http\Controllers\AuthController::class, 'logout']);
+
+    // get setting type bill
+    Route::get('/getSettingTypeBill/{id}' , [App\Http\Controllers\ApiController::class, 'getSettingTypeBill']);
+    Route::post('/setSettingTypeBill' , [App\Http\Controllers\ApiController::class, 'setSettingTypeBill']);
+
+    // get setting type invoice
+    Route::get('/getSettingTypeInvoice/{id}' , [App\Http\Controllers\ApiController::class, 'getSettingTypeInvoice']);
+    Route::post('/setSettingTypeInvoice' , [App\Http\Controllers\ApiController::class, 'setSettingTypeInvoice']);
 });
 
 Route::group([

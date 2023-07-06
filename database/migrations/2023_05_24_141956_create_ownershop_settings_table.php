@@ -17,6 +17,8 @@ return new class extends Migration
             $table->id();
             $table->string('user_code');
             $table->string('setting');
+            $table->int('setting_bill')->defaultValue(1);
+            $table->int('setting_invoice')->defaultValue(1);
             $table->timestamps();
         });
     }

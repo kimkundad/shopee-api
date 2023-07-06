@@ -1628,23 +1628,50 @@ class ApiController extends Controller
 
     public function getNoti($code_user, $id)
     {
-        $check = DB::table('ownershop_settings')->where('user_id', '=', $id)->first();
-        $object = json_decode($check->setting);
-        if ($object->notification == true) {
-            $objs = DB::table('notifications')->join('orders', 'orders.id', '=', 'notifications.order_id')->where('notifications.user_code', '=', $code_user)->orWhere('notifications.user_id', '=', $id)->where('notifications.is_seen', 0)
-                ->orWhere(function ($query) {
-                    $query->where('notifications.is_seen', 1)
-                        ->limit(5);
-                })->orderBy('notifications.is_seen', 'asc')->orderBy('notifications.created_at', 'desc')->limit(5)->get();
+        $check = DB::table('ownershop_settings')->where('user_id', '=', $id)->count();
+        if ($check == 0) {
+            $data = ["notification" => true];
+            DB::table('ownershop_settings')->insert([
+                'user_id' => $id,
+                'setting' => json_encode($data)
+            ]);
+            $settingId = DB::table('ownershop_settings')->where('user_id', '=', $id)->first();
+            $object = json_decode($settingId->setting);
+            if ($object->notification == true) {
+                $objs = DB::table('notifications')->join('orders', 'orders.id', '=', 'notifications.order_id')->where('notifications.user_code', '=', $code_user)->orWhere('notifications.user_id', '=', $id)->where('notifications.is_seen', 0)
+                    ->orWhere(function ($query) {
+                        $query->where('notifications.is_seen', 1)
+                            ->limit(5);
+                    })->orderBy('notifications.is_seen', 'asc')->orderBy('notifications.created_at', 'desc')->limit(5)->get();
 
-            return response()->json([
-                'status' => "success",
-                'noti' => $objs,
-            ], 201);
+                return response()->json([
+                    'status' => "success",
+                    'noti' => $objs,
+                ], 201);
+            } else {
+                return response()->json([
+                    'status' => "error",
+                ], 201);
+            }
         } else {
-            return response()->json([
-                'status' => "error",
-            ], 201);
+            $settingId = DB::table('ownershop_settings')->where('user_id', '=', $id)->first();
+            $object = json_decode($settingId->setting);
+            if ($object->notification == true) {
+                $objs = DB::table('notifications')->join('orders', 'orders.id', '=', 'notifications.order_id')->where('notifications.user_code', '=', $code_user)->orWhere('notifications.user_id', '=', $id)->where('notifications.is_seen', 0)
+                    ->orWhere(function ($query) {
+                        $query->where('notifications.is_seen', 1)
+                            ->limit(5);
+                    })->orderBy('notifications.is_seen', 'asc')->orderBy('notifications.created_at', 'desc')->limit(5)->get();
+
+                return response()->json([
+                    'status' => "success",
+                    'noti' => $objs,
+                ], 201);
+            } else {
+                return response()->json([
+                    'status' => "error",
+                ], 201);
+            }
         }
     }
 
@@ -3295,6 +3322,94 @@ class ApiController extends Controller
         } else {
             return response()->json([
                 'isSubadmin' => 0,
+            ], 201);
+        }
+    }
+
+    //get setting_bill form Database
+    public function getSettingTypeBill($id)
+    {
+        $checkIdTypeBill = DB::table('ownershop_settings')->where('user_id', $id)->count();
+        if ($checkIdTypeBill == 0) {
+            DB::table('ownershop_settings')->insert([
+                'user_id' => $id,
+                'setting_bill' => 1
+            ]);
+            return response()->json([
+                'success' => 'Insert first type bill successfully!',
+            ], 201);
+        } else {
+            $type_bill = DB::table('ownershop_settings')->where('user_id', $id)->select('setting_bill')->first();
+            return response()->json([
+                'settingTypeBill' => $type_bill->setting_bill,
+            ], 201);
+        }
+    }
+
+    //set setting_bill form Database
+    public function setSettingTypeBill(Request $request)
+    {
+        $checkId = DB::table('ownershop_settings')->where('user_id', $request->userId)->count();
+        if ($checkId == 0) {
+            DB::table('ownershop_settings')->insert([
+                'user_id' => $request->userId,
+                'setting_bill' => $request->typebill
+            ]);
+            return response()->json([
+                'success' => 'Insert setting type bill successfully!',
+            ], 201);
+        } else {
+            DB::table('ownershop_settings')
+                ->where('user_id', $request->userId)
+                ->update([
+                    'setting_bill' => $request->typebill,
+                ]);
+            return response()->json([
+                'success' => 'Updated setting type bill successfully!',
+            ], 201);
+        }
+    }
+
+    //get setting_invoice form Database
+    public function getSettingTypeInvoice($id)
+    {
+        $checkIdTypeInvoice = DB::table('ownershop_settings')->where('user_id', $id)->count();
+        if ($checkIdTypeInvoice == 0) {
+            DB::table('ownershop_settings')->insert([
+                'user_id' => $id,
+                'setting_invoice' => 1
+            ]);
+            return response()->json([
+                'success' => 'Insert first type invoice successfully!',
+            ], 201);
+        } else {
+            $type_invoice = DB::table('ownershop_settings')->where('user_id', $id)->select('setting_invoice')->first();
+            return response()->json([
+                'settingTypeInvoice' => $type_invoice->setting_invoice,
+            ], 201);
+        }
+    }
+
+    //set setting_invoice form Database
+    public function setSettingTypeInvoice(Request $request)
+    {
+        $checkId = DB::table('ownershop_settings')->where('user_id', $request->userId)->count();
+        if ($checkId == 0) {
+            DB::table('ownershop_settings')->insert([
+                'user_id' => $request->userId,
+                'setting_invoice' => $request->typeinvoice
+            ]);
+            return response()->json([
+                'success' => 'Insert setting type invoice successfully!',
+            ], 201);
+        } else {
+            DB::table('ownershop_settings')
+                ->where('user_id', $request->userId)
+                ->update([
+                    'setting_invoice' => $request->typeinvoice,
+                ]);
+            return response()->json([
+                'success' => 'Updated setting type invoice successfully!',
             ], 201);
         }
     }
