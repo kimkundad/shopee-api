@@ -3413,4 +3413,48 @@ class ApiController extends Controller
             ], 201);
         }
     }
+
+    //get setting_purchase_order form Database
+    public function getSettingTypePurchaseOrder($id)
+    {
+        $checkIdTypePurchaseOrder = DB::table('ownershop_settings')->where('user_id', $id)->count();
+        if ($checkIdTypePurchaseOrder == 0) {
+            DB::table('ownershop_settings')->insert([
+                'user_id' => $id,
+                'setting_purchase_order' => 1
+            ]);
+            return response()->json([
+                'success' => 'Insert first type purchase order successfully!',
+            ], 201);
+        } else {
+            $type_purchase_order = DB::table('ownershop_settings')->where('user_id', $id)->select('setting_purchase_order')->first();
+            return response()->json([
+                'settingTypePurchaseOrder' => $type_purchase_order->setting_purchase_order,
+            ], 201);
+        }
+    }
+
+    //set setting_purchase_order form Database
+    public function setSettingTypePurchaseOrder(Request $request)
+    {
+        $checkId = DB::table('ownershop_settings')->where('user_id', $request->userId)->count();
+        if ($checkId == 0) {
+            DB::table('ownershop_settings')->insert([
+                'user_id' => $request->userId,
+                'setting_purchase_order' => $request->typepurchaseorder
+            ]);
+            return response()->json([
+                'success' => 'Insert setting type purchase order successfully!',
+            ], 201);
+        } else {
+            DB::table('ownershop_settings')
+                ->where('user_id', $request->userId)
+                ->update([
+                    'setting_purchase_order' => $request->typepurchaseorder,
+                ]);
+            return response()->json([
+                'success' => 'Updated setting type purchase order successfully!',
+            ], 201);
+        }
+    }
 }

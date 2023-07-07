@@ -144,6 +144,10 @@ Route::group([
     // get setting type invoice
     Route::get('/getSettingTypeInvoice/{id}' , [App\Http\Controllers\ApiController::class, 'getSettingTypeInvoice']);
     Route::post('/setSettingTypeInvoice' , [App\Http\Controllers\ApiController::class, 'setSettingTypeInvoice']);
+
+    // get setting purchase order
+    Route::get('/getSettingTypePurchaseOrder/{id}' , [App\Http\Controllers\ApiController::class, 'getSettingTypePurchaseOrder']);
+    Route::post('/setSettingTypePurchaseOrder' , [App\Http\Controllers\ApiController::class, 'setSettingTypePurchaseOrder']);
 });
 
 Route::group([

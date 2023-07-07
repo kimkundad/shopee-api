@@ -19,6 +19,7 @@ return new class extends Migration
             $table->string('setting');
             $table->int('setting_bill')->defaultValue(1);
             $table->int('setting_invoice')->defaultValue(1);
+            $table->int('setting_purchase_order')->defaultValue(1);
             $table->timestamps();
         });
     }
