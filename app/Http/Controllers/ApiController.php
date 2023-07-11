@@ -34,10 +34,17 @@ class ApiController extends Controller
 {
 
     //
-    public function get_category_all()
+    public function get_category_all(Request $request)
     {
+        $check_subadmin = DB::table('sub_admins')->where('sub_admin', $request->userId)->count();
+        if($check_subadmin == 0){
+            $owner_category = $request->userId;
+        }else{
+            $owner_subadmin = DB::table('sub_admins')->where('sub_admin', $request->userId)->first('owner_admin');
+            $owner_category = $owner_subadmin->owner_admin;
+        }
 
-        $objs = category::select('cat_name', 'image', 'id')->where('status', 1)->get();
+        $objs = category::select('cat_name', 'image', 'id')->where('status', 1)->where('user_id', $owner_category)->get();
 
         return response()->json([
             'category' => $objs,
@@ -680,8 +687,18 @@ class ApiController extends Controller
                 product::where('id', '=', $id)->update(['active' => 0]);
             }
 
+            $user_id = DB::table('users')->where('code_user', $ucode)->first('id');
+            $check_subadmin = DB::table('sub_admins')->where('sub_admin', $user_id->id)->count();
+            if ($check_subadmin == 0) {
+                $code_user = $ucode;
+            } else {
+                $owner_id = DB::table('sub_admins')->where('sub_admin', $user_id->id)->first('owner_admin');
+                $owner_code_user = DB::table('users')->where('id', $owner_id->owner_admin)->first('code_user');
+                $code_user = $owner_code_user->code_user;
+            }
+
             $products = product::select('id', 'img_product', 'name_product', 'cost', 'price', 'maker', 'created_at', 'stock', 'active')
-                ->where('user_code', $ucode)
+                ->where('user_code', $code_user)
                 ->orderBy('id', 'desc')
                 ->get();
             return response()->json([
@@ -707,8 +724,19 @@ class ApiController extends Controller
             } else {
                 product::query()->update(['active' => 0]);
             }
+
+            $user_id = DB::table('users')->where('code_user', $ucode)->first('id');
+            $check_subadmin = DB::table('sub_admins')->where('sub_admin', $user_id->id)->count();
+            if ($check_subadmin == 0) {
+                $code_user = $ucode;
+            } else {
+                $owner_id = DB::table('sub_admins')->where('sub_admin', $user_id->id)->first('owner_admin');
+                $owner_code_user = DB::table('users')->where('id', $owner_id->owner_admin)->first('code_user');
+                $code_user = $owner_code_user->code_user;
+            }
+
             $products = product::select('id', 'img_product', 'name_product', 'cost', 'price', 'maker', 'created_at', 'stock', 'active')
-                ->where('user_code', $ucode)
+                ->where('user_code', $code_user)
                 ->orderBy('id', 'desc')
                 ->get();
             return response()->json([
@@ -755,6 +783,15 @@ class ApiController extends Controller
     // เพิ่มสินค้า
     public function addProduct(Request $request)
     {
+        $user_id = DB::table('users')->where('code_user', $request->user_code)->first('id');
+        $check_subadmin = DB::table('sub_admins')->where('sub_admin', $user_id->id)->count();
+        if ($check_subadmin == 0) {
+            $code_user = $request->user_code;
+        } else {
+            $owner_id = DB::table('sub_admins')->where('sub_admin', $user_id->id)->first('owner_admin');
+            $owner_code_user = DB::table('users')->where('id', $owner_id->owner_admin)->first('code_user');
+            $code_user = $owner_code_user->code_user;
+        }
 
         $product = new product();
         $product->name_product = $request->name_product;
@@ -767,7 +804,7 @@ class ApiController extends Controller
         $product->width_product = $request->width_product;
         $product->length_product = $request->length_product;
         $product->height_product = $request->height_product;
-        $product->user_code = $request->user_code;
+        $product->user_code = $code_user;
         $product->sku = $request->sku;
         $product->category = $request->category;
         $product->type = 1;
@@ -820,6 +857,16 @@ class ApiController extends Controller
     public function addOptionProduct(Request $request)
     {
 
+        $user_id = DB::table('users')->where('code_user', $request->user_code)->first('id');
+        $check_subadmin = DB::table('sub_admins')->where('sub_admin', $user_id->id)->count();
+        if ($check_subadmin == 0) {
+            $code_user = $request->user_code;
+        } else {
+            $owner_id = DB::table('sub_admins')->where('sub_admin', $user_id->id)->first('owner_admin');
+            $owner_code_user = DB::table('users')->where('id', $owner_id->owner_admin)->first('code_user');
+            $code_user = $owner_code_user->code_user;
+        }
+
         $product = new product();
         $product->name_product = $request->name_product;
         $product->detail_product = $request->detail_product;
@@ -831,7 +878,7 @@ class ApiController extends Controller
         $product->width_product = $request->width_product;
         $product->length_product = $request->length_product;
         $product->height_product = $request->height_product;
-        $product->user_code = $request->user_code;
+        $product->user_code = $code_user;
         $product->sku = $request->sku;
         $product->category = $request->category;
         $product->type = 1;
@@ -2538,13 +2585,21 @@ class ApiController extends Controller
 
     public function addCategory(Request $request)
     {
+        $check_subadmin = DB::table('sub_admins')->where('sub_admin', $request->userID)->count();
+        if($check_subadmin == 0){
+            $owner_category = $request->userID;
+        }else{
+            $owner_subadmin = DB::table('sub_admins')->where('sub_admin', $request->userID)->first('owner_admin');
+            $owner_category = $owner_subadmin->owner_admin;
+        }
+
         if ($request->input('category')) {
             $InputCategory = $request->input('category');
             if (is_array($InputCategory)) {
                 foreach ($InputCategory as $category) {
                     DB::table('categories')->insert([
                         'cat_name' => $category,
-                        'user_id' => $request->userID,
+                        'user_id' => $owner_category,
                         'status' => 1,
                         'created_at' =>  date('Y-m-d H:i:s'),
                         'updated_at' => date('Y-m-d H:i:s'),
@@ -2607,15 +2662,25 @@ class ApiController extends Controller
         $search = $request->query('search');
         $ucode = $request->query('user_code');
 
+        $user_id = DB::table('users')->where('code_user', $ucode)->first('id');
+        $check_subadmin = DB::table('sub_admins')->where('sub_admin', $user_id->id)->count();
+        if ($check_subadmin == 0) {
+            $code_user = $ucode;
+        } else {
+            $owner_id = DB::table('sub_admins')->where('sub_admin', $user_id->id)->first('owner_admin');
+            $owner_code_user = DB::table('users')->where('id', $owner_id->owner_admin)->first('code_user');
+            $code_user = $owner_code_user->code_user;
+        }
+
         if ($search != 'null') {
             $products = product::when($search, function ($query, $search) {
                 return $query->where('name_product', 'like', '%' . $search . '%');
             })
-                ->where('user_code', $ucode)
+                ->where('user_code', $code_user)
                 ->get();
         } else {
             $products = DB::table('products')->select('*')
-                ->where('user_code', $ucode)
+                ->where('user_code', $code_user)
                 ->orderBy('id', 'DESC')
                 ->get();
         }
