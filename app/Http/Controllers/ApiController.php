@@ -1385,13 +1385,27 @@ class ApiController extends Controller
     // -------------------------------ดึงข้อมูลของ users และ role ของ users ออกมาทั้งหมด create by อั้นเอง----------------------------
     public function getAllUsers(Request $request)
     {
-        $objs = DB::table('users')->select('users.*', 'users.id as userID', 'roles.name as role_name', 'users.name as user_name', 'users.created_at as user_created_at', 'sub_admins.*')
+        $check_subadmin = DB::table('sub_admins')->where('sub_admin', $request->user_id)->count();
+        if($check_subadmin == 0){
+            $objs = DB::table('users')->select('users.*', 'users.id as userID', 'roles.name as role_name', 'users.name as user_name', 'users.created_at as user_created_at', 'sub_admins.*')
             ->join('role_user', 'role_user.user_id', '=', 'users.id')
             ->join('roles', 'roles.id', '=', 'role_user.role_id')
             ->join('sub_admins', 'sub_admins.sub_admin', '=', 'users.id')
             ->orderBy('users.id', 'desc')
             ->where('sub_admins.owner_admin', $request->user_id)
             ->get();
+        }else{
+            $owner_subadmin = DB::table('sub_admins')->where('sub_admin', $request->user_id)->first('owner_admin');
+            $objs = DB::table('users')->select('users.*', 'users.id as userID', 'roles.name as role_name', 'users.name as user_name', 'users.created_at as user_created_at', 'sub_admins.*')
+            ->join('role_user', 'role_user.user_id', '=', 'users.id')
+            ->join('roles', 'roles.id', '=', 'role_user.role_id')
+            ->join('sub_admins', 'sub_admins.sub_admin', '=', 'users.id')
+            ->orderBy('users.id', 'desc')
+            ->where('sub_admins.sub_admin', '!=' , $request->user_id)
+            ->where('sub_admins.owner_admin', '=' ,$owner_subadmin->owner_admin)
+            ->get();
+        }
+
 
         return response()->json([
             'users' => $objs,
@@ -2226,9 +2240,17 @@ class ApiController extends Controller
             'user_id' => $lastInsertId
         ]);
 
+        $check_subadmin = DB::table('sub_admins')->where('sub_admin', $request['owner_admin'])->count();
+        if($check_subadmin == 0){
+            $owner_category = $request['owner_admin'];
+        }else{
+            $owner_subadmin = DB::table('sub_admins')->where('sub_admin', $request['owner_admin'])->first('owner_admin');
+            $owner_category = $owner_subadmin->owner_admin;
+        }
+
         // set permissions and owner admin
         DB::table('sub_admins')->insert([
-            'owner_admin' => $request['owner_admin'],
+            'owner_admin' => $owner_category,
             'sub_admin' => $lastInsertId,
             'permission' => $json_permission,
             'created_at' =>  date('Y-m-d H:i:s'),
@@ -2300,25 +2322,52 @@ class ApiController extends Controller
     {
         $search = $request->query('search');
         $uid = $request->query('uid');
-
-        if ($search != 'null') {
-            $objs = DB::table('users')->select('users.*', 'users.id as userID', 'roles.name as role_name', 'users.name as user_name', 'users.created_at as user_created_at', 'sub_admins.*')
-                ->join('role_user', 'role_user.user_id', '=', 'users.id')
-                ->join('roles', 'roles.id', '=', 'role_user.role_id')
-                ->join('sub_admins', 'sub_admins.sub_admin', '=', 'users.id')
-                ->where('sub_admins.owner_admin', $uid)
-                ->whereDate('users.created_at', $search)
-                ->orderBy('users.id', 'desc')
-                ->get();
-        } else {
-            $objs = DB::table('users')->select('users.*', 'users.id as userID', 'roles.name as role_name', 'users.name as user_name', 'users.created_at as user_created_at', 'sub_admins.*')
-                ->join('role_user', 'role_user.user_id', '=', 'users.id')
-                ->join('roles', 'roles.id', '=', 'role_user.role_id')
-                ->join('sub_admins', 'sub_admins.sub_admin', '=', 'users.id')
-                ->where('sub_admins.owner_admin', $uid)
-                ->orderBy('users.id', 'desc')
-                ->get();
+        $check_subadmin = DB::table('sub_admins')->where('sub_admin', $uid)->count();
+        if($check_subadmin == 0){
+            if ($search != 'null') {
+                $objs = DB::table('users')->select('users.*', 'users.id as userID', 'roles.name as role_name', 'users.name as user_name', 'users.created_at as user_created_at', 'sub_admins.*')
+                    ->join('role_user', 'role_user.user_id', '=', 'users.id')
+                    ->join('roles', 'roles.id', '=', 'role_user.role_id')
+                    ->join('sub_admins', 'sub_admins.sub_admin', '=', 'users.id')
+                    ->where('sub_admins.owner_admin', $uid)
+                    ->whereDate('users.created_at', $search)
+                    ->orderBy('users.id', 'desc')
+                    ->get();
+            } else {
+                $objs = DB::table('users')->select('users.*', 'users.id as userID', 'roles.name as role_name', 'users.name as user_name', 'users.created_at as user_created_at', 'sub_admins.*')
+                    ->join('role_user', 'role_user.user_id', '=', 'users.id')
+                    ->join('roles', 'roles.id', '=', 'role_user.role_id')
+                    ->join('sub_admins', 'sub_admins.sub_admin', '=', 'users.id')
+                    ->where('sub_admins.owner_admin', $uid)
+                    ->orderBy('users.id', 'desc')
+                    ->get();
+            }
+        }else{
+            $owner_subadmin = DB::table('sub_admins')->where('sub_admin', $uid)->first('owner_admin');
+            $owner_admin = $owner_subadmin->owner_admin;
+            if ($search != 'null') {
+                $objs = DB::table('users')->select('users.*', 'users.id as userID', 'roles.name as role_name', 'users.name as user_name', 'users.created_at as user_created_at', 'sub_admins.*')
+                    ->join('role_user', 'role_user.user_id', '=', 'users.id')
+                    ->join('roles', 'roles.id', '=', 'role_user.role_id')
+                    ->join('sub_admins', 'sub_admins.sub_admin', '=', 'users.id')
+                    ->where('sub_admins.owner_admin', $owner_admin)
+                    ->where('sub_admins.sub_admin', '!=' ,$uid)
+                    ->whereDate('users.created_at', $search)
+                    ->orderBy('users.id', 'desc')
+                    ->get();
+            } else {
+                $objs = DB::table('users')->select('users.*', 'users.id as userID', 'roles.name as role_name', 'users.name as user_name', 'users.created_at as user_created_at', 'sub_admins.*')
+                    ->join('role_user', 'role_user.user_id', '=', 'users.id')
+                    ->join('roles', 'roles.id', '=', 'role_user.role_id')
+                    ->join('sub_admins', 'sub_admins.sub_admin', '=', 'users.id')
+                    ->where('sub_admins.owner_admin', $owner_admin)
+                    ->where('sub_admins.sub_admin', '!=' ,$uid)
+                    ->orderBy('users.id', 'desc')
+                    ->get();
+            }
         }
+
+
 
         return response()->json([
             'users' => $objs,
@@ -2330,25 +2379,52 @@ class ApiController extends Controller
     {
         $search = $request->query('search');
         $uid = $request->query('uid');
-
-        if ($search != 'null') {
-            $objs = DB::table('users')->select('users.*', 'users.id as userID', 'roles.name as role_name', 'users.name as user_name', 'users.created_at as user_created_at', 'sub_admins.*')
-                ->join('role_user', 'role_user.user_id', '=', 'users.id')
-                ->join('roles', 'roles.id', '=', 'role_user.role_id')
-                ->join('sub_admins', 'sub_admins.sub_admin', '=', 'users.id')
-                ->where('sub_admins.owner_admin', $uid)
-                ->where('users.name', 'like', '%' . $search . '%')
-                ->orderBy('users.id', 'desc')
-                ->get();
-        } else {
-            $objs = DB::table('users')->select('users.*', 'users.id as userID', 'roles.name as role_name', 'users.name as user_name', 'users.created_at as user_created_at', 'sub_admins.*')
-                ->join('role_user', 'role_user.user_id', '=', 'users.id')
-                ->join('roles', 'roles.id', '=', 'role_user.role_id')
-                ->join('sub_admins', 'sub_admins.sub_admin', '=', 'users.id')
-                ->where('sub_admins.owner_admin', $uid)
-                ->orderBy('users.id', 'desc')
-                ->get();
+        $check_subadmin = DB::table('sub_admins')->where('sub_admin', $uid)->count();
+        if($check_subadmin == 0){
+            if ($search != 'null') {
+                $objs = DB::table('users')->select('users.*', 'users.id as userID', 'roles.name as role_name', 'users.name as user_name', 'users.created_at as user_created_at', 'sub_admins.*')
+                    ->join('role_user', 'role_user.user_id', '=', 'users.id')
+                    ->join('roles', 'roles.id', '=', 'role_user.role_id')
+                    ->join('sub_admins', 'sub_admins.sub_admin', '=', 'users.id')
+                    ->where('sub_admins.owner_admin', $uid)
+                    ->where('users.name', 'like', '%' . $search . '%')
+                    ->orderBy('users.id', 'desc')
+                    ->get();
+            } else {
+                $objs = DB::table('users')->select('users.*', 'users.id as userID', 'roles.name as role_name', 'users.name as user_name', 'users.created_at as user_created_at', 'sub_admins.*')
+                    ->join('role_user', 'role_user.user_id', '=', 'users.id')
+                    ->join('roles', 'roles.id', '=', 'role_user.role_id')
+                    ->join('sub_admins', 'sub_admins.sub_admin', '=', 'users.id')
+                    ->where('sub_admins.owner_admin', $uid)
+                    ->orderBy('users.id', 'desc')
+                    ->get();
+            }
+        }else{
+            $owner_subadmin = DB::table('sub_admins')->where('sub_admin', $uid)->first('owner_admin');
+            $owner_admin = $owner_subadmin->owner_admin;
+            if ($search != 'null') {
+                $objs = DB::table('users')->select('users.*', 'users.id as userID', 'roles.name as role_name', 'users.name as user_name', 'users.created_at as user_created_at', 'sub_admins.*')
+                    ->join('role_user', 'role_user.user_id', '=', 'users.id')
+                    ->join('roles', 'roles.id', '=', 'role_user.role_id')
+                    ->join('sub_admins', 'sub_admins.sub_admin', '=', 'users.id')
+                    ->where('sub_admins.owner_admin', $owner_admin)
+                    ->where('sub_admins.sub_admin', '!=' ,$uid)
+                    ->where('users.name', 'like', '%' . $search . '%')
+                    ->orderBy('users.id', 'desc')
+                    ->get();
+            } else {
+                $objs = DB::table('users')->select('users.*', 'users.id as userID', 'roles.name as role_name', 'users.name as user_name', 'users.created_at as user_created_at', 'sub_admins.*')
+                    ->join('role_user', 'role_user.user_id', '=', 'users.id')
+                    ->join('roles', 'roles.id', '=', 'role_user.role_id')
+                    ->join('sub_admins', 'sub_admins.sub_admin', '=', 'users.id')
+                    ->where('sub_admins.owner_admin', $owner_admin)
+                    ->where('sub_admins.sub_admin', '!=' ,$uid)
+                    ->orderBy('users.id', 'desc')
+                    ->get();
+            }
         }
+
+
 
         return response()->json([
             'users' => $objs,
