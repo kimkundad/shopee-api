@@ -1689,17 +1689,28 @@ class ApiController extends Controller
 
     public function getNoti($code_user, $id)
     {
-        $check = DB::table('ownershop_settings')->where('user_id', '=', $id)->count();
+        $check_subadmin = DB::table('sub_admins')->where('sub_admin', $id)->count();
+        if($check_subadmin == 0){
+            $owner_noti_code_user = $code_user;
+            $owner_noti_id = $id;
+        }else{
+            $get_owner_subadmin_id = DB::table('sub_admins')->where('sub_admin', $id)->first('owner_admin');
+            $get_owner_subadmin_code_user = DB::table('users')->where('id', $get_owner_subadmin_id->owner_admin)->first('code_user');
+            $owner_noti_code_user = $get_owner_subadmin_code_user->code_user;
+            $owner_noti_id = $get_owner_subadmin_id->owner_admin;
+        }
+
+        $check = DB::table('ownershop_settings')->where('user_id', '=', $owner_noti_id)->count();
         if ($check == 0) {
             $data = ["notification" => true];
             DB::table('ownershop_settings')->insert([
-                'user_id' => $id,
+                'user_id' => $owner_noti_id,
                 'setting' => json_encode($data)
             ]);
-            $settingId = DB::table('ownershop_settings')->where('user_id', '=', $id)->first();
+            $settingId = DB::table('ownershop_settings')->where('user_id', '=', $owner_noti_id)->first();
             $object = json_decode($settingId->setting);
             if ($object->notification == true) {
-                $objs = DB::table('notifications')->join('orders', 'orders.id', '=', 'notifications.order_id')->where('notifications.user_code', '=', $code_user)->orWhere('notifications.user_id', '=', $id)->where('notifications.is_seen', 0)
+                $objs = DB::table('notifications')->join('orders', 'orders.id', '=', 'notifications.order_id')->where('notifications.user_code', '=', $owner_noti_code_user)->orWhere('notifications.user_id', '=', $owner_noti_id)->where('notifications.is_seen', 0)
                     ->orWhere(function ($query) {
                         $query->where('notifications.is_seen', 1)
                             ->limit(5);
@@ -1715,10 +1726,10 @@ class ApiController extends Controller
                 ], 201);
             }
         } else {
-            $settingId = DB::table('ownershop_settings')->where('user_id', '=', $id)->first();
+            $settingId = DB::table('ownershop_settings')->where('user_id', '=', $owner_noti_id)->first();
             $object = json_decode($settingId->setting);
             if ($object->notification == true) {
-                $objs = DB::table('notifications')->join('orders', 'orders.id', '=', 'notifications.order_id')->where('notifications.user_code', '=', $code_user)->orWhere('notifications.user_id', '=', $id)->where('notifications.is_seen', 0)
+                $objs = DB::table('notifications')->join('orders', 'orders.id', '=', 'notifications.order_id')->where('notifications.user_code', '=', $owner_noti_code_user)->orWhere('notifications.user_id', '=', $owner_noti_id)->where('notifications.is_seen', 0)
                     ->orWhere(function ($query) {
                         $query->where('notifications.is_seen', 1)
                             ->limit(5);
@@ -1738,7 +1749,17 @@ class ApiController extends Controller
 
     public function readNoti(Request $request)
     {
-        DB::table('notifications')->where('user_code', '=', $request->user_code)->where('type_noti', '=', $request->type_noti)->update([
+        $get_userId = DB::table('users')->where('code_user', $request->user_code)->first('id');
+        $check_subadmin = DB::table('sub_admins')->where('sub_admin', $get_userId->id)->count();
+        if($check_subadmin == 0){
+            $owner_user_code = $request->user_code;
+        }else{
+            $get_owner_readNoti_id = DB::table('sub_admins')->where('sub_admin', $get_userId->id)->first('owner_admin');
+            $get_owner_readNoti_code_user = DB::table('users')->where('id', $get_owner_readNoti_id->owner_admin)->first('code_user');
+            $owner_user_code = $get_owner_readNoti_code_user->code_user;
+        }
+
+        DB::table('notifications')->where('user_code', '=', $owner_user_code)->where('type_noti', '=', $request->type_noti)->update([
             'is_seen' => 1
         ]);
     }
@@ -2216,6 +2237,8 @@ class ApiController extends Controller
             'set_permission_stock' => $request['set_permission_stock'],
             'set_permission_report' => $request['set_permission_report'],
             'set_permission_admin_manage' => $request['set_permission_admin_manage'],
+            'set_permission_order' => $request['set_permission_order'],
+            'set_permission_chat' => $request['set_permission_chat'],
             'set_permission_settings' => $request['set_permission_settings']
         ];
 
@@ -2274,6 +2297,8 @@ class ApiController extends Controller
             'set_permission_stock' => $request['set_permission_stock'],
             'set_permission_report' => $request['set_permission_report'],
             'set_permission_admin_manage' => $request['set_permission_admin_manage'],
+            'set_permission_order' => $request['set_permission_order'],
+            'set_permission_chat' => $request['set_permission_chat'],
             'set_permission_settings' => $request['set_permission_settings']
         ];
         $json_permission = json_encode($permission);
@@ -3060,6 +3085,17 @@ class ApiController extends Controller
         //     ->get();
         $search = $request->search;
         $searchDate = $request->searchDate;
+
+        $get_userId = DB::table('users')->where('code_user', $request->user_code)->first('id');
+        $check_subadmin = DB::table('sub_admins')->where('sub_admin', $get_userId->id)->count();
+        if($check_subadmin == 0){
+            $owner_code_user = $request->user_code;
+        }else{
+            $get_Idowner_sub_admin = DB::table('sub_admins')->where('sub_admin', $get_userId->id)->first('owner_admin');
+            $get_code_user_owner_sub_admin = DB::table('users')->where('id', $get_Idowner_sub_admin->owner_admin)->first('code_user');
+            $owner_code_user = $get_code_user_owner_sub_admin->code_user;
+        }
+
         $orders2 = DB::table('orders')
             ->leftJoin('addresses', 'addresses.id', '=', 'orders.address_id')
             ->leftJoin('transections', 'transections.order_id', '=', 'orders.id')
@@ -3090,7 +3126,7 @@ class ApiController extends Controller
                 'transections.time as timeSlipPayment',
             ])
             ->where('orders.status', $request->navbarTab)
-            ->where('orders.user_code', $request->user_code)
+            ->where('orders.user_code', $owner_code_user)
             ->where(function ($query) use ($search, $searchDate) {
                 if (!empty($searchDate) && empty($search)) {
                     $query->whereDate('orders.created_at', $searchDate);
@@ -3137,17 +3173,17 @@ class ApiController extends Controller
             $value->orderDetails = $data;
         }
         // ราคารวมและจำนวนของ order ทั้งหมด ของแต่ละสถานะ
-        $total_Amount = DB::table('orders')->where('status', $request->navbarTab)->where('user_code', $request->user_code)->sum('price');
-        $total_Num = DB::table('orders')->where('status', $request->navbarTab)->where('user_code', $request->user_code)->sum('num');
+        $total_Amount = DB::table('orders')->where('status', $request->navbarTab)->where('user_code', $owner_code_user)->sum('price');
+        $total_Num = DB::table('orders')->where('status', $request->navbarTab)->where('user_code', $owner_code_user)->sum('num');
 
         // จำนวน order แต่ละสถานะ
-        $count_status1 = DB::table('orders')->where('status', 'ตรวจสอบคำสั่งซื้อ')->where('user_code', $request->user_code)->count();
-        $count_status2 = DB::table('orders')->where('status', 'กำลังแพ็ค')->where('user_code', $request->user_code)->count();
-        $count_status3 = DB::table('orders')->where('status', 'พร้อมส่ง')->where('user_code', $request->user_code)->count();
-        $count_status4 = DB::table('orders')->where('status', 'จัดส่งสำเร็จ')->where('user_code', $request->user_code)->count();
-        $count_status5 = DB::table('orders')->where('status', 'ส่งสำเร็จ')->where('user_code', $request->user_code)->count();
-        $count_status6 = DB::table('orders')->where('status', 'ตีกลับ')->where('user_code', $request->user_code)->count();
-        $count_status7 = DB::table('orders')->where('status', 'ยกเลิก')->where('user_code', $request->user_code)->count();
+        $count_status1 = DB::table('orders')->where('status', 'ตรวจสอบคำสั่งซื้อ')->where('user_code', $owner_code_user)->count();
+        $count_status2 = DB::table('orders')->where('status', 'กำลังแพ็ค')->where('user_code', $owner_code_user)->count();
+        $count_status3 = DB::table('orders')->where('status', 'พร้อมส่ง')->where('user_code', $owner_code_user)->count();
+        $count_status4 = DB::table('orders')->where('status', 'จัดส่งสำเร็จ')->where('user_code', $owner_code_user)->count();
+        $count_status5 = DB::table('orders')->where('status', 'ส่งสำเร็จ')->where('user_code', $owner_code_user)->count();
+        $count_status6 = DB::table('orders')->where('status', 'ตีกลับ')->where('user_code', $owner_code_user)->count();
+        $count_status7 = DB::table('orders')->where('status', 'ยกเลิก')->where('user_code', $owner_code_user)->count();
         return response()->json([
             'orders' => $orders2,
             'count_status1' => $count_status1,
@@ -3439,7 +3475,16 @@ class ApiController extends Controller
 
     public function getAddressOwnerShop($code_user)
     {
-        $objs = DB::table('ownershops')->select('*')->where('user_code', $code_user)->first();
+        $get_userId = DB::table('users')->where('code_user', $code_user)->first('id');
+        $check_subadmin = DB::table('sub_admins')->where('sub_admin', $get_userId->id)->count();
+        if($check_subadmin == 0){
+            $owner_user_code = $code_user;
+        }else{
+            $get_owner_readNoti_id = DB::table('sub_admins')->where('sub_admin', $get_userId->id)->first('owner_admin');
+            $get_owner_readNoti_code_user = DB::table('users')->where('id', $get_owner_readNoti_id->owner_admin)->first('code_user');
+            $owner_user_code = $get_owner_readNoti_code_user->code_user;
+        }
+        $objs = DB::table('ownershops')->select('*')->where('user_code', $owner_user_code)->first();
         return response()->json([
             'ownerShop' => $objs,
         ], 201);
