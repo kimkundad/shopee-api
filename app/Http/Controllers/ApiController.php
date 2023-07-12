@@ -37,9 +37,9 @@ class ApiController extends Controller
     public function get_category_all(Request $request)
     {
         $check_subadmin = DB::table('sub_admins')->where('sub_admin', $request->userId)->count();
-        if($check_subadmin == 0){
+        if ($check_subadmin == 0) {
             $owner_category = $request->userId;
-        }else{
+        } else {
             $owner_subadmin = DB::table('sub_admins')->where('sub_admin', $request->userId)->first('owner_admin');
             $owner_category = $owner_subadmin->owner_admin;
         }
@@ -1386,24 +1386,24 @@ class ApiController extends Controller
     public function getAllUsers(Request $request)
     {
         $check_subadmin = DB::table('sub_admins')->where('sub_admin', $request->user_id)->count();
-        if($check_subadmin == 0){
+        if ($check_subadmin == 0) {
             $objs = DB::table('users')->select('users.*', 'users.id as userID', 'roles.name as role_name', 'users.name as user_name', 'users.created_at as user_created_at', 'sub_admins.*')
-            ->join('role_user', 'role_user.user_id', '=', 'users.id')
-            ->join('roles', 'roles.id', '=', 'role_user.role_id')
-            ->join('sub_admins', 'sub_admins.sub_admin', '=', 'users.id')
-            ->orderBy('users.id', 'desc')
-            ->where('sub_admins.owner_admin', $request->user_id)
-            ->get();
-        }else{
+                ->join('role_user', 'role_user.user_id', '=', 'users.id')
+                ->join('roles', 'roles.id', '=', 'role_user.role_id')
+                ->join('sub_admins', 'sub_admins.sub_admin', '=', 'users.id')
+                ->orderBy('users.id', 'desc')
+                ->where('sub_admins.owner_admin', $request->user_id)
+                ->get();
+        } else {
             $owner_subadmin = DB::table('sub_admins')->where('sub_admin', $request->user_id)->first('owner_admin');
             $objs = DB::table('users')->select('users.*', 'users.id as userID', 'roles.name as role_name', 'users.name as user_name', 'users.created_at as user_created_at', 'sub_admins.*')
-            ->join('role_user', 'role_user.user_id', '=', 'users.id')
-            ->join('roles', 'roles.id', '=', 'role_user.role_id')
-            ->join('sub_admins', 'sub_admins.sub_admin', '=', 'users.id')
-            ->orderBy('users.id', 'desc')
-            ->where('sub_admins.sub_admin', '!=' , $request->user_id)
-            ->where('sub_admins.owner_admin', '=' ,$owner_subadmin->owner_admin)
-            ->get();
+                ->join('role_user', 'role_user.user_id', '=', 'users.id')
+                ->join('roles', 'roles.id', '=', 'role_user.role_id')
+                ->join('sub_admins', 'sub_admins.sub_admin', '=', 'users.id')
+                ->orderBy('users.id', 'desc')
+                ->where('sub_admins.sub_admin', '!=', $request->user_id)
+                ->where('sub_admins.owner_admin', '=', $owner_subadmin->owner_admin)
+                ->get();
         }
 
 
@@ -1518,7 +1518,14 @@ class ApiController extends Controller
             ], 201);
         }
         if ($request->type == "setting") {
-            $banks = DB::table('bankaccounts')->leftjoin('banks', 'banks.id', '=', 'bankaccounts.bank_id')->where('bankaccounts.user_id', '=', $request->user_id)->where('bankaccounts.type_account', '=', 'eBank')->select([
+            $check_subadmin = DB::table('sub_admins')->where('sub_admin', $request->user_id)->count();
+            if ($check_subadmin == 0) {
+                $owner_bank = $request->user_id;
+            } else {
+                $get_owner_bank_id = DB::table('sub_admins')->where('sub_admin', $request->user_id)->first('owner_admin');
+                $owner_bank = $get_owner_bank_id->owner_admin;
+            }
+            $banks = DB::table('bankaccounts')->leftjoin('banks', 'banks.id', '=', 'bankaccounts.bank_id')->where('bankaccounts.user_id', '=', $owner_bank)->where('bankaccounts.type_account', '=', 'eBank')->select([
                 'bankaccounts.*',
                 'banks.name_bank',
                 'banks.icon_bank_circle',
@@ -1545,7 +1552,14 @@ class ApiController extends Controller
 
     public function getActiveCOD(Request $request)
     {
-        $objs = DB::table('bankaccounts')->where('user_id', '=', $request->uid)->where('type_account', '=', 'COD')->first();
+        $check_subadmin = DB::table('sub_admins')->where('sub_admin', $request->uid)->count();
+        if ($check_subadmin == 0) {
+            $owner_COD = $request->uid;
+        } else {
+            $get_owner_COD_id = DB::table('sub_admins')->where('sub_admin', $request->uid)->first('owner_admin');
+            $owner_COD = $get_owner_COD_id->owner_admin;
+        }
+        $objs = DB::table('bankaccounts')->where('user_id', '=', $owner_COD)->where('type_account', '=', 'COD')->first();
 
         return response()->json([
             'account' => $objs,
@@ -1568,9 +1582,16 @@ class ApiController extends Controller
             $filePaths = $file->hashName();
         }
 
+        $check_subadmin = DB::table('sub_admins')->where('sub_admin', $request->uid)->count();
+        if ($check_subadmin == 0) {
+            $owner_bank = $request->uid;
+        } else {
+            $get_owner_bank_id = DB::table('sub_admins')->where('sub_admin', $request->uid)->first('owner_admin');
+            $owner_bank = $get_owner_bank_id->owner_admin;
+        }
 
         $objs = new bankaccount();
-        $objs->user_id = $request->uid;
+        $objs->user_id = $owner_bank;
         $objs->bank_id = $request->bank_id;
         $objs->bankaccount_name = $request->bankaccount_name;
         $objs->bankaccount_number = $request->bankaccount_number;
@@ -1587,18 +1608,25 @@ class ApiController extends Controller
 
     public function setActiveBankacc(Request $request)
     {
+        $check_subadmin = DB::table('sub_admins')->where('sub_admin', $request->user_id)->count();
+        if ($check_subadmin == 0) {
+            $owner_COD = $request->user_id;
+        } else {
+            $get_owner_COD_id = DB::table('sub_admins')->where('sub_admin', $request->user_id)->first('owner_admin');
+            $owner_COD = $get_owner_COD_id->owner_admin;
+        }
 
         DB::table('bankaccounts')->where('id', '=', $request->bankacc_id)->update([
             'is_active' => $request->checked,
         ]);
         if ($request->type == "COD") {
-            $banks = DB::table('bankaccounts')->leftjoin('banks', 'banks.id', '=', 'bankaccounts.bank_id')->where('bankaccounts.user_id', '=', $request->user_id)->where('bankaccounts.type_account', '=', 'eBank')->select([
+            $banks = DB::table('bankaccounts')->leftjoin('banks', 'banks.id', '=', 'bankaccounts.bank_id')->where('bankaccounts.user_id', '=', $owner_COD)->where('bankaccounts.type_account', '=', 'eBank')->select([
                 'bankaccounts.*',
                 'banks.name_bank',
                 'banks.icon_bank_circle',
             ])->first();
         } else {
-            $banks = DB::table('bankaccounts')->leftjoin('banks', 'banks.id', '=', 'bankaccounts.bank_id')->where('bankaccounts.user_id', '=', $request->user_id)->where('bankaccounts.type_account', '=', 'eBank')->select([
+            $banks = DB::table('bankaccounts')->leftjoin('banks', 'banks.id', '=', 'bankaccounts.bank_id')->where('bankaccounts.user_id', '=', $owner_COD)->where('bankaccounts.type_account', '=', 'eBank')->select([
                 'bankaccounts.*',
                 'banks.name_bank',
                 'banks.icon_bank_circle',
@@ -1614,7 +1642,15 @@ class ApiController extends Controller
     {
         DB::table('bankaccounts')->where('id', '=', $request->accId)->delete();
 
-        $banks = DB::table('bankaccounts')->leftjoin('banks', 'banks.id', '=', 'bankaccounts.bank_id')->where('bankaccounts.user_id', '=', $request->user_id)->where('bankaccounts.type_account', '=', 'eBank')->select([
+        $check_subadmin = DB::table('sub_admins')->where('sub_admin', $request->user_id)->count();
+        if ($check_subadmin == 0) {
+            $owner_bank_acc = $request->user_id;
+        } else {
+            $get_owner_bankacc_id = DB::table('sub_admins')->where('sub_admin', $request->user_id)->first('owner_admin');
+            $owner_bank_acc = $get_owner_bankacc_id->owner_admin;
+        }
+
+        $banks = DB::table('bankaccounts')->leftjoin('banks', 'banks.id', '=', 'bankaccounts.bank_id')->where('bankaccounts.user_id', '=', $owner_bank_acc)->where('bankaccounts.type_account', '=', 'eBank')->select([
             'bankaccounts.*',
             'banks.name_bank',
             'banks.icon_bank_circle',
@@ -1690,10 +1726,10 @@ class ApiController extends Controller
     public function getNoti($code_user, $id)
     {
         $check_subadmin = DB::table('sub_admins')->where('sub_admin', $id)->count();
-        if($check_subadmin == 0){
+        if ($check_subadmin == 0) {
             $owner_noti_code_user = $code_user;
             $owner_noti_id = $id;
-        }else{
+        } else {
             $get_owner_subadmin_id = DB::table('sub_admins')->where('sub_admin', $id)->first('owner_admin');
             $get_owner_subadmin_code_user = DB::table('users')->where('id', $get_owner_subadmin_id->owner_admin)->first('code_user');
             $owner_noti_code_user = $get_owner_subadmin_code_user->code_user;
@@ -1751,9 +1787,9 @@ class ApiController extends Controller
     {
         $get_userId = DB::table('users')->where('code_user', $request->user_code)->first('id');
         $check_subadmin = DB::table('sub_admins')->where('sub_admin', $get_userId->id)->count();
-        if($check_subadmin == 0){
+        if ($check_subadmin == 0) {
             $owner_user_code = $request->user_code;
-        }else{
+        } else {
             $get_owner_readNoti_id = DB::table('sub_admins')->where('sub_admin', $get_userId->id)->first('owner_admin');
             $get_owner_readNoti_code_user = DB::table('users')->where('id', $get_owner_readNoti_id->owner_admin)->first('code_user');
             $owner_user_code = $get_owner_readNoti_code_user->code_user;
@@ -2265,9 +2301,9 @@ class ApiController extends Controller
         ]);
 
         $check_subadmin = DB::table('sub_admins')->where('sub_admin', $request['owner_admin'])->count();
-        if($check_subadmin == 0){
+        if ($check_subadmin == 0) {
             $owner_category = $request['owner_admin'];
-        }else{
+        } else {
             $owner_subadmin = DB::table('sub_admins')->where('sub_admin', $request['owner_admin'])->first('owner_admin');
             $owner_category = $owner_subadmin->owner_admin;
         }
@@ -2349,7 +2385,7 @@ class ApiController extends Controller
         $search = $request->query('search');
         $uid = $request->query('uid');
         $check_subadmin = DB::table('sub_admins')->where('sub_admin', $uid)->count();
-        if($check_subadmin == 0){
+        if ($check_subadmin == 0) {
             if ($search != 'null') {
                 $objs = DB::table('users')->select('users.*', 'users.id as userID', 'roles.name as role_name', 'users.name as user_name', 'users.created_at as user_created_at', 'sub_admins.*')
                     ->join('role_user', 'role_user.user_id', '=', 'users.id')
@@ -2368,7 +2404,7 @@ class ApiController extends Controller
                     ->orderBy('users.id', 'desc')
                     ->get();
             }
-        }else{
+        } else {
             $owner_subadmin = DB::table('sub_admins')->where('sub_admin', $uid)->first('owner_admin');
             $owner_admin = $owner_subadmin->owner_admin;
             if ($search != 'null') {
@@ -2377,7 +2413,7 @@ class ApiController extends Controller
                     ->join('roles', 'roles.id', '=', 'role_user.role_id')
                     ->join('sub_admins', 'sub_admins.sub_admin', '=', 'users.id')
                     ->where('sub_admins.owner_admin', $owner_admin)
-                    ->where('sub_admins.sub_admin', '!=' ,$uid)
+                    ->where('sub_admins.sub_admin', '!=', $uid)
                     ->whereDate('users.created_at', $search)
                     ->orderBy('users.id', 'desc')
                     ->get();
@@ -2387,7 +2423,7 @@ class ApiController extends Controller
                     ->join('roles', 'roles.id', '=', 'role_user.role_id')
                     ->join('sub_admins', 'sub_admins.sub_admin', '=', 'users.id')
                     ->where('sub_admins.owner_admin', $owner_admin)
-                    ->where('sub_admins.sub_admin', '!=' ,$uid)
+                    ->where('sub_admins.sub_admin', '!=', $uid)
                     ->orderBy('users.id', 'desc')
                     ->get();
             }
@@ -2406,7 +2442,7 @@ class ApiController extends Controller
         $search = $request->query('search');
         $uid = $request->query('uid');
         $check_subadmin = DB::table('sub_admins')->where('sub_admin', $uid)->count();
-        if($check_subadmin == 0){
+        if ($check_subadmin == 0) {
             if ($search != 'null') {
                 $objs = DB::table('users')->select('users.*', 'users.id as userID', 'roles.name as role_name', 'users.name as user_name', 'users.created_at as user_created_at', 'sub_admins.*')
                     ->join('role_user', 'role_user.user_id', '=', 'users.id')
@@ -2425,7 +2461,7 @@ class ApiController extends Controller
                     ->orderBy('users.id', 'desc')
                     ->get();
             }
-        }else{
+        } else {
             $owner_subadmin = DB::table('sub_admins')->where('sub_admin', $uid)->first('owner_admin');
             $owner_admin = $owner_subadmin->owner_admin;
             if ($search != 'null') {
@@ -2434,7 +2470,7 @@ class ApiController extends Controller
                     ->join('roles', 'roles.id', '=', 'role_user.role_id')
                     ->join('sub_admins', 'sub_admins.sub_admin', '=', 'users.id')
                     ->where('sub_admins.owner_admin', $owner_admin)
-                    ->where('sub_admins.sub_admin', '!=' ,$uid)
+                    ->where('sub_admins.sub_admin', '!=', $uid)
                     ->where('users.name', 'like', '%' . $search . '%')
                     ->orderBy('users.id', 'desc')
                     ->get();
@@ -2444,7 +2480,7 @@ class ApiController extends Controller
                     ->join('roles', 'roles.id', '=', 'role_user.role_id')
                     ->join('sub_admins', 'sub_admins.sub_admin', '=', 'users.id')
                     ->where('sub_admins.owner_admin', $owner_admin)
-                    ->where('sub_admins.sub_admin', '!=' ,$uid)
+                    ->where('sub_admins.sub_admin', '!=', $uid)
                     ->orderBy('users.id', 'desc')
                     ->get();
             }
@@ -2688,9 +2724,9 @@ class ApiController extends Controller
     public function addCategory(Request $request)
     {
         $check_subadmin = DB::table('sub_admins')->where('sub_admin', $request->userID)->count();
-        if($check_subadmin == 0){
+        if ($check_subadmin == 0) {
             $owner_category = $request->userID;
-        }else{
+        } else {
             $owner_subadmin = DB::table('sub_admins')->where('sub_admin', $request->userID)->first('owner_admin');
             $owner_category = $owner_subadmin->owner_admin;
         }
@@ -3088,9 +3124,9 @@ class ApiController extends Controller
 
         $get_userId = DB::table('users')->where('code_user', $request->user_code)->first('id');
         $check_subadmin = DB::table('sub_admins')->where('sub_admin', $get_userId->id)->count();
-        if($check_subadmin == 0){
+        if ($check_subadmin == 0) {
             $owner_code_user = $request->user_code;
-        }else{
+        } else {
             $get_Idowner_sub_admin = DB::table('sub_admins')->where('sub_admin', $get_userId->id)->first('owner_admin');
             $get_code_user_owner_sub_admin = DB::table('users')->where('id', $get_Idowner_sub_admin->owner_admin)->first('code_user');
             $owner_code_user = $get_code_user_owner_sub_admin->code_user;
@@ -3477,9 +3513,9 @@ class ApiController extends Controller
     {
         $get_userId = DB::table('users')->where('code_user', $code_user)->first('id');
         $check_subadmin = DB::table('sub_admins')->where('sub_admin', $get_userId->id)->count();
-        if($check_subadmin == 0){
+        if ($check_subadmin == 0) {
             $owner_user_code = $code_user;
-        }else{
+        } else {
             $get_owner_readNoti_id = DB::table('sub_admins')->where('sub_admin', $get_userId->id)->first('owner_admin');
             $get_owner_readNoti_code_user = DB::table('users')->where('id', $get_owner_readNoti_id->owner_admin)->first('code_user');
             $owner_user_code = $get_owner_readNoti_code_user->code_user;
