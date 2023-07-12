@@ -2227,6 +2227,7 @@ class ApiController extends Controller
             'phone' => $request['email_sub_admin'],
             'password' => Hash::make($request['password_sub_admin']),
             'code_user' => sprintf("%07d", rand(0, 9999999)),
+            'is_subadmin' => 1,
             'created_at' =>  date('Y-m-d H:i:s'),
             'updated_at' => date('Y-m-d H:i:s'),
         ]);

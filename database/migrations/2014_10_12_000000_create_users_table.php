@@ -29,6 +29,7 @@ return new class extends Migration
             $table->integer('status')->default('0');
             $table->string('code_user')->nullable();
             $table->text('session_id')->nullable();
+            $table->integer('is_subadmin')->default('0');
             $table->rememberToken();
             $table->timestamps();
         });
