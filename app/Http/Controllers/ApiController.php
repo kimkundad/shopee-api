@@ -1500,10 +1500,18 @@ class ApiController extends Controller
                 $objs->shop_id = $request->shop_id;
                 $objs->sender_id = $request->sender_id;
                 $objs->recived_id = $request->recived_id;
-                $objs->message = $request->message;
+                $objs->message = null;
                 $objs->img_message = $filePaths;
                 $objs->save();
             }
+            $objs = new chats();
+                $objs->user_id = $request->user_id;
+                $objs->shop_id = $request->shop_id;
+                $objs->sender_id = $request->sender_id;
+                $objs->recived_id = $request->recived_id;
+                $objs->message = $request->message;
+                $objs->img_message = null;
+                $objs->save();
         } else {
             $objs = new chats();
             $objs->user_id = $request->user_id;
@@ -1868,10 +1876,10 @@ class ApiController extends Controller
             ->join('users', 'users.id', '=', 'c1.user_id')
             ->where('c1.shop_id', '=', $id)
             ->where(function ($query) {
-                $query->whereRaw('c1.created_at = (SELECT MAX(created_at) FROM chats as c2 WHERE c2.user_id = c1.user_id and c2.shop_id = c1.shop_id)');
+                $query->whereRaw('c1.id = (SELECT MAX(id) FROM chats as c2 WHERE c2.user_id = c1.user_id and c2.shop_id = c1.shop_id)');
             })
 
-            ->orderBy('c1.created_at', 'desc')
+            ->orderBy('c1.id', 'desc')
             ->get();
 
         return response()->json([
