@@ -1707,7 +1707,15 @@ class ApiController extends Controller
 
     public function getOwnerSetting(Request $request)
     {
-        $objs = Db::table('ownershop_settings')->where('user_id', '=', $request->user_id)->first();
+        $check_subadmin = DB::table('sub_admins')->where('sub_admin', $request->user_id)->count();
+        if ($check_subadmin == 0) {
+            $owner_noti = $request->user_id;
+        } else {
+            $owner_subadmin = DB::table('sub_admins')->where('sub_admin', $request->user_id)->first('owner_admin');
+            $owner_noti = $owner_subadmin->owner_admin;
+        }
+
+        $objs = Db::table('ownershop_settings')->where('user_id', '=', $owner_noti)->first();
 
         return response()->json([
             'setting' => $objs,
@@ -1803,14 +1811,21 @@ class ApiController extends Controller
     //เปิดปิด แจ้งเตือนหลังบ้าน
     public function settingNoti(Request $request)
     {
+        $check_subadmin = DB::table('sub_admins')->where('sub_admin', $request->user_id)->count();
+        if ($check_subadmin == 0) {
+            $owner_noti = $request->user_id;
+        } else {
+            $owner_subadmin = DB::table('sub_admins')->where('sub_admin', $request->user_id)->first('owner_admin');
+            $owner_noti = $owner_subadmin->owner_admin;
+        }
 
-        $objs = ownershop_settings::where('user_id', $request->user_id)->first();
+        $objs = ownershop_settings::where('user_id', $owner_noti)->first();
         if ($objs) {
             $objs->setting = $request->setting;
             $objs->save();
         } else {
             $objs = ownershop_settings::insert([
-                'user_id' => $request->user_id,
+                'user_id' => $owner_noti,
                 'setting' => $request->setting
             ]);
         }
@@ -3552,17 +3567,24 @@ class ApiController extends Controller
     //get setting_bill form Database
     public function getSettingTypeBill($id)
     {
-        $checkIdTypeBill = DB::table('ownershop_settings')->where('user_id', $id)->count();
+        $check_subadmin = DB::table('sub_admins')->where('sub_admin', $id)->count();
+        if ($check_subadmin == 0) {
+            $owner_bill = $id;
+        } else {
+            $owner_subadmin = DB::table('sub_admins')->where('sub_admin', $id)->first('owner_admin');
+            $owner_bill = $owner_subadmin->owner_admin;
+        }
+        $checkIdTypeBill = DB::table('ownershop_settings')->where('user_id', $owner_bill)->count();
         if ($checkIdTypeBill == 0) {
             DB::table('ownershop_settings')->insert([
-                'user_id' => $id,
+                'user_id' => $owner_bill,
                 'setting_bill' => 1
             ]);
             return response()->json([
                 'success' => 'Insert first type bill successfully!',
             ], 201);
         } else {
-            $type_bill = DB::table('ownershop_settings')->where('user_id', $id)->select('setting_bill')->first();
+            $type_bill = DB::table('ownershop_settings')->where('user_id', $owner_bill)->select('setting_bill')->first();
             return response()->json([
                 'settingTypeBill' => $type_bill->setting_bill,
             ], 201);
@@ -3572,10 +3594,17 @@ class ApiController extends Controller
     //set setting_bill form Database
     public function setSettingTypeBill(Request $request)
     {
-        $checkId = DB::table('ownershop_settings')->where('user_id', $request->userId)->count();
+        $check_subadmin = DB::table('sub_admins')->where('sub_admin', $request->userId)->count();
+        if ($check_subadmin == 0) {
+            $owner_bill = $request->userId;
+        } else {
+            $owner_subadmin = DB::table('sub_admins')->where('sub_admin', $request->userId)->first('owner_admin');
+            $owner_bill = $owner_subadmin->owner_admin;
+        }
+        $checkId = DB::table('ownershop_settings')->where('user_id', $owner_bill)->count();
         if ($checkId == 0) {
             DB::table('ownershop_settings')->insert([
-                'user_id' => $request->userId,
+                'user_id' => $owner_bill,
                 'setting_bill' => $request->typebill
             ]);
             return response()->json([
@@ -3583,7 +3612,7 @@ class ApiController extends Controller
             ], 201);
         } else {
             DB::table('ownershop_settings')
-                ->where('user_id', $request->userId)
+                ->where('user_id', $owner_bill)
                 ->update([
                     'setting_bill' => $request->typebill,
                 ]);
@@ -3596,17 +3625,24 @@ class ApiController extends Controller
     //get setting_invoice form Database
     public function getSettingTypeInvoice($id)
     {
-        $checkIdTypeInvoice = DB::table('ownershop_settings')->where('user_id', $id)->count();
+        $check_subadmin = DB::table('sub_admins')->where('sub_admin', $id)->count();
+        if ($check_subadmin == 0) {
+            $owner_invoice = $id;
+        } else {
+            $owner_subadmin = DB::table('sub_admins')->where('sub_admin', $id)->first('owner_admin');
+            $owner_invoice = $owner_subadmin->owner_admin;
+        }
+        $checkIdTypeInvoice = DB::table('ownershop_settings')->where('user_id', $owner_invoice)->count();
         if ($checkIdTypeInvoice == 0) {
             DB::table('ownershop_settings')->insert([
-                'user_id' => $id,
+                'user_id' => $owner_invoice,
                 'setting_invoice' => 1
             ]);
             return response()->json([
                 'success' => 'Insert first type invoice successfully!',
             ], 201);
         } else {
-            $type_invoice = DB::table('ownershop_settings')->where('user_id', $id)->select('setting_invoice')->first();
+            $type_invoice = DB::table('ownershop_settings')->where('user_id', $owner_invoice)->select('setting_invoice')->first();
             return response()->json([
                 'settingTypeInvoice' => $type_invoice->setting_invoice,
             ], 201);
@@ -3616,10 +3652,17 @@ class ApiController extends Controller
     //set setting_invoice form Database
     public function setSettingTypeInvoice(Request $request)
     {
-        $checkId = DB::table('ownershop_settings')->where('user_id', $request->userId)->count();
+        $check_subadmin = DB::table('sub_admins')->where('sub_admin', $request->userId)->count();
+        if ($check_subadmin == 0) {
+            $owner_invoice = $request->userId;
+        } else {
+            $owner_subadmin = DB::table('sub_admins')->where('sub_admin', $request->userId)->first('owner_admin');
+            $owner_invoice = $owner_subadmin->owner_admin;
+        }
+        $checkId = DB::table('ownershop_settings')->where('user_id', $owner_invoice)->count();
         if ($checkId == 0) {
             DB::table('ownershop_settings')->insert([
-                'user_id' => $request->userId,
+                'user_id' => $owner_invoice,
                 'setting_invoice' => $request->typeinvoice
             ]);
             return response()->json([
@@ -3627,7 +3670,7 @@ class ApiController extends Controller
             ], 201);
         } else {
             DB::table('ownershop_settings')
-                ->where('user_id', $request->userId)
+                ->where('user_id', $owner_invoice)
                 ->update([
                     'setting_invoice' => $request->typeinvoice,
                 ]);
@@ -3640,17 +3683,24 @@ class ApiController extends Controller
     //get setting_purchase_order form Database
     public function getSettingTypePurchaseOrder($id)
     {
-        $checkIdTypePurchaseOrder = DB::table('ownershop_settings')->where('user_id', $id)->count();
+        $check_subadmin = DB::table('sub_admins')->where('sub_admin', $id)->count();
+        if ($check_subadmin == 0) {
+            $owner_PurchaseOrder = $id;
+        } else {
+            $owner_subadmin = DB::table('sub_admins')->where('sub_admin', $id)->first('owner_admin');
+            $owner_PurchaseOrder = $owner_subadmin->owner_admin;
+        }
+        $checkIdTypePurchaseOrder = DB::table('ownershop_settings')->where('user_id', $owner_PurchaseOrder)->count();
         if ($checkIdTypePurchaseOrder == 0) {
             DB::table('ownershop_settings')->insert([
-                'user_id' => $id,
+                'user_id' => $owner_PurchaseOrder,
                 'setting_purchase_order' => 1
             ]);
             return response()->json([
                 'success' => 'Insert first type purchase order successfully!',
             ], 201);
         } else {
-            $type_purchase_order = DB::table('ownershop_settings')->where('user_id', $id)->select('setting_purchase_order')->first();
+            $type_purchase_order = DB::table('ownershop_settings')->where('user_id', $owner_PurchaseOrder)->select('setting_purchase_order')->first();
             return response()->json([
                 'settingTypePurchaseOrder' => $type_purchase_order->setting_purchase_order,
             ], 201);
@@ -3660,10 +3710,17 @@ class ApiController extends Controller
     //set setting_purchase_order form Database
     public function setSettingTypePurchaseOrder(Request $request)
     {
-        $checkId = DB::table('ownershop_settings')->where('user_id', $request->userId)->count();
+        $check_subadmin = DB::table('sub_admins')->where('sub_admin', $request->userId)->count();
+        if ($check_subadmin == 0) {
+            $owner_PurchaseOrder = $request->userId;
+        } else {
+            $owner_subadmin = DB::table('sub_admins')->where('sub_admin', $request->userId)->first('owner_admin');
+            $owner_PurchaseOrder = $owner_subadmin->owner_admin;
+        }
+        $checkId = DB::table('ownershop_settings')->where('user_id', $owner_PurchaseOrder)->count();
         if ($checkId == 0) {
             DB::table('ownershop_settings')->insert([
-                'user_id' => $request->userId,
+                'user_id' => $owner_PurchaseOrder,
                 'setting_purchase_order' => $request->typepurchaseorder
             ]);
             return response()->json([
@@ -3671,7 +3728,7 @@ class ApiController extends Controller
             ], 201);
         } else {
             DB::table('ownershop_settings')
-                ->where('user_id', $request->userId)
+                ->where('user_id', $owner_PurchaseOrder)
                 ->update([
                     'setting_purchase_order' => $request->typepurchaseorder,
                 ]);
