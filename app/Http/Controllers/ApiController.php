@@ -1481,14 +1481,39 @@ class ApiController extends Controller
     // ส่งข้อความ
     public function sendMessage(Request $request)
     {
+
+        // $objs->img_message = $request->img_message;
         $objs = new chats();
-        $objs->user_id = $request->user_id;
-        $objs->shop_id = $request->shop_id;
-        $objs->sender_id = $request->sender_id;
-        $objs->recived_id = $request->recived_id;
-        $objs->message = $request->message;
-        $objs->img_message = $request->img_message;
-        $objs->save();
+        if ($request->file('image')) {
+            $images = $request->file('image');
+            foreach ($images as $index => $img) {
+                $filename = time() . '.' . $img->getClientOriginalExtension();
+                $image = Image::make($img->getRealPath());
+                $image->resize(300, 300, function ($constraint) {
+                    $constraint->aspectRatio();
+                });
+                $image->stream();
+                Storage::disk('do_spaces')->put('shopee/img_message/' . $img->hashName(), $image, 'public');
+                $filePaths = $img->hashName();
+
+                $objs->user_id = $request->user_id;
+                $objs->shop_id = $request->shop_id;
+                $objs->sender_id = $request->sender_id;
+                $objs->recived_id = $request->recived_id;
+                $objs->message = $request->message;
+                $objs->img_message = $filePaths;
+                $objs->save();
+            }
+        } else {
+            $objs->user_id = $request->user_id;
+            $objs->shop_id = $request->shop_id;
+            $objs->sender_id = $request->sender_id;
+            $objs->recived_id = $request->recived_id;
+            $objs->message = $request->message;
+            $objs->img_message = null;
+            $objs->save();
+        }
+
 
         $message = DB::table('chats')
             ->join('users', 'users.id', '=', 'chats.user_id')
