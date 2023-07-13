@@ -1485,6 +1485,15 @@ class ApiController extends Controller
         // $objs->img_message = $request->img_message;
 
         if ($request->file('image')) {
+            $objs = new chats();
+            $objs->user_id = $request->user_id;
+            $objs->shop_id = $request->shop_id;
+            $objs->sender_id = $request->sender_id;
+            $objs->recived_id = $request->recived_id;
+            $objs->message = $request->message;
+            $objs->img_message = null;
+            $objs->save();
+
             $images = $request->file('image');
             foreach ($images as $index => $img) {
                 $filename = time() . '.' . $img->getClientOriginalExtension();
@@ -1504,14 +1513,6 @@ class ApiController extends Controller
                 $objs->img_message = $filePaths;
                 $objs->save();
             }
-            $objs = new chats();
-                $objs->user_id = $request->user_id;
-                $objs->shop_id = $request->shop_id;
-                $objs->sender_id = $request->sender_id;
-                $objs->recived_id = $request->recived_id;
-                $objs->message = $request->message;
-                $objs->img_message = null;
-                $objs->save();
         } else {
             $objs = new chats();
             $objs->user_id = $request->user_id;
