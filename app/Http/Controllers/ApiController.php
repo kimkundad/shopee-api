@@ -1483,7 +1483,7 @@ class ApiController extends Controller
     {
 
         // $objs->img_message = $request->img_message;
-        $objs = new chats();
+
         if ($request->file('image')) {
             $images = $request->file('image');
             foreach ($images as $index => $img) {
@@ -1495,7 +1495,7 @@ class ApiController extends Controller
                 $image->stream();
                 Storage::disk('do_spaces')->put('shopee/img_message/' . $img->hashName(), $image, 'public');
                 $filePaths = $img->hashName();
-
+                $objs = new chats();
                 $objs->user_id = $request->user_id;
                 $objs->shop_id = $request->shop_id;
                 $objs->sender_id = $request->sender_id;
@@ -1505,6 +1505,7 @@ class ApiController extends Controller
                 $objs->save();
             }
         } else {
+            $objs = new chats();
             $objs->user_id = $request->user_id;
             $objs->shop_id = $request->shop_id;
             $objs->sender_id = $request->sender_id;
