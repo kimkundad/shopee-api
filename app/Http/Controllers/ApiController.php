@@ -1500,9 +1500,9 @@ class ApiController extends Controller
             foreach ($images as $index => $img) {
                 $filename = time() . '.' . $img->getClientOriginalExtension();
                 $image = Image::make($img->getRealPath());
-                $image->resize(300, 300, function ($constraint) {
-                    $constraint->aspectRatio();
-                });
+                // $image->resize(300, 300, function ($constraint) {
+                //     $constraint->aspectRatio();
+                // });
                 $image->stream();
                 Storage::disk('do_spaces')->put('shopee/img_message/' . $img->hashName(), $image, 'public');
                 $filePaths = $img->hashName();
@@ -3778,7 +3778,7 @@ class ApiController extends Controller
     //get images chat all
     public function getImagesMessage($userId, $shopId)
     {
-        $objs = DB::table('chats')->where('user_id', $userId)->where('shop_id', $shopId)->where('img_message', '!=', null)->select('img_message')->get();
+        $objs = DB::table('chats')->where('user_id', $userId)->where('shop_id', $shopId)->where('img_message', '!=', null)->orderBy('id', 'desc')->select('img_message')->get();
         return response()->json([
             'img_chat' => $objs,
         ], 201);
