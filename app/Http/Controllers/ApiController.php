@@ -1485,14 +1485,16 @@ class ApiController extends Controller
         // $objs->img_message = $request->img_message;
 
         if ($request->file('image')) {
-            $objs = new chats();
-            $objs->user_id = $request->user_id;
-            $objs->shop_id = $request->shop_id;
-            $objs->sender_id = $request->sender_id;
-            $objs->recived_id = $request->recived_id;
-            $objs->message = $request->message;
-            $objs->img_message = null;
-            $objs->save();
+            if ($request->message) {
+                $objs = new chats();
+                $objs->user_id = $request->user_id;
+                $objs->shop_id = $request->shop_id;
+                $objs->sender_id = $request->sender_id;
+                $objs->recived_id = $request->recived_id;
+                $objs->message = $request->message;
+                $objs->img_message = null;
+                $objs->save();
+            }
 
             $images = $request->file('image');
             foreach ($images as $index => $img) {
@@ -3771,5 +3773,14 @@ class ApiController extends Controller
                 'success' => 'Updated setting type purchase order successfully!',
             ], 201);
         }
+    }
+
+    //get images chat all
+    public function getImagesMessage($userId, $shopId)
+    {
+        $objs = DB::table('chats')->where('user_id', $userId)->where('shop_id', $shopId)->where('img_message', '!=', null)->select('img_message')->get();
+        return response()->json([
+            'img_chat' => $objs,
+        ], 201);
     }
 }

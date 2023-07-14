@@ -89,6 +89,8 @@ Route::group([
     //chat messages
     Route::post('/messages', [App\Http\Controllers\ApiController::class, 'messages']);
 
+    Route::get('/getImagesMessage/{userId}/{shopId}', [App\Http\Controllers\ApiController::class, 'getImagesMessage']);
+
     Route::get('/getCategory/{id}' , [App\Http\Controllers\ApiController::class, 'getCategory']);
 
     Route::get('/getUserChats/{id}' , [App\Http\Controllers\ApiController::class, 'getUserChats']);
