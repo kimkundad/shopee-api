@@ -1437,12 +1437,24 @@ class ApiController extends Controller
             ], 201);
         }
 
+        // $message = DB::table('chats')
+        //     ->join('users', 'users.id', '=', 'chats.user_id')
+        //     ->join('shops', 'shops.id', '=', 'chats.shop_id')
+        //     ->select('chats.*', 'users.avatar', 'shops.img_shop')
+        //     ->where('chats.sender_id', $user_id)
+        //     ->orWhere('chats.recived_id', $user_id)
+        //     ->where('chats.shop_id', $shop_id)
+        //     ->orderBy('chats.created_at', 'asc')
+        //     ->get();
+
         $message = DB::table('chats')
             ->join('users', 'users.id', '=', 'chats.user_id')
             ->join('shops', 'shops.id', '=', 'chats.shop_id')
             ->select('chats.*', 'users.avatar', 'shops.img_shop')
-            ->where('chats.sender_id', $user_id)
-            ->orWhere('chats.recived_id', $user_id)
+            ->where(function ($query) use ($user_id) {
+                $query->where('chats.sender_id', $user_id)
+                    ->orWhere('chats.recived_id', $user_id);
+            })
             ->where('chats.shop_id', $shop_id)
             ->orderBy('chats.created_at', 'asc')
             ->get();
