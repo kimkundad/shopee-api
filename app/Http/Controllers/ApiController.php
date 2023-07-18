@@ -123,6 +123,14 @@ class ApiController extends Controller
             ->select('*')
             ->where('user_code', $code_user)
             ->get();
+        foreach ($objs as $obj) {
+            $chat = DB::table('chats')
+                ->where('shop_id', $obj->id)
+                ->whereNotNull('sender_id')
+                ->where('status', 0)
+                ->count();
+            $obj->chat = $chat;
+        }
 
         return response()->json([
             'shops' => $objs,
